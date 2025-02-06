@@ -1,0 +1,31 @@
+<tbody>
+  {% if data.rows|length %}
+    {% for row in data.rows %}
+    <tr class="mb-0" data-pkv="{{ row.pkv }}">
+      {% if data.bulk_actions|length %}
+        <td class="col-check-all">
+          <input
+            type="checkbox" 
+            value="{{ row.pkv }}"
+            class="cb-item form-check-input cursor-pointer"
+          />
+        </td> 
+      {% endif %}
+      {% for column in data.columns %}
+        <td data-label="{{ column.label }}" class="td_{{ column.name }}">{{ row[column.name]|raw }}</td>
+      {% endfor %}
+      {% if row.actions|length %}
+        <td align="center" class="actions" data-label="{{ "Actions"|trans }}">
+          {% include "layout/table/actions.html.twig" %}
+        </td>
+      {% endif %}
+    </tr>
+    {% endfor %}
+  {% else %}
+  <tr>
+    <td colspan="{{ data.columns|length }}" align="center" class="empty">
+      {{ "Aucun résultat n'a été trouvé"|trans }}
+    </td>
+  </tr>
+  {% endif %}
+</tbody>

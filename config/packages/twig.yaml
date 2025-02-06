@@ -1,0 +1,11 @@
+twig:
+    default_path: '%kernel.project_dir%/templates'
+    form_themes:
+        - 'bootstrap_5_layout.html.twig'
+        - 'layout/form/type/fieldset.html.twig'
+        - 'layout/form/type/ajax-upload.html.twig'
+    paths:
+        '%kernel.project_dir%/public/assets': assets
+when@test:
+    twig:
+        strict_variables: true

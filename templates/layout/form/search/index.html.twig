@@ -1,0 +1,25 @@
+<div class="accordion rounded-0 mb-4" id="search-accordion">
+  <div class="accordion-item bg-white rounded-0">
+    <h5 class="accordion-header" id="search-heading" title="{{ "Click to show/hide the form"|trans }}">
+      <button class="accordion-button collapsed rounded-0 shadow-none bg-white text-uppercase text-muted m-0 fs-5" type="button" data-bs-toggle="collapse" data-bs-target="#search-collapse" aria-expanded="false" aria-controls="search-collapse">
+        <i class="bi-search me-1"></i>
+        {{ "Recherche"|trans }}
+      </button>
+    </h5>
+    <div id="search-collapse" class="accordion-collapse collapse show" aria-labelledby="search-heading" data-bs-parent="#search-accordion">
+      <div class="accordion-body pt-1">
+        <search-form table="{{ tableId ?? '' }}">
+          {{ form_start(form) }}
+          {{ form_widget(form) }}
+          <button type="reset" class="btn btn-outline-danger btn-reset rounded-0 shadow-none mt-2">
+            {{ "Reset"|trans }}
+          </button>
+          <button class="btn btn-outline-primary btn-search float-end rounded-0 shadow-none mt-2">
+            {{ "Search"|trans }}
+          </button>
+          {{ form_end(form) }}
+        </search-form>
+      </div>
+    </div>
+  </div>
+</div>

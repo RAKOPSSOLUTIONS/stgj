@@ -1,0 +1,155 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+
+  <h1 class="page-name">
+    <i class="bi bi-calendar-check"></i>
+    {% if not entity|length %}
+      {{ "Nouvelle réservation"|trans }}
+    {% else %}
+      {{ "Editer une réservation"|trans }}
+    {% endif %}
+  </h1>
+<br />
+<style>
+  .port-title {
+    background-color: #6c757d !important;
+  }
+  fieldset .col-form-label {
+    margin-bottom: 8px;
+  }
+  .card-entry fieldset {
+    margin-bottom: 0px !important;
+  }
+  .delete-entry {
+    right: 15px;
+  }
+  .entries {
+    counter-reset: compagne_counter;
+  }
+  .compagne-counter:before {
+    counter-increment: compagne_counter;
+    content: counter(compagne_counter);
+    position: absolute;
+    top: 5px;
+    right: 45px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+</style>
+ <ajax-form>
+ {{ form_start(form) }}
+
+    {{ form_row(form.reservation_heure) }}
+
+
+    <div id="div_trajet_entree" {% if entity and entity.isHomePickup %}style="display:none;" {% endif %}>{{ form_row(form.trajet) }}</div>
+    <div id="div_pickup_entree" {% if entity and entity.isHomePickup %}style="display:none;" {% endif %}>{{ form_row(form.pickup) }}</div>
+    <div id="div_adresse_entree" {% if entity and entity.isHomePickup!=1 %}style="display:none;" {% endif %}>{{ form_row(form.adresse) }}</div>
+     
+      {% if form.dureeUp is defined %} {{ form_row(form.dureeUp) }}{% endif %}
+       {% if form.heure_passage is defined %} {{ form_row(form.heure_passage) }}{% endif %}
+
+<hr class="border-2 border-top border-secondary">
+    <button type="button" class="btn btn-outline-danger rounded-0 shadow-none" onclick="history.go(-1);">
+      <i class="bi bi-x-lg"></i>
+      {{ "Annuler"|trans }}
+    </button>
+    <button type="submit" class="btn btn-outline-secondary rounded-0 shadow-none  ">
+      <i class="bi bi-check2-square"></i>
+      {{ "Enregistrer"|trans }}
+    </button>
+
+{{ form_end(form) }}
+</ajax-form>
+
+{% endblock %}
+
+{% block footer %}
+  {{ parent() }}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js" type="text/javascript"></script>
+   
+ 
+  <script>
+  document.querySelector("ajax-form").addEventListener("ajax.form.success", function() {
+    setTimeout(function() {
+      window.location.href = '{{ path("reservation_entries") }}'
+    }, 1000)
+  })
+  </script>
+
+    <script>
+
+  $('#reservation_entries_reservation_heure').change(function() {
+    let shift_entree = $(this).val();
+    console.log(shift_entree);
+    if ( shift_entree < 8 || shift_entree > 20 ){
+      console.log('show adresse and hide trajet');
+      $('#div_trajet_entree').hide();
+      $('#div_pickup_entree').hide();
+      $('#div_adresse_entree').show();
+    }
+    else{
+      console.log('show trajet and hide adress');
+      $('#div_trajet_entree').show();
+      $('#div_pickup_entree').show();
+      $('#div_adresse_entree').hide();
+    }
+   }); 
+
+    
+
+
+   
+</script>
+
+<script>
+  $('#reservation_entries_trajet').change(function() {
+    let trajet_id = $(this).val();
+    console.log(trajet_id);
+
+
+    var selectElement = document.getElementById('reservation_entries_pickup');
+    var options = selectElement.options;
+
+    for (var i = 0; i < options.length; i++) {
+      var option = options[i];
+      var customAttribute = option.getAttribute('data-trajet') ? parseInt(option.getAttribute('data-trajet')) : 0;
+      console.log('Option value:', option.value, 'Custom Attribute:', customAttribute);
+      if ( customAttribute == trajet_id ){
+       $(option).css("display", "block");
+      }
+      else {
+       $(option).css("display", "none");
+      }
+    }
+   }); 
+
+   
+</script>
+
+  <script>
+  $('#reservation_trajet_entree').change(function() {
+
+  let trajet = $(this).val();
+  console.log(trajet);
+
+  $("#reservation_pickup_entree > option").each(function() {
+    let pickup = $(this).val();
+
+    //ajax call
+
+    if ( $(this).attr('data-site') == category && $(this).attr('data-direction') == direction ){
+     $(this).css("display", "block");
+    }
+    else {
+     $(this).css("display", "none");
+    }
+  }); 
+
+   }); 
+</script>
+
+{% endblock %}

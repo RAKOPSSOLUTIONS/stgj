@@ -1,0 +1,41 @@
+{% extends 'layout/email.html.twig' %}
+
+{% block title %}Validation de la navette{% endblock %}
+
+{% block body %}
+<container>  
+  <row>
+    <columns>
+      <center>
+        <img src="{{ absolute_url(asset('assets/img/logo-stjg.png')) }}" width="216" height="135" alt="STJG TOUR"/>
+      </center>
+    </columns>
+  </row>  
+  <row>
+    <p>Bonjour,</p>
+    <p>Nous vous informons que la navette pour le trajet <b>{{trajet}}</b> prévue le <b>{{date}}</b> à <b>{{heure}}h</b> a été validée.</p>
+
+    <p>pickup {{ pickup }}</p>
+    <p>dropoff {{ dropoff }}</p>
+    <p>Heure de passage {{ heure_passage }}</p>
+    <p>Matricule {{ matricule }}</p>
+    <p>Chauffeur {{ chauffeur }}</p>
+
+    <p>Cordialement</p>
+  </row>
+</container>
+{% endblock %}
+
+{% block footer %}
+<row>
+<columns small="12" large="12">
+<center>
+  <small><a href="http://www.stjg.ma">www.stjg.ma</a></small> 
+  <small style="color:#000"> | </small>
+  <small><a href="mailto:contact@stjg.ma">contact@stjg.ma</a></small> 
+  <small style="color:#000"> | </small>
+  <small><a href="tel:05377-71355">05377-71355</a></small> 
+</center>
+</columns>
+</row>
+{% endblock %}

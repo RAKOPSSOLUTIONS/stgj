@@ -1,0 +1,28 @@
+#chm-toast {
+  position: fixed;
+  top: 15px;
+  left: 0;
+  right: 0;
+  padding: 5px;
+  margin: 0px auto;
+  background-color: white;
+  z-index: 9999;
+  width: fit-content;
+  width: -moz-fit-content;
+  &.success {
+    border-left: 3px solid $success;
+  }
+  &.info {
+    border-left: 3px solid $info;
+  }
+  &.warning {
+    border-left: 3px solid $warning;
+  }
+  &.danger,
+  &.error {
+    border-left: 3px solid $danger;
+  }
+  .toast-body {
+    font-weight: 600;
+  }
+}

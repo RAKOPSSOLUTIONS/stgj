@@ -1,0 +1,16 @@
+{% if data.bulk_actions|length %}
+  <div class="input-group-text check-all rounded-0 shadow-none">
+    <input type="checkbox" class="cb-check-all form-check-input mt-0 cursor-pointer">
+  </div>
+  <select class="form-control bulk-actions">
+    <option value="">{{ "Actions groupées"|trans }}</option>
+    {% for action in data.bulk_actions %}
+      <option value="{{ action.path }}" data-name="{{ action.name }}">
+        {{ action.label }}
+      </option>
+    {% endfor %}
+  </select>
+  <button type="button" class="btn btn-outline-secondary rounded-0 shadow-none bulk-apply">
+    {{ "Appliquer"|trans }}
+  </button>
+{% endif %}

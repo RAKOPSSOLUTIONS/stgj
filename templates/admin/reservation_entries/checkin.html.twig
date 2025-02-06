@@ -1,0 +1,53 @@
+{% extends 'visiteurs/layout/front.html.twig' %}
+
+{% block page_name %}QR CODE scanner{% endblock %}
+
+{% extends 'layout/admin.html.twig' %}
+
+  <br /><br />
+  <p>Veuillez scanner le qr code</p>
+  <br /><br />
+
+  <div class="row invisibles">
+      <div class="col-12"><input style="width:100%; padding: 5px; border:1px solid #FFF" type="url" id="url" onchange="redirect()" name="url" autofocus /></div>
+  </div>
+
+  <div class="row">
+    <div class="col-12" id="error"></div>
+    <!--06849ec8-12e2-4f94-abd0-e89a8b3bc0ec-->
+  </div>
+
+  
+	<!--<video id="preview" class="mt-3" style="width:100%;"></video>-->
+{% endblock %}
+
+{% block footer %}
+	{{ parent() }}
+ {% if 'ROLE_CHAUFFEUR' in app.user.getroles()  %}
+  <script type="text/javascript">
+    function redirect(){
+      
+      var token = document.getElementById("url").value;
+      document.getElementById("url").value = ''; 
+      
+      var length = url.length;
+      
+       
+      //var token = url.substr(length - 26);
+
+      //document.getElementById("error").innerHTML = url ;
+
+      //if ( token.length == 26 ){
+        token = token.replace(/[^a-zA-Z0-9 ]/g, '');
+        var redirect_url = "https://127.0.0.1:8000/admin/reservation_entries/" + token + "/checkin";
+        //document.getElementById("error").innerHTML = redirect_url ;
+        //console.log(redirect_url);
+        //alert(redirect_url); 
+        document.location = redirect_url;
+      //}
+      
+    }
+  </script>
+  {% endif %}
+	
+{% endblock %}

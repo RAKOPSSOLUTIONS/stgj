@@ -1,0 +1,34 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+  
+  <div class="row mb-4">
+    <div class="col-md-8 col-sm-12">
+      <h1 class="page-name">
+        <i class="bi bi-truck"></i>
+        {{ "Véhicules"|trans }}
+      </h1>
+    </div>
+    <div class="col-md-4 col-sm-12">
+      <div class="float-end">
+        {% include "partials/export-results.html.twig" with { path: path('vehicules.export') } %}
+        <ajax-modal url="{{ path('vehicule.create') }}" class="add-new">
+          <button class="btn btn-outline-primary rounded-0 shadow-none">
+            <i class="bi bi-plus"></i>
+            <span class="d-none d-lg-inline-block">{{ "Ajouter"|trans }}</span>
+          </button>
+        </ajax-modal>
+      </div>
+    </div>
+  </div>
+
+   {% include "layout/form/search/index.html.twig" with { 
+    form: search_form,
+    tableId: "vehicules" 
+  } %}
+
+  <ajax-table id="vehicules" url="{{ path('vehicules.table') }}">
+    {{ table|raw }}
+  </ajax-table>
+
+{% endblock %}

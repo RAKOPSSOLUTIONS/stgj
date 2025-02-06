@@ -1,0 +1,20 @@
+<div class="dropdown d-inline">
+	 
+		
+		<a class="btn btn-outline-primary rounded-0 shadow-none" href="javascript:void()" onclick="window.open('{{ path }}' + (location.search ? location.search + '&format=xlsx' : '?format=xlsx'))"><i class="bi bi-file-earmark-spreadsheet"></i><span class="d-none d-lg-inline-block">{{ "Exporter"|trans }}</span></a>
+	 
+	<!--<ul class="dropdown-menu" aria-labelledby="export-results">
+		<li>
+			<a class="dropdown-item" href="javascript:void()" onclick="window.open('{{ path }}' + (location.search ? location.search + '&format=pdf' : '?format=pdf'))">
+				<i class="bi bi-file-pdf"></i>
+				{{ "Format PDF"|trans }}
+			</a>
+		</li>
+		<li>
+			<a class="dropdown-item" href="javascript:void()" onclick="window.open('{{ path }}' + (location.search ? location.search + '&format=xlsx' : '?format=xlsx'))">
+				<i class="bi bi-file-earmark-spreadsheet"></i>
+				{{ "Format Excel"|trans }}
+			</a>
+		</li>
+	</ul>-->
+</div>

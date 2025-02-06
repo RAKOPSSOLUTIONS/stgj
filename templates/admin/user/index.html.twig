@@ -1,0 +1,38 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+
+  <div class="row mb-4">
+     <div class="col-lg-7 col-7">
+      <h1 class="page-name">
+        <i class="bi bi-people"></i>
+        {{ "Utilisateurs"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-5 col-5">
+      <div class="float-end">
+        <ajax-modal url="{{ path('user.create') }}" class="add-new">
+          <button class="btn btn-outline-primary rounded-0 shadow-none">
+            <i class="bi bi-plus"></i>
+            <span class="d-none d-lg-inline-block">{{ "Ajouter"|trans }}</span>
+          </button>
+        </ajax-modal>
+
+        <a href="{{ path('users.import') }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-upload"></i>
+        <span class="d-none d-lg-inline-block">{{ "Importer"|trans }}</span>
+        </a>
+      </div>
+    </div>
+  </div>
+
+   {% include "layout/form/search/index.html.twig" with { 
+    form: search_form,
+    tableId: "users" 
+  } %}
+
+  <ajax-table id="users" url="{{ path('users.table') }}">
+    {{ table|raw }}
+  </ajax-table>
+
+{% endblock %}

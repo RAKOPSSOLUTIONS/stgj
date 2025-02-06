@@ -1,0 +1,9 @@
+{% for label, messages in app.flashes %}
+  <div class="bd-callout bd-callout-{{ label == 'error' ? 'danger' : label }}">
+    <ul class="m-0 p-0">
+      {% for message in messages %}
+        <li class="list-unstyled">{{ message }}</li>
+      {% endfor %}
+    </ul>
+  </div>
+{% endfor %}

@@ -1,0 +1,10 @@
+# https://ddev.readthedocs.io/en/latest/users/configuration/config/
+type: php
+name: stjg
+docroot: "public"
+php_version: "8.2"
+timezone: "Africa/Casablanca"
+webserver_type: nginx-fpm
+database:
+  type: mariadb
+  version: "10.11"

@@ -1,0 +1,17 @@
+{% if app.user %}
+<script src="{{ asset('assets/js/webpush-client.min.js') }}"></script>
+<script>
+    if (WebPushClientFactory.isSupported()) {
+        WebPushClientFactory.create({
+            serviceWorkerPath: '{{ asset("assets/js/webpush-sw.min.js") }}',
+            serverKey: 'BDMoknezav3-yWOZ4d60vl1rcTCnKwhzVHs0CctZZ4a2IVXehyClDKzHRAzuAYzNBmi3wZMSXctcI8mpIadUk1E',
+            subscribeUrl: '/webpush/',
+        })
+        .then(function(Client) {
+            if (!Client.getSubscription()) {
+                Client.subscribe()
+            }
+        });
+    }
+</script>
+{% endif %}

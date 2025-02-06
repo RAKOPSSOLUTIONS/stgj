@@ -1,0 +1,13 @@
+.entries {
+  counter-reset: compagne_counter;
+}
+.entry-counter:before {
+  counter-increment: compagne_counter;
+  content: counter(compagne_counter);
+  position: absolute;
+  top: 5px;
+  right: 45px;
+  font-size: 1.2rem;
+  font-weight: 700;
+  color: var(--color-primary);
+}

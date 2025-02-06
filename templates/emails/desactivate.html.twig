@@ -1,0 +1,35 @@
+{% extends 'layout/email.html.twig' %}
+
+{% block title %}Désactivation de votre compte{% endblock %}
+
+{% block body %}
+<container>
+        <row class="float-center">
+            <columns>
+                <center>
+                <img src="{{ absolute_url(asset('assets/img/logo-stjg.png')) }}" width="216" height="135" alt="STJG TOUR"/>
+                </center>
+            </columns>
+         </row>   
+   <row class="body">
+   <p>Bonjour, </p>
+   <p>Votre compte a été désactivé !</p>
+</row>
+  
+</container>
+{% endblock %}
+
+{% block footer %}
+<row>
+<columns small="12" large="12">
+<center>
+  <small><a href="http://www.stjg.ma">www.stjg.ma</a></small> 
+  <small style="color:#000"> | </small>
+  <small><a href="mailto:contact@stjg.ma">contact@stjg.ma</a></small> 
+  <small style="color:#000"> | </small>
+  <small><a href="tel:05377-71355">05377-71355</a></small> 
+</center>
+</columns>
+</row>
+
+{% endblock %}

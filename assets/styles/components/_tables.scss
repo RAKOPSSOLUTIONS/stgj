@@ -1,0 +1,122 @@
+ajax-table {
+  &.loading {
+    opacity: 0.3;
+    pointer-events: none;
+    -webkit-user-select: none; /* Chrome all / Safari all */
+    -moz-user-select: none; /* Firefox all */
+    -ms-user-select: none; /* IE 10+ */
+    user-select: none; /* Likely future */
+  }
+  &[sortable] {
+    tbody tr {
+      cursor: all-scroll;
+    }
+  }
+  table {
+    thead {
+      th {
+        padding: 0.8rem 0.5rem !important;
+        vertical-align: bottom;
+      }
+    }
+    tbody {
+      tr:hover {
+        --bs-table-accent-bg: rgba(0, 189, 187, 0.1) !important;
+      }
+    }
+    td,
+    th {
+      padding: 0.5rem;
+      vertical-align: middle;
+    }
+    > :not(:last-child) > :last-child > * {
+      border-bottom-color: #dee2e6 !important;
+    }
+  }
+  .table-bottom {
+    .bulk-actions,
+    .bulk-apply,
+    .btn-loading,
+    .perpage,
+    .page-number,
+    .prev-page,
+    .next-page {
+      border-radius: 0;
+      outline: 0;
+      box-shadow: none !important;
+      border: 1px solid #dee2e6;
+      border-color: #dee2e6 !important;
+    }
+    .page-number,
+    .total-pages {
+      max-width: 60px;
+      text-align: center;
+    }
+    .bulk-actions {
+      width: fit-content;
+      max-width: 155px;
+    }
+    .bulk-apply {
+      margin-right: 10px !important;
+    }
+    .perpage {
+      max-width: 60px;
+    }
+    .btn-loading {
+      display: none;
+      margin-left: 10px !important;
+    }
+    .check-all {
+      background: transparent;
+      padding: 7px;
+    }
+  }
+}
+
+@media screen and (max-width: 991px) {
+  table:not(.table-basic) {
+    thead {
+      border: none;
+      clip: rect(0 0 0 0);
+      height: 1px;
+      margin: -1px;
+      overflow: hidden;
+      padding: 0;
+      position: absolute;
+      width: 1px;
+    }
+    tbody {
+      border-bottom: 0px !important;
+      tr {
+        display: block;
+        border: 1px solid #dee2e6;
+        &:not(:last-child) {
+          margin-bottom: 0.625em;
+        }
+        td {
+          border-top: 0px !important;
+          border-bottom: 1px solid #dee2e6;
+          display: block;
+          font-size: 0.9em;
+          text-align: right;
+          &.actions:before {
+            line-height: 1.9rem;
+          }
+          &.col-check-all {
+            text-align: left;
+            font-size: 1rem;
+          }
+          &:before {
+            content: attr(data-label);
+            float: left;
+            font-weight: 600;
+            text-transform: uppercase;
+          }
+          &:last-child {
+            border-bottom: 0;
+          }
+        }
+      }
+    }
+  }
+}

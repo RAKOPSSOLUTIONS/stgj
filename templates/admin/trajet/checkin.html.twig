@@ -1,0 +1,132 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+
+<div class="row mb-4">
+    <div class="col-lg-8 col-8">
+      <h1 class="page-name">
+        <i class="bi bi-inbox"></i>
+        {{ "Trajet"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-4 col-4">
+      <div class="float-end">
+
+        <a href="{{ path('trajets') }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-list"></i>
+        <span class="d-none d-lg-inline-block">{{ "Liste"|trans }}</span>
+        </a>
+
+        <a href="{{ path('trajets.clone', {id: trajet.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-bookmarks"></i>
+        <span class="d-none d-lg-inline-block">{{ "Checkin"|trans }}</span>
+        </a>
+
+        
+
+      </div>
+    </div>
+  </div>
+
+<table class="table table-hover table-basic mb-0">
+  <tr>
+    <td colspan="4" class="styled-title mb-2">
+      <h3>{{ "Informations du trajet"|trans }}</h3>
+    </td>
+  </tr>
+  <tr>
+    <td><b>{{ "Site"|trans }}</b></td>
+    <td>{{ trajet.site }}</td>
+    <td><b>{{ "Nom"|trans }}</b></td>
+    <td>{{ trajet.name }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Direction"|trans }}</b></td>
+    <td>{{ trajet.direction }}</td>
+    <td><b>{{ "Poste"|trans }}</b></td>
+    <td>{{ trajet.zone }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Véhicule"|trans }}</b></td>
+    <td>{{ trajet.vehicule }}</td>
+    <td><b>{{ "Chauffeur"|trans }}</b></td>
+    <td>{{ trajet.user }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Heure de départ"|trans }}</b></td>
+    <td>{% if trajet.heure is not empty  %}{{ trajet.heure }} {% endif %}</td>
+    <td><b>{{ "Photo"|trans }}</b></td>
+    <td><img src="/uploads/trajets/{{ trajet.fichier }}" alt="{{ trajet.name }}" /></td>
+  </tr>
+</table>
+
+<table class="table table-hover table-basic mb-0">
+  <tr>
+    <td colspan="5" class="styled-title mb-2">
+      <h3>{{ "Passagers"|trans }}</h3>
+    </td>
+  </tr>
+  <tr>
+    <th>Nom</th>
+    <th>Prénom</th>
+    <th>Téléphone</th>
+    <th>Point de ramassage</th>
+    <th>Statut</th>
+  {% for entry in entries %}
+    <tr>
+      <td>{{ entry.user.nom }}</td>
+      <td>{{ entry.user.prenom }}</td>
+      <td>{{ entry.user.telephone }}</td>
+      <td>{{ entry.pickup }}</td>
+      <td>{{ entry.status }}</td>
+    </tr>
+  {% endfor %}
+
+</table>
+
+<div class="container">
+        <h1>Scan QR Codes</h1>
+        <div class="section">
+            <div id="my-qr-reader">
+            </div>
+        </div>
+    </div>
+
+
+
+
+{% endblock %}
+
+{% block footer %}
+  {{ parent() }}
+ {% if 'ROLE_CHAUFFEUR' in app.user.getroles()  %}
+<script src="https://unpkg.com/html5-qrcode"></script>
+
+<script>
+function domReady(fn) {
+    if (
+        document.readyState === "complete" ||
+        document.readyState === "interactive"
+    ) {
+        setTimeout(fn, 1000);
+    } else {
+        document.addEventListener("DOMContentLoaded", fn);
+    }
+}
+
+domReady(function () {
+
+    // If found you qr code
+    function onScanSuccess(decodeText, decodeResult) {
+        console.log("You Qr is : " + decodeText, decodeResult);
+    }
+
+    let htmlscanner = new Html5QrcodeScanner(
+        "my-qr-reader",
+        { fps: 10, qrbos: 250 }
+    );
+    htmlscanner.render(onScanSuccess);
+});
+</script>
+{% endif %}
+{% endblock %}

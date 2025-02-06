@@ -1,0 +1,44 @@
+ajax-upload {
+  .row {
+    padding-left: 0.5rem;
+  }
+  .file-add {
+    label {
+      min-height: 70px;
+    }
+    i {
+      font-size: 4.8rem;
+      @media (max-width: 767px) {
+        font-size: 4rem;
+      }
+    }
+    .spinner-border {
+      display: none;
+      margin: 42px auto;
+    }
+  }
+  .file-item {
+    overflow: hidden;
+    max-height: 130px;
+    .card {
+      height: 100%;
+      overflow: hidden;
+      justify-content: center;
+      min-height: 130px;
+    }
+    i {
+      font-size: 3rem;
+      text-align: center;
+      display: block;
+      color: #86888a;
+    }
+    .file-delete {
+      position: absolute;
+      top: 0;
+      right: 5px;
+      cursor: pointer;
+      font-size: 1.3rem;
+      color: var(--color-danger);
+    }
+  }
+}

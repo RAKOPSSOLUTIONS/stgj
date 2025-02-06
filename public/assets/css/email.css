@@ -1,0 +1,45 @@
+body {
+  margin: 0;
+  padding: 0;
+  background-color: #f3f3f3;
+  font-family: "Raleway", Helvetica, Arial, sans-serif !important;
+}
+h2 {
+  background-color: #264459;
+  color: #ffffff;
+  font-weight: normal;
+}
+hr {
+  border: none;
+  border-top: 3px solid #264459;
+  margin: 20px;
+}
+.welcome {
+  background-color: #264459;
+}
+.bottom {
+  background-color: #efefee;
+}
+.logo {
+  width: 100%;
+}
+.text-center {
+  text-align: center;
+}
+table.button a {
+  background-color: #264459;
+}
+table.button table td {
+  background-color: #264459;
+  border: 2px solid #264459;
+}
+.btn-primary {
+  color: #fff;
+  background-color: #00447a;
+  border-color: #00447a;
+}
+.btn-primary:hover {
+  background-color: #477626;
+  border-color: #477626;
+  box-shadow: 0 0 0 0.25rem #477626;
+}

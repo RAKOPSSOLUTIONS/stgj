@@ -1,0 +1,30 @@
+<div class="d-flex float-start float-md-end">
+  <div class="me-2 align-self-center">
+    {{ "%total% entrées"|trans({'%total%': '<span class="chm-table-total">' ~ data.count ~ '</span>'})|raw }}
+  </div>
+  <div class="input-group w-auto m-0">
+    <button 
+      type="button" 
+      title="{{ "Précédente"|trans }}"  
+      class="btn btn-outline-secondary rounded-0 shadow-none prev-page"
+      {% if data.page == 1 %}disabled{% endif %}
+    >
+      <i class="bi bi-arrow-left"></i>
+    </button>
+    <input 
+      type="text" 
+      max="{{ data.pages }}" 
+      value="{{ data.page }}" 
+      class="form-control page-number"
+      title="{{ "Page (%page%/%pages%)"|trans({'%page%': data.page, '%pages%': data.pages}) }}" 
+    />
+    <button 
+      type="button" 
+      class="btn btn-outline-secondary rounded-0 shadow-none border-start-0 next-page"
+      {% if data.page == data.pages %}disabled{% endif %}
+      title="{{ "Suivante"|trans }}"
+    >
+      <i class="bi bi-arrow-right"></i>
+    </button>
+  </div>
+</div>

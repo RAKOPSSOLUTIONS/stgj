@@ -1,0 +1,39 @@
+{% apply inky_to_html|inline_css(source('@assets/css/foundation-emails.css'), source('@assets/css/foundation.css')) %}
+    <style type="text/css">
+        body, html, .body {
+            background: #f3f3f3 !important;
+        }
+        .container.header, .container.footer {
+            background: #000;color: #FFF; padding-top:15px;
+        }
+        .container.footer a{color: #FFF !important}
+        h4{color:#00447a}
+        .register a {background-color:#000;}
+        .register td{border:2px solid #00447a !important; background:none !important}
+    </style>
+    <container class="header">
+        <row>
+            <columns>
+                <h1 class="text-center" style="color: #FFF; padding-top:20px">{% block title %}{% endblock %}</h1>
+            </columns>
+        </row>
+    </container>
+
+    <container class="body-border">
+        <row>
+            <columns>
+                <spacer size="32"></spacer>
+                {% block body %}{% endblock %}
+            </columns>
+        </row>
+    </container>
+
+    <container class="footer">
+        <row>
+            <columns>
+                <p class="text-center" style="color: #FFF; padding-top:20px">{% block footer %}{% endblock %}</p>
+            </columns>
+        </row>
+    </container>
+
+{% endapply %}

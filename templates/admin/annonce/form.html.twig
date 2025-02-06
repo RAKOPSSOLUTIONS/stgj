@@ -1,0 +1,81 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+
+  <h1 class="page-name">
+    <i class="bi bi-megaphone"></i>
+    {% if not entity|length %}
+      {{ "Nouvelle annonce"|trans }}
+    {% else %}
+      {{ "Editer une annonce"|trans }}
+    {% endif %}
+  </h1>
+<br />
+<style>
+  .port-title {
+    background-color: #6c757d !important;
+  }
+  fieldset .col-form-label {
+    margin-bottom: 8px;
+  }
+  .card-entry fieldset {
+    margin-bottom: 0px !important;
+  }
+  .delete-entry {
+    right: 15px;
+  }
+  .entries {
+    counter-reset: compagne_counter;
+  }
+  .compagne-counter:before {
+    counter-increment: compagne_counter;
+    content: counter(compagne_counter);
+    position: absolute;
+    top: 5px;
+    right: 45px;
+    font-size: 1.2rem;
+    font-weight: 700;
+    color: var(--color-primary);
+  }
+</style>
+ <ajax-form>
+ {{ form_start(form) }}
+
+ 
+    {{ form_row(form.titre) }}
+    {{ form_row(form.message) }}
+    {{ form_row(form.destinataire) }}
+    {{ form_row(form.status) }}
+
+
+
+<hr class="border-2 border-top border-secondary">
+    <button type="button" class="btn btn-outline-danger rounded-0 shadow-none" onclick="history.go(-1);">
+      <i class="bi bi-x-lg"></i>
+      {{ "Annuler"|trans }}
+    </button>
+    <button type="submit" class="btn btn-outline-secondary rounded-0 shadow-none  ">
+      <i class="bi bi-check2-square"></i>
+      {{ "Enregistrer"|trans }}
+    </button>
+
+{{ form_end(form) }}
+</ajax-form>
+
+{% endblock %}
+
+{% block footer %}
+  {{ parent() }}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js" type="text/javascript"></script>
+   
+ 
+  <script>
+  document.querySelector("ajax-form").addEventListener("ajax.form.success", function() {
+    setTimeout(function() {
+      window.location.href = '{{ path("annonces") }}'
+    }, 1000)
+  })
+  </script>
+
+{% endblock %}

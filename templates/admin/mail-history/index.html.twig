@@ -1,0 +1,18 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+  
+  <div class="row mb-4">
+    <div class="col-lg-9 col-8">
+      <h1 class="page-name">
+        <i class="bi bi-envelope-open"></i>
+        {{ "Notifications"|trans }}
+      </h1>
+    </div>
+  </div>
+
+  <ajax-table id="mail-history" url="{{ path('mail.history.table') }}">
+    {{ table|raw }}
+  </ajax-table>
+
+{% endblock %}

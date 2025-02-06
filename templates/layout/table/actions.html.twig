@@ -1,0 +1,38 @@
+<div class="btn-group">
+  <button 
+    type="button" 
+    class="btn btn-light btn-sm rounded-0 shadow-none dropdown-toggle" 
+    data-bs-toggle="dropdown" 
+    aria-expanded="false"
+  >
+    <i class="bi bi-list"></i>
+  </button>
+  <ul class="dropdown-menu">
+    {% for action in row.actions %}
+      <li class="action-{{ action.type == 'divider' ? 'divider' : action.name }}">
+        {% if action.type == 'divider' %}
+          {% if row.actions|length > loop.index %}
+            <hr class="dropdown-divider m-0 my-1">
+          {% endif %}
+        {% elseif action.type == 'link' %}
+          <a href="{{ action.path }}" class="dropdown-item" {{ chm_attributes(action.attrs)|raw }}>
+            <i class="{{ action.icon }}"></i>
+            {{ action.label }}
+          </a>
+        {% elseif action.type == 'modal' %}
+          <ajax-modal 
+            url="{{ action.path }}"
+            {% if action.confirm %}confirm="1"{% endif %}
+            {% if action.modal_message %}message="{{ action.modal_message|trans }}"{% endif %}
+            {{ chm_attributes(action.attrs)|raw }}
+          >
+            <a class="dropdown-item" href="javascript:void(0)">
+              <i class="{{ action.icon }}"></i>
+              {{ action.label }}
+            </a>
+          </ajax-modal>
+        {% endif %}
+      </li>
+    {% endfor %}
+  </ul>
+</div>

@@ -1,0 +1,13 @@
+.rbc-event {
+  font-size: 0.9rem;
+  outline: 0px !important;
+  color: black !important;
+  background-color: transparent !important;
+  border: 1px dashed var(--color-success) !important;
+  border-left: 3px solid var(--color-success) !important;
+  margin-bottom: 5px !important;
+  ajax-modal {
+    display: flex;
+    height: 100%;
+  }
+}

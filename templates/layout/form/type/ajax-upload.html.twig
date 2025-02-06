@@ -1,0 +1,46 @@
+{% block ajax_upload_widget %}
+  <ajax-upload 
+    name="{{ form.vars.name }}"
+    min="{{ form.vars.min }}" 
+    max="{{ form.vars.max }}" 
+    path="{{ form.vars.path }}"
+  >
+    <div class="row">
+      {% for file in form.vars.files %}
+      <div class="col-sm-3 col-6 ps-1 mb-3 file-item">
+        <div class="card">
+          <a href="/uploads/{{ file.path }}" target="_blank" title="{{ file.name }}">
+            {% set extension = file.path|split('.')|last|lower %}
+            {% if extension in ['jpeg', 'jpg', 'png', 'gif'] %}
+              <img src="/uploads/{{ file.path }}" class="img-fluid">
+            {% elseif extension in ['doc', 'docx'] %}
+              <i class="bi bi-file-word"></i>
+            {% elseif extension in ['xls', 'xlsx'] %}
+              <i class="bi bi-file-excel"></i>
+            {% elseif extension == "pdf" %}
+              <i class="bi bi-file-pdf"></i>
+            {% else %}
+              <i class="bi bi-file-richtext"></i>
+            {% endif %}
+          </a>
+          <i class="bi bi-x-circle file-delete"></i>
+          <input type="hidden" name="{{ form.vars.name }}[]" value='{{ file|json_encode|raw }}' />
+        </div>
+      </div>
+      {% endfor %}
+
+      <div 
+        class="col-sm-3 col-6 ps-1 mb-3 file-add"
+        {% if form.vars.max > 0 and form.vars.files|length >= form.vars.max %}style="display:none;"{% endif %}
+      >
+        <div class="card h-100">
+          <label class="btn h-100" title="{{ "Sélectionner un fichier"|trans }}">
+            <input type="file" accept=".{{ extensions|join(',.') }}" hidden />
+            <i class="bi bi-plus"></i>
+            <span class="spinner-border"></span>
+          </label>
+        </div>
+      </div>
+    </div>
+  </ajax-upload>
+{% endblock %}

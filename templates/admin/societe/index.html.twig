@@ -1,0 +1,28 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+
+  <div class="row mb-4">
+    <div class="col-lg-10 col-9">
+      <h1 class="page-name">
+        <i class="bi bi-building"></i>
+        {{ "Sociétés"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-2 col-3">
+      <div class="float-end">
+        <ajax-modal url="{{ path('societe.create') }}" class="add-new">
+          <button class="btn btn-outline-primary rounded-0 shadow-none">
+            <i class="bi bi-plus"></i>
+            <span class="d-none d-lg-inline-block">{{ "Ajouter"|trans }}</span>
+          </button>
+        </ajax-modal>
+      </div>
+    </div>
+  </div>
+
+  <ajax-table id="societes" url="{{ path('societes.table') }}">
+    {{ table|raw }}
+  </ajax-table>
+
+{% endblock %}

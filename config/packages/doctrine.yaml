@@ -1,0 +1,34 @@
+doctrine:
+    dbal:
+        url: '%env(resolve:DATABASE_URL)%'
+        # ignore tables
+        schema_filter: ~^(?!users_hrm|users_madaef|users_sapst)~
+
+        # IMPORTANT: You MUST configure your server version,
+        # either here or in the DATABASE_URL env var (see .env file)
+        #server_version: '13'
+    orm:
+        auto_generate_proxy_classes: true
+        naming_strategy: doctrine.orm.naming_strategy.underscore_number_aware
+        auto_mapping: true
+        mappings:
+            App:
+                is_bundle: false
+                type: annotation
+                dir: '%kernel.project_dir%/src/Entity'
+                prefix: 'App\Entity'
+                alias: App
+        dql:
+          string_functions:
+            CONCAT_WS: DoctrineExtensions\Query\Mysql\ConcatWs
+            DATE_ADD: DoctrineExtensions\Query\Mysql\DateAdd
+            DATE_FORMAT: DoctrineExtensions\Query\Mysql\DateFormat
+            DATE: DoctrineExtensions\Query\Mysql\Date
+            TIME: DoctrineExtensions\Query\Mysql\Time
+            HOUR: DoctrineExtensions\Query\Mysql\Hour
+            ROUND: DoctrineExtensions\Query\Mysql\Round
+            TIME_TO_SEC: DoctrineExtensions\Query\Mysql\TimeToSec
+            TIMEDIFF: DoctrineExtensions\Query\Mysql\TimeDiff
+            MONTH: DoctrineExtensions\Query\Mysql\Month
+            YEAR: DoctrineExtensions\Query\Mysql\Year
+            CONCAT: DoctrineExtensions\Query\Mysql\Concat

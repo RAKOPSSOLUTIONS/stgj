@@ -1,0 +1,20 @@
+<div class="row table-bottom mt-3">
+  <div class="col-md-6 mb-3 mb-lg-0">
+    <div class="input-group m-0">
+      {% include "layout/table/bulk-actions.html.twig" %}
+      <select class="form-control perpage" title="{{ "Éléments par page"|trans }}">
+        {% for perpage in data.perpages %}
+          <option value="{{ perpage }}" {{ perpage == data.perpage ? 'selected' : '' }}>
+            {{ perpage }}
+          </option>
+        {% endfor %}
+      </select>
+      <button type="button" class="btn btn-outline-secondary rounded-0 shadow-none btn-loading">
+        <span class="spinner-border spinner-border-sm"></span>
+      </button>
+    </div>
+  </div>
+  <div class="col-md-6">
+    {% include "layout/table/pagination.html.twig" %}
+  </div>
+</div>

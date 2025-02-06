@@ -1,0 +1,51 @@
+{% set field_type = form.field_type.vars.value %}
+
+<style>
+	[data-field-type]:not([data-field-type="{{ field_type }}"]) {
+		display: none;
+	}
+</style>
+
+<ajax-form>
+	{{ form_start(form) }}
+	<div class="modal-header">
+		<h5 class="modal-title">{{ title }}</h5>
+		<button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="{{ "Fermer"|trans }}"></button>
+	</div>
+	<div class="modal-body">
+		{{ form_widget(form) }}
+		<!-- field types -->
+		<label class="mb-2">{{ "Valeur"|trans }}</label>
+		{% for name,label in types %}
+			<div class="mb-3" data-field-type="{{ name }}">
+				{% if name in ['choice', 'checkbox', 'radio'] %}
+					<div class="items">
+						{% if field_type == name %}
+							{% for key, value in field_options %}
+								<div class="input-group">
+									<input type="text" name="value[{{ name }}][{{ key }}]" class="form-control" value="{{ value }}" data-key="{{ key }}">
+									<button type="button" class="input-group-text bg-danger text-white deleteLine">
+										<i class="bi bi-dash"></i>
+									</button>
+								</div>
+							{% endfor %}
+						{% endif %}
+					</div>
+					<button type="button" class="btn btn-primary btn-sm addLine">
+						<i class="bi bi-plus"></i>
+						{{ "Ajouter un élément"|trans }}
+					</button>
+				{% elseif name in ['textarea', 'json'] %}
+					<textarea name="value[{{ name }}]" class="form-control">{{ field_type == name ? form.value.vars.value : '' }}</textarea>
+				{% else %}
+					<input type="{{ name }}" name="value[{{ name }}]" value="{{ field_type == name ? form.value.vars.value : '' }}" class="form-control"/>
+				{% endif %}
+			</div>
+		{% endfor %}
+	</div>
+	<div class="modal-footer justify-content-between">
+		<button type="button" class="btn btn-outline-danger rounded-0 shadow-none" data-bs-dismiss="modal">{{ "Fermer"|trans }}</button>
+		<button type="submit" class="btn btn-outline-secondary rounded-0 shadow-none">{{ submit_label ?? "Enregistrer"|trans }}</button>
+	</div>
+	{{ form_end(form) }}
+</ajax-form>

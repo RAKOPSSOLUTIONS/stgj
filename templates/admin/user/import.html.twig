@@ -1,0 +1,25 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block title %}Import Excel File{% endblock %}
+
+{% block body %}
+    <h1 class="page-name"><i class="bi bi-people"></i> {{ "Importer des utilisateurs"|trans }}</h1>
+    {{ form_start(form) }}
+        {{ form_row(form.excelFile) }}
+        <button type="submit" class="btn btn-primary">Uploader et Importer</button>
+    {{ form_end(form) }}
+<br /><br />
+    <h3>Description du fichier</h3>
+
+    <ul>
+      <li>Site : Text</li>
+      <li>Nom : Text </li>
+      <li>Prénom: Text </li>
+      <li>Matricule : Text</li>
+      <li>Mot de passe: date de naissance</li>
+    </ul>
+
+    <p>Les collones doivent respecter l'ordre suivant  :Site, Nom, Prénom, Matricule, Mot de passe</p>
+    <p>Le matricule doit être unique</p>
+
+{% endblock %}

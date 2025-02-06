@@ -1,0 +1,112 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+
+<h6 class="styled-title mb-2 text-white">{{ reservation.user }}</h6>
+<div class="row">
+  <div class="col-sm-6">
+<h3 class="btn btn-danger">ENTREE</h3>
+
+<table class="table table-hover table-basic mb-0">
+  <tr>
+    <td>{{ "Zone"|trans }}</td>
+    <td>{{ reservation.zone }}</td>
+  </tr>
+  {% if reservation.trajetEntree %}
+  <tr>
+    <td>{{ "Nom du trajet"|trans }}</td>
+    <td>{{ reservation.trajetEntree }}</td>
+  </tr>
+  {% endif %}
+  {% if reservation.pickupEntree %}
+  <tr>
+    <td>{{ "Point de ramassage"|trans }}</td>
+    <td>{{ reservation.pickupEntree }}</td>
+  </tr>
+  {% endif %} 
+  <tr>
+    <td>{{ "Heure d'entrée"|trans }}</td>
+    <td>{{ reservation.shiftEntree }}H</td>
+  </tr>
+  {% if reservation.adresseEntree %}
+  <tr>
+    <td>{{ "Adresse du domicile"|trans }}</td>
+    <td>{{ reservation.adresseEntree }}</td>
+  </tr>
+  {% endif %}
+  {% if reservation.repereEntree %}
+  <tr>
+    <td>{{ "Point de repère le plus proche"|trans }}</td>
+    <td>{{ reservation.repereEntree }}</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>{{ "Dates nécessitant le transport en entrée"|trans }}</td>
+    <td><ul>
+    {% for date in reservation.getDatesEntree() %}
+      <li>{{ date }}</li>
+    {% endfor %}</ul>
+    </td>
+  </tr>
+   
+</table>
+</div>
+<div class="col-sm-6">
+<h3 class="btn btn-danger">SORTIE</h3>
+
+<table class="table table-hover table-basic mb-0">
+  <tr>
+    <td>{{ "Zone"|trans }}</td>
+    <td>{{ reservation.zone }}</td>
+  </tr>
+  {% if reservation.trajetSortie %}
+  <tr>
+    <td>{{ "Trajet de sortie"|trans }}</td>
+    <td>{{ reservation.trajetSortie }}</td>
+  </tr>
+  {% endif %}
+  {% if reservation.pickupSortie %}
+  <tr>
+    <td>{{ "Point de ramassage"|trans }}</td>
+    <td>{{ reservation.pickupSortie }}</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>{{ "Heure de sortie"|trans }}</td>
+    <td>{{ reservation.shiftSortie }}H</td>
+  </tr>
+  {% if reservation.adresseSortie %}
+  <tr>
+    <td>{{ "Adresse du domicile"|trans }}</td>
+    <td>{{ reservation.adresseSortie }}</td>
+  </tr>
+  {% endif %}
+  {% if reservation.repereSortie %}
+  <tr>
+    <td>{{ "Point de repère le plus proche"|trans }}</td>
+    <td>{{ reservation.repereSortie }}</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>{{ "Dates nécessitant le transport en sortie"|trans }}</td>
+    <td><ul>
+    {% for date in reservation.getDatesSortie() %}
+      <li>{{ date }}</li>
+    {% endfor %}</ul>
+    </td>
+  </tr>
+ 
+
+</table>
+</div>
+</div>
+
+ 
+
+{% endblock %}
+
+{% block footer %}
+  {{ parent() }}
+
+  
+{% endblock %}

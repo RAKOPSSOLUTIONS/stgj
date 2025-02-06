@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.getLocale() }}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% include 'partials/service-worker-meta.html.twig' %}
+  <title>{% block title %}RASD{% endblock %}</title>
+  {% block head %}
+    {{ encore_entry_link_tags('app') }}
+  {% endblock %}
+  {% set route_name = app.request.get('_route') %}
+</head>
+<body>
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm" id="primary-navbar">
+    <div class="container-fluid">
+      <a class="navbar-brand ms-3 me-5" href="{{  path('home') }}" style="font-size: 1.5; font-weight: 800; color: #0075b9;">
+        <!--<img src="{{ asset('assets/img/logo-no-background.png') }}" alt="RASD" class="d-inline-block align-text-top" height="60">-->
+        MEDIA MAPS
+      </a>
+      <button 
+        type="button" 
+        class="navbar-toggler" 
+        data-bs-toggle="collapse" 
+        data-bs-target="#admin-navbar" 
+        aria-controls="admin-navbar" 
+        aria-expanded="false" 
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="admin-navbar">
+        <ul class="navbar-nav">
+          <li class="d-block d-lg-none mt-1">
+            <hr class="dropdown-divider">
+          </li>
+          {% block navbar %}
+          <li class="nav-item">
+            <a href="{{ path('home') }}" class="nav-link{{ route_name == 'home' ? ' active' }}">
+              {{ "Home"|trans }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ path('services') }}" class="nav-link{{ route_name == 'services' ? ' active' }}">
+              {{ "Features"|trans }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ path('services') }}" class="nav-link{{ route_name == 'services' ? ' active' }}">
+              {{ "Services"|trans }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ path('pricing') }}" class="nav-link{{ route_name == 'pricing' ? ' active' }}">
+              {{ "Pricing"|trans }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ path('customers') }}" class="nav-link{{ route_name == 'customers' ? ' active' }}">
+              {{ "Customers"|trans }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ path('ressources') }}" class="nav-link{{ route_name == 'ressources' ? ' active' }}">
+              {{ "Ressources"|trans }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a href="{{ path('contact') }}" class="nav-link{{ route_name == 'contact' ? ' active' }}">
+              {{ "Contact us"|trans }}
+            </a>
+          </li>
+           {% endblock %}
+      </ul>
+
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-lg-block">
+        <li class="nav-item dropdown dropdown-account">
+          {% if app.user %}
+            <a href="{{ path('reporting') }}" class="btn btn-primary rounded-pill px-3 text-white">
+              {{ "My account"|trans }}
+            </a>
+          {% else %}
+            <a href="#" class="btn btn-success rounded-pill px-3 text-white">
+              {{ "Signup"|trans }}
+            </a>
+            <a href="{{ path('login') }}" class="btn btn-primary rounded-pill px-3 text-white">
+              {{ "Login"|trans }}
+            </a>
+          {% endif %}
+        </li>
+      </ul>
+    </div>
+  </nav>
+
+  {% include 'partials/sidebar.html.twig' %}
+
+  <div class="container my-3">
+    <div class="row">
+      <div id="main" class="col-sm-12" style="min-height:440px">
+        {% include 'layout/alert.html.twig' %}
+        {% block body %}{% endblock %}
+      </div>
+    </div>
+  </div>
+
+  {% block footer %}
+    {% include "block/footer.html.twig" %}
+  
+    {{ encore_entry_script_tags('app') }}
+    {% include 'partials/webpush.html.twig' %}
+    {% include 'partials/service-worker-script.html.twig' %}
+  {% endblock %}
+</body>
+</html>

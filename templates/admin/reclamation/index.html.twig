@@ -1,0 +1,56 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+
+  <div class="row mb-4">
+    <div class="col-lg-8 col-8">
+      <h1 class="page-name">
+        <i class="bi bi-question-circle"></i>
+        {{ "Réclamations"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-4 col-4">
+      <div class="float-end">
+
+          {% if is_granted('ROLE_ADMIN') %} 
+
+        {% include "partials/export-results.html.twig" with { path: path('reclamations.export') } %}
+{% endif %}
+        <div class="float-end">
+        <ajax-modal url="{{ path('reclamations.create') }}" class="add-new">
+          <button class="btn btn-outline-primary rounded-0 shadow-none">
+            <i class="bi bi-plus"></i>
+            <span class="d-none d-lg-inline-block">{{ "Ajouter"|trans }}</span>
+          </button>
+        </ajax-modal>
+      </div>
+
+      
+
+      </div>
+    </div>
+  </div>
+
+  
+            <div class="alert alert-error">{% for message in app.flashes('error') %}
+                {{ message }}{% endfor %}
+            </div>
+        
+
+ {% if app.request.get('sortable') %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  {% endif %}
+
+   {% if not app.request.get('sortable') %}
+    {# include "layout/form/search/index.html.twig" with { 
+      form: search_form,
+      tableId: "reclamations" 
+    } #}
+  {% endif %}
+
+  <ajax-table id="reclamations" url="{{ path('reclamations.table') }}">
+    {{ table|raw }}
+  </ajax-table>
+
+{% endblock %}

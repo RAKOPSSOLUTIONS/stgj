@@ -1,0 +1,77 @@
+// scss-docs-start theme-color-variables
+$primary: #000 !default;
+$secondary: #e30f21 !default;
+$success: #83b655 !default;
+$info: #00bdbb !default;
+$warning: #f6c342 !default;
+$danger: #dc3545 !default;
+// scss-docs-end theme-color-variables
+
+@import "~bootstrap/scss/bootstrap.scss";
+@import "~bootstrap-icons/font/bootstrap-icons.css";
+@import url("https://fonts.googleapis.com/css2?family=Raleway:wght@400;600;700&display=swap");
+
+@import "components/nav";
+@import "components/navbar";
+@import "components/modal";
+@import "components/tables";
+@import "components/forms";
+@import "components/button";
+@import "components/dropdown";
+@import "components/toasts";
+@import "components/callout";
+@import "components/calendar";
+@import "components/upload";
+@import "components/entries";
+
+:root {
+  --color-primary: #000;
+  --color-secondary: #e30f21;
+  --color-success: #83b655;
+  --color-info: #00bdbb;
+  --color-warning: #f6c342;
+  --color-danger: #dc3545;
+}
+
+html,
+body {
+  font-family: "Raleway", Helvetica, Arial, sans-serif;
+}
+
+.admin-layout {
+  min-height: 100vh;
+  border-bottom: 5px solid var(--color-secondary);
+}
+
+.page-name {
+  font-size: 1.5rem;
+  text-transform: uppercase;
+  margin: 5px auto;
+}
+.cursor-pointer {
+  cursor: pointer !important;
+}
+a{
+  text-decoration: none;
+}
+
+/* For phones */
+@media (max-width: 767px) {
+  .page-name {
+    font-size: 1.3rem;
+  }
+  .add-new {
+    button {
+      span {
+        display: none;
+      }
+    }
+  }
+}
+
+/* Extra large devices (large desktops, 1200px and up) */
+@media (min-width: 1200px) {
+  .container {
+    max-width: 1130px;
+  }
+}

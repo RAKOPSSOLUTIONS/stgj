@@ -1,0 +1,70 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+  
+  <div class="row mb-4">
+    <div class="col-lg-9 col-9">
+      <h1 class="page-name">
+        <i class="bi bi-calendar-check"></i>
+        {{ "Recap des reservations"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-3 col-3">
+      <div class="float-end">
+      {% if is_granted('ROLE_ADMIN') %}   
+        {% include "partials/export-results.html.twig" with { path: path('reservations.export') } %}
+      {% else %}
+        <a href="{{ path('reservations.create') }}" class="add-new">
+          <button class="btn btn-outline-primary rounded-0 shadow-none">
+            <i class="bi bi-plus"></i>
+            <span class="d-none d-lg-inline-block">{{ "Ajouter"|trans }}</span>
+          </button>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if not app.request.get('sortable') %}
+    {% include "layout/form/search/index.html.twig" with { 
+      form: search_form,
+      tableId: "reservations" 
+    } %}
+  {% endif %}
+
+  <table class="table table-hover mb-0">
+    <thead>
+      <tr>
+          <th>#</th>
+          <th>Date</th>
+          <th>Zone</th>
+          <th>Trajet</th>
+          <th>Direction</th>
+          <th>Heure</th>
+          <th>Nombre de réservations</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for reservation in reservations %}
+      <tr class="mb-0" data-pkv="10">
+        <td>{{ loop.index }}</td>
+        <td>{{ reservation[0] }}</td>
+        <td>{{ reservation[1] }}</td>
+        <td>{{ reservation[2] }}</td>
+        <td>{{ reservation[3] }}</td>
+        <td>{{ reservation[4] }}</td>
+        <td>{{ reservation[5] }}</td>
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}
+
+{% block footer %}
+  {{ parent() }}
+  {% if app.request.get('sortable') %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  {% endif %}
+{% endblock %}

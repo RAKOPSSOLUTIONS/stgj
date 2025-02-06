@@ -1,0 +1,113 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+
+<div class="row mb-4">
+    <div class="col-lg-8 col-8">
+      <h1 class="page-name">
+        <i class="bi bi-person"></i>
+        {{ "Mon compte"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-4 col-4">
+      <div class="float-end">
+
+      {% if 'ROLE_MANAGER' in app.user.getroles()  %}
+       <a href="{{ path('user.update', {id: user.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-pencil-square"></i>
+        <span class="d-none d-lg-inline-block">{{ "Modifier mes informations"|trans }}</span>
+        </a>
+      {% endif %}
+      {% if 'ROLE_USER' in app.user.getroles()  %}
+       <a href="{{ path('user.update', {id: user.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-pencil-square"></i>
+        <span class="d-none d-lg-inline-block">{{ "Modifier mes informations"|trans }}</span>
+        </a>
+
+         <a href="{{ path('user.adhesion') }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-bookmark-check"></i>
+        <span class="d-none d-lg-inline-block">{{ "Adhésion"|trans }}</span>
+        </a>        
+      {% endif %}
+      </div>
+    </div>
+  </div>
+
+  <div class="row mb-4">
+    <div class="col-6">
+      {% if 'ROLE_USER' in app.user.getroles() and user.uid  %}
+      <table class="table table-hover table-basic mb-0">
+        <tr>
+          <td class="font-weight-bold">{{ "Qrcode"|trans }}</td>
+          <td><img src="/uploads/users{{ asset(user.uid) }}.png" class="d-inline-block align-text-top" alt="{{ user.uid }}" height="160" /></td>
+        </tr>
+      </table>
+  {% endif %}
+    </div>
+    <div class="col-6">
+      <table class="table table-hover table-basic mb-0">
+        <tr>
+          <td class="font-weight-bold">{{ "Société"|trans }}</td>
+          <td>{{ user.societe }}</td>
+        </tr>
+        {% if user.matricule %}
+        <tr>
+          <td class="font-weight-bold">{{ "Matricule"|trans }}</td>
+          <td>{{ user.matricule }}</td>
+        </tr>
+        {% endif %}
+        <tr>
+          <td class="font-weight-bold">{{ "Nom"|trans }}</td>
+          <td>{{ user.prenom }}</td>
+        </tr>
+        <tr>
+          <td class="font-weight-bold">{{ "Prénom"|trans }}</td>
+          <td>{{ user.nom }}</td>
+        </tr>
+      </table>
+    </div>
+  </div>
+<table class="table table-hover table-basic mb-0">
+   
+ 
+  <tr>
+    <td>{{ "Site"|trans }}</td>
+    <td>{{ user.site }}</td>
+  </tr>
+  <tr>
+    <td>{{ "Email"|trans }}</td>
+    <td>{{ user.email }}</td>
+  </tr>
+  <tr>
+    <td>{{ "Téléphone"|trans }}</td>
+    <td>{{ user.telephone }}</td>
+  </tr>
+  {% if 'ROLE_USER' in app.user.getroles()  %}
+  <tr>
+    <td>{{ "Adresse"|trans }}</td>
+    <td>{{ user.adresse }}</td>
+  </tr>
+  <tr>
+    <td>{{ "Latitude"|trans }}</td>
+    <td>{{ user.latitude }}</td>
+  </tr>
+  <tr>
+    <td>{{ "Longitude"|trans }}</td>
+    <td>{{ user.longitude }}</td>
+  </tr>
+  <tr>
+    <td>{{ "Nombre de mise à jour"|trans }}</td>
+    <td>{{ user.updatesCount }}</td>
+  </tr>
+
+  {% if user.societe and user.societe.adhesion %}
+  <tr>
+    <td>{{ "Adhérant"|trans }}</td>
+    <td>{{ user.adhesion == 1 ? 'oui' : 'non' }}</td>
+  </tr>
+  {% endif %}
+   {% endif %}
+</table>
+
+  
+{% endblock %}

@@ -1,0 +1,56 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+  
+  <div class="row mb-4">
+    <div class="col-lg-9 col-9">
+      <h1 class="page-name">
+        <i class="bi bi-truck"></i>
+        {{ "Navettes"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-3 col-3">
+      <div class="float-end">
+        {% if is_granted('ROLE_ADMIN') %}   
+        <ajax-modal url="{{ path('navettes.create') }}" class="add-new">
+          <button class="btn btn-outline-primary rounded-0 shadow-none">
+            <i class="bi bi-plus"></i>
+            <span class="d-none d-lg-inline-block">{{ "Ajouter"|trans }}</span>
+          </button>
+        </ajax-modal>
+        {% endif %}
+
+      </div>
+    </div>
+  </div>
+
+  {% if not app.request.get('sortable') %}
+    {% include "layout/form/search/index.html.twig" with { 
+      form: search_form,
+      tableId: "navettes" 
+    } %}
+  {% endif %}
+
+
+ 
+
+        <ajax-table id="navettes" 
+                    url="{{ path('navettes.table') }}" 
+                    {% if app.request.get('sortable') %}sortable="navettes"{% endif %}
+                    class="table-responsive"
+                    style="width: 90%;">
+            {{ table|raw }}
+        </ajax-table>
+
+
+
+
+{% endblock %}
+
+{% block footer %}
+  {{ parent() }}
+  {% if app.request.get('sortable') %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  {% endif %}
+{% endblock %}

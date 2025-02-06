@@ -1,0 +1,78 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+
+<div class="row mb-4">
+    <div class="col-lg-6 col-6">
+      <h1 class="page-name">
+        <i class="bi bi-inbox"></i>
+        {{ "Trajet"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-6 col-6">
+      <div class="float-end">
+
+        <a href="{{ path('trajets') }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-list"></i>
+        <span class="d-none d-lg-inline-block">{{ "Liste"|trans }}</span>
+        </a>
+
+        <a href="{{ path('trajets.clone', {id: trajet.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-bookmarks"></i>
+        <span class="d-none d-lg-inline-block">{{ "Dupliquer"|trans }}</span>
+        </a>
+
+        <ajax-modal url="{{ path('trajets.pickup', {id: trajet.id}) }}" class="add-new">
+          <button class="btn btn-outline-primary rounded-0 shadow-none">
+            <i class="bi bi-plus"></i>
+            <span class="d-none d-lg-inline-block">{{ "Ajouter un point de ramassage"|trans }}</span>
+          </button>
+        </ajax-modal>
+
+      </div>
+    </div>
+  </div>
+
+<table class="table table-hover table-basic mb-0">
+  <tr>
+    <td colspan="4" class="styled-title mb-2">
+      <h3>{{ "Informations du trajet"|trans }}</h3>
+    </td>
+  </tr>
+  <tr>
+    <td><b>{{ "Nom"|trans }}</b></td>
+    <td>{{ trajet.name }}</td>
+    <td><b>{{ "Statut"|trans }}</b></td>
+    <td>{{ trajet.status }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Zone"|trans }}</b></td>
+    <td>{{ trajet.zone }}</td>
+    <td><b>{{ "Site"|trans }}</b></td>
+    <td>{{ trajet.site }}</td>
+  </tr>
+</table>
+<table class="table table-hover table-basic mb-0">
+  <tr>
+    <td colspan="4" class="styled-title mb-2">
+      <h3>{{ "Points de ramassage"|trans }}</h3>
+    </td>
+  </tr>
+  <tr>
+    <th>Nom</th>
+    <th>Latitude</th>
+    <th>Longitude</th>
+    <th>Statut</th>
+  </tr>
+  {% for pickup in pickups %}
+    <tr>
+      <td>{{ pickup.name }}</td>
+      <td>{{ pickup.latitude }}</td>
+      <td>{{ pickup.longitude }}</td>
+      <td>{{ pickup.status }}</td>
+    </tr>
+  {% endfor %}
+
+</table>
+
+{% endblock %}

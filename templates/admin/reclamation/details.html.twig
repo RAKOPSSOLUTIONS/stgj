@@ -1,0 +1,178 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+
+<div class="row mb-4">
+    <div class="col-lg-8 col-8">
+      <h1 class="page-name">
+        <i class="bi bi-question-circle"></i>
+        {{ "Demande"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-4 col-4">
+      <div class="float-end">
+
+        <a href="{{ path('demandes') }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-list"></i>
+        <span class="d-none d-lg-inline-block">{{ "Liste"|trans }}</span>
+        </a>
+
+        {% if demande.status != 'Clôturée' %} 
+
+        <a href="{{ path('demande.update', {id: demande.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
+          <i class="bi bi-pencil-square"></i>
+          <span class="d-none d-lg-inline-block">{{ "Modifier"|trans }}</span>
+        </a>
+
+        {% endif %}
+
+        <a href="{{ path('demande.create') }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-plus"></i>
+        <span class="d-none d-lg-inline-block">{{ "Ajouter"|trans }}</span>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+<table class="table table-hover table-basic mb-0">
+  <tr>
+    <td colspan="4" class="styled-title mb-2">
+      <h3>{{ "Informations du demandeur"|trans }}</h3>
+    </td>
+  </tr>
+  <tr>
+    <td><b>{{ "Société"|trans }}</b></td>
+    <td>{{ demande.societe }}</td>
+    <td><b>{{ "Demandeur"|trans }}</b></td>
+    <td>{{ demande.user }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Direction"|trans }}</b></td>
+    <td>{{ demande.user.direction }}</td>
+    <td><b>{{ "Poste"|trans }}</b></td>
+    <td>{{ demande.user.poste }}</td>
+  </tr>
+</table>
+<table class="table table-hover table-basic mb-0">
+  <tr>
+    <td colspan="4" class="styled-title mb-2">
+      <h3>{{ "Informations de la demande"|trans }}</h3>
+    </td>
+  </tr>
+  <tr>
+    <td><b>{{ "Objet"|trans }}</b></td>
+    <td colspan="3">{{ demande.title }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Direction"|trans }}</b></td>
+    <td>{{ demande.direction }}</td>
+    <td><b>{{ "Nature"|trans }}</b></td>
+    <td>{{ demande.nature }}</td>
+  </tr>
+
+ 
+  <tr>
+  {% if demande.application %}
+    <td><b>{{ "Application"|trans }}</b></td>
+    <td>{{ demande.application }}</td>
+  {% endif %}
+  {% if demande.module %}
+    <td><b>{{ "Module"|trans }}</b></td>
+    <td>{{ demande.module }}</td>
+  {% endif %}
+  </tr>
+  
+
+  <tr>
+    <td><b>{{ "Commentaire"|trans }}</b></td>
+    <td colspan="3">{{ demande.description }}</td>
+  </tr>
+  {% if demande.attachments %}
+    <tr>
+      <td>{{ "Attachements"|trans }}</td>
+      <td colspan="3">
+        <ul class="list-unstyled m-0 p-0">
+          {% for attachment in demande.attachments %}
+            <li>
+              <a target="_blank" href="/uploads/{{ attachment.path }}">{{ attachment.name }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+      </td>
+    </tr>
+  {% endif %}
+ 
+  <tr>
+    <td><b>{{ "Date de la demande"|trans }}</b></td>
+    <td>{% if demande.createdAt %}{{ demande.createdAt|date("m/d/Y H:i") }}{% endif %}</td>
+    <td><b>{{ "Deadline"|trans }}</b></td>
+    <td>{% if demande.deadline %}{{ demande.deadline|date("m/d/Y H:i") }}{% endif %}</td>
+  <tr>
+    <td><b>{{ "Statut"|trans }}</td>
+    <td>{{ demande.status }}</td>
+    <td><b>{{ "Date de clôture"|trans }}</b></td>
+    <td>{% if demande.closedAt %}{{ demande.closedAt|date("m/d/Y H:i") }}{% endif %}</td>
+  </tr>
+
+  <tr>
+    <td><b>{{ "Durée de traitement"|trans }}</td>
+    <td>{{ demande.duration }} jour(s)</td>
+    <td></td>
+    <td></td>
+  </tr>
+
+  {% if demande.direction.id == 8 %}
+  <tr>
+    <td><b>{{ "Avancement"|trans }}</b></td>
+    <td>{{ demande.avancement }}</td>
+    <td><b>{{ "Next step"|trans }}</b></td>
+    <td>{{ demande.nextStep }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Actif"|trans }}</b></td>
+    <td>{{  get_choice_value_by_id('actifs', demande.getActifId())  }}</td>
+    <td><b>{{ "PU"|trans }}</b></td>
+    <td>{{ demande.pu }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Client"|trans }}</b></td>
+    <td>{{ demande.client }}</td>
+    <td><b>{{ "Responsable"|trans }}</b></td>
+    <td>{{ demande.responsable }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Externe"|trans }}</b></td>
+    <td>{{ demande.externe }}</td>
+    <td><b>{{ "Nombre d'heures"|trans }}</b></td>
+    <td>{{ demande.hoursCount }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Nombre de pages"|trans }}</b></td>
+    <td>{{ demande.pagesCount }}</td>
+  </tr>
+ {% endif %}
+ </table>
+<table class="table table-hover table-basic mb-0">
+  <tr>
+    <td colspan="2" class="styled-title mb-2">
+      <h3>{{ "Echanges sur la demande"|trans }}</h3>
+    </td>
+  </tr>
+  {% for comment in demande.comments %}
+  <tr>
+    <td colspan="2"> 
+      {{ comment.comment }} <br /><b>par</b> {{ comment.user }} <b>le</b> {% if comment.createdAt %}{{ comment.createdAt|date("m/d/Y H:i") }}{% endif %}<br />
+      <ul class="list-unstyled m-0 p-0">
+          {% for attachment in comment.attachments %}
+            <li>
+              <a target="_blank" href="/uploads/{{ attachment.path }}">{{ attachment.name }}</a>
+            </li>
+          {% endfor %}
+        </ul>
+    </td>
+  </tr>
+  {% endfor %}
+
+</table>
+{% endblock %}

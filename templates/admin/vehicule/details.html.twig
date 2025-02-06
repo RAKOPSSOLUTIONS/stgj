@@ -1,0 +1,91 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+
+<div class="row mb-4">
+    <div class="col-lg-8 col-8">
+      <h1 class="page-name">
+        <i class="bi bi-truck"></i>
+        {{ "Véhicule"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-4 col-4">
+      <div class="float-end">
+
+        <a href="{{ path('vehicules') }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-list"></i>
+        <span class="d-none d-lg-inline-block">{{ "Liste des vehicules"|trans }}</span>
+        </a>
+
+        <a href="{{ path('vehicule.update', {id: vehicule.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
+          <i class="bi bi-pencil-square"></i>
+          <span class="d-none d-lg-inline-block">{{ "Modifier"|trans }}</span>
+        </a>
+
+        <a href="{{ path('vehicule.create') }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-plus"></i>
+        <span class="d-none d-lg-inline-block">{{ "Ajouter"|trans }}</span>
+        </a>
+
+      </div>
+    </div>
+  </div>
+
+<table class="table table-hover table-basic mb-0">
+    <tr>
+      <td colspan="4" class="styled-title mb-2">
+        <h3>{{ "Information sur le véhicule : "|trans }}</h3>
+      </td>
+    </tr>
+	<tr>
+		<td>{{ "Marque"|trans }}</td>
+		<td>{% if vehicule.marqueId in marques|keys %} {{ marques[vehicule.marqueId] }} {% endif %}</td>
+		<td>{{ "Modèle"|trans }}</td>
+		<td>{% if vehicule.modeleId in modeles|keys %} {{ modeles[vehicule.modeleId] }} {% endif %}</td>
+	</tr>
+	
+	<tr>
+		<td>{{ "Type"|trans }}</td>
+		<td>{% if vehicule.typeId in types|keys %} {{ types[vehicule.typeId] }} {% endif %}</td>
+		<td>{{ "Type de moteur"|trans }}</td>
+		<td>{% if vehicule.typeMoteurId in type_moteurs|keys %} {{ type_moteurs[vehicule.typeMoteurId] }} {% endif %}</td>
+	</tr>
+
+	<tr>
+		<td>{{ "Etat physique du véhicule"|trans }}</td>
+		<td>{% if vehicule.groupeId in groupes|keys %} {{ groupes[vehicule.groupeId] }} {% endif %}</td>
+		<td>{{ "Date de mise en circulation"|trans }}</td>
+		<td>{{ vehicule.dateCirculation|date("m/d/Y") }}</td>
+	</tr>
+
+	<tr>
+		<td>{{ "Kilométrage de départ"|trans }}</td>
+		<td>{{ vehicule.kilometrage }}</td>
+		<td>{{ "Plaque d'immatriculation"|trans }}</td>
+		<td>{{ vehicule.immatriculation }}</td>
+	</tr>
+
+	<tr>
+		<td>{{ "Date d’acquisition"|trans }}</td>
+		<td>{{ vehicule.dateCirculation|date("m/d/Y") }}</td>
+		<td>{{ "Numéro de châssis"|trans }}</td>
+		<td>{{ vehicule.numeroChassis }}</td>
+	</tr>
+
+	
+	<tr>
+		<td>{{ "En services ?"|trans }}</td>
+		<td>{{ vehicule.enService==1 ? 'Oui' : 'Non' }}</td>
+		<td></td>
+		<td></td>
+    </tr>
+
+</table>
+
+
+  <div class="styled-title mb-2 mt-2">
+    <h3>{{ "Affectations"|trans }}</h3>
+  </div> 
+
+
+{% endblock %}

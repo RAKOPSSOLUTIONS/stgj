@@ -1,0 +1,31 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+  
+  <div class="row mb-4">
+    <div class="col-lg-10 col-9">
+      <h1 class="page-name">
+        <i class="bi bi-people"></i>
+        {{ "Adhésion"|trans }}
+      </h1>
+      Contenu  de la charte d’utilisation
+
+     <form action="{{ path('user.adhesion') }}" method="post" name="adhesion_form">
+      <div class="mb-3">
+      <label class="form-label" for="user_adhesion">
+        <input type="checkbox" name="adhesion" id="user_adhesion" value="1" {% if user.adhesion==1 %} checked="checked"{% endif %}> J'ai lu et j'accepte la charte 
+      </label>
+      </div>
+      <div class="mb-3">
+        <input type="submit" name="Valider" value="Valider" class="btn btn-primary">
+        <a href="{{ path('user.details', {id : user.id }) }}" class="btn btn-danger">Annuler</a>
+      </div>
+
+      <p><b>Pour activer votre adhésion, merci de cocher la case « J’ai lu et j’accepte la charte »</b></p>
+      <p><b>Pour annuler votre adhésion, merci de décocher la case « J’ai lu et j’accepte la charte » puis cliquer sur valider</b></p>
+
+
+     </form>
+    </div>
+
+{% endblock %}

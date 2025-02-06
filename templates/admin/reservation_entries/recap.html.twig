@@ -1,0 +1,85 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+  
+  <div class="row mb-4">
+    <div class="col-lg-9 col-9">
+      <h1 class="page-name">
+        <i class="bi bi-calendar-check"></i>
+        {{ "Recap des reservations"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-3 col-3">
+      <div class="float-end">
+       
+      </div>
+    </div>
+  </div>
+
+  {% if not app.request.get('sortable') %}
+    {% include "layout/form/search/index.html.twig" with { 
+      form: search_form,
+      tableId: "reservation_entries" 
+    } %}
+  {% endif %}
+
+  <table class="table table-hover mb-0">
+    <thead>
+      <tr>
+          <th>#</th>
+          <th>Date</th>
+          <th>Trajet</th>
+          <th>Direction</th>
+          <th>Heure</th>
+          <th colspan="3">Nombre de réservations</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for reservation in reservations %}
+      <tr class="mb-0" data-pkv="10">
+        <td>{{ loop.index }}</td>
+        <td>{{ reservation[0] }}</td>
+        <td>{{ reservation[1] }}</td>
+        <td>{{ reservation[3] }}</td>
+        <td>{{ reservation[4] }}</td>
+        <td>
+
+        <span class="badge rounded-pill bg-success" role="button" tabindex="0" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-content="{{ reservation[11] }}" data-bs-html="true" title="affectées">{{ reservation[10] }}</span>
+        </td>
+        <td>
+          <span class="badge rounded-pill bg-danger" role="button" tabindex="0" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-content="{{ reservation[9] }}" data-bs-html="true" title="non affectées">{{ reservation[8] }}</span>
+
+        </td>
+          <td>
+          <a href="{{ path('reservation_entries', {'date':reservation[0], 'zone':reservation[1], 'trajet_id':reservation[5], 'direction':reservation[3],'heure':reservation[4]}) }}"> 
+
+          <span class="badge rounded-pill bg-primary" role="button" tabindex="0" data-bs-toggle="popover" data-bs-trigger="focus" data-bs-content="{{ reservation[7] }}" data-bs-html="true" title="total">{{ reservation[6] }}</span></a>
+
+          {% if reservation[8] > 0 %}
+          <a href="{{ path('reservation_entries', {'date':reservation[0], 'zone':reservation[1], 'trajet_id':reservation[5], 'direction':reservation[3],'heure':reservation[4], 'status':'validée', 'create': 'yes'}) }}">Créer une navette</a>
+          {% endif %}
+
+          
+          {% if reservation[12] > 0 %} 
+           <a href="{{ path('navettes.details', {id: reservation[12]}) }}">Détails de la navette</a>
+          {% endif %}
+
+       
+        </td>
+
+        
+
+      </tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+{% endblock %}
+
+{% block footer %}
+  {{ parent() }}
+  {% if app.request.get('sortable') %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  {% endif %}
+{% endblock %}

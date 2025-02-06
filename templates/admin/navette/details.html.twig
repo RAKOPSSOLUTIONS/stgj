@@ -1,0 +1,271 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+    <style>
+         
+        #map {
+            height: 500px;
+            width: 100%;
+            margin-top: 20px;
+            border: 2px solid #ccc;
+        }
+
+        #panel {
+            background: white;
+            padding: 10px;
+            border-radius: 5px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            z-index: 1;
+            max-height: calc(100vh - 40px);
+            overflow: scroll;
+            margin-top: 20px;
+        }
+
+        #total-duration {
+            font-weight: bold;
+            margin-top: 10px;
+            color: #333;
+        }
+    </style> 
+<div class="row mb-4">
+    <div class="col-lg-8 col-8">
+      <h1 class="page-name">
+        <i class="bi bi-truck"></i>
+        {{ "Navette"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-4 col-4">
+      <div class="float-end">
+
+        <a href="{{ path('navettes') }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-list"></i>
+        <span class="d-none d-lg-inline-block">{{ "Liste"|trans }}</span>
+        </a>
+{% if 'ROLE_ADMIN' in app.user.getroles()  %}
+        <a href="{{ path('navettes.clone', {id: navette.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-bookmarks"></i>
+        <span class="d-none d-lg-inline-block">{{ "Dupliquer"|trans }}</span>
+        </a>
+
+        <a href="{{ path('navettes.reset', {id: navette.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
+          <i class="bi bi-clock"></i>
+          <span class="d-none d-lg-inline-block">{{ "Reset"|trans }}</span>
+        </a>
+
+{% endif %}
+        
+ 
+
+      </div>
+    </div>
+  </div>
+
+<table class="table table-hover table-basic mb-0">
+  <tr>
+    <td colspan="4" class="styled-title mb-2">
+      <h3>{{ "Informations sur la navette"|trans }}</h3>
+    </td>
+  </tr>
+  <tr>
+    <td><b>{{ "Date"|trans }}</b></td>
+    <td>{% if navette.dateNavette %}{{ navette.dateNavette|date("d-m-Y") }} {% endif %}</td>
+    <td><b>{{ "Heure"|trans }}</b></td>
+    <td>{{ navette.heureNavette }} </td>
+  </tr>
+  <tr>
+    <td><b>{{ "Start at"|trans }}</b></td>
+    <td>{% if navette.startAt %}{{ navette.startAt|date("d-m-Y H:i:s") }} {% endif %}</td>
+    <td><b>{{ "End at"|trans }}</b></td>
+    <td>{% if navette.endAt %}{{ navette.endAt|date("d-m-Y H:i:s") }} {% endif %} </td>
+  </tr>
+  <tr>
+    <td><b>{{ "zone"|trans }}</b></td>
+    <td>{{ navette.zone }}</td>
+    <td><b>{{ "Direction"|trans }}</b></td>
+    <td>{{ navette.direction }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Trajet"|trans }}</b></td>
+    <td>{{ navette.nomTrajet }}</td>
+    <td><b>{{ "Statut"|trans }}</b></td>
+    <td>{{ navette.status }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Véhicule"|trans }}</b></td>
+    <td>{{ navette.vehicule }}</td>
+    <td><b>{{ "Chauffeur"|trans }}</b></td>
+    <td>{% if navette.vehicule %} {{ navette.vehicule.user }} {% endif %}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Pick-up"|trans }}</b></td>
+    <td>{{ navette.pickupLocation }}</td>
+    <td><b>{{ "Drop-off"|trans }}</b></td>
+    <td>{{ navette.dropoffLocation }}</td>
+  </tr>
+  <tr>
+    <td><b>{{ "Distance"|trans }}</b></td>
+    <td>{{ navette.distance }}</td>
+    <td><b>{{ "Durée"|trans }}</b></td>
+    <td>{{ navette.duree }}</td>
+  </tr>
+
+   <tr>
+    <td><b>{{ "Commentaire"|trans }}</b></td>
+    <td>{{ navette.comment }}</td>
+    <td></td>
+    <td></td>
+  </tr>
+  
+</table>
+
+<table class="table table-hover table-basic mb-0">
+  <tr>
+    <td colspan="6" class="styled-title mb-2">
+      <h3>{{ "Passagers affectés à cette navette"|trans }}</h3>
+    </td>
+  </tr>
+  <form name="update_navette" action="">
+
+  <tr>
+    <th>Matricule</th>
+    <th>Nom</th>
+    <th>Pick-up</th>
+    <th>Drop-off</th>
+    <th>Heure de passage</th>
+    <th>Actions</th>
+  </tr>
+
+   {% set items = [] %}
+  {% for entry in entries %}
+     {% set key = entry.pickupLatitude ~  entry.pickupLongitude %}
+
+    <input type="hidden" name="id[]" id="id[]" value="" />
+    <input type="hidden" name="lat[]" id="lat[]" value="" />
+    <input type="hidden" name="lng[]" id="lng[]" value="" />
+    <input type="hidden" name="distance" id="distance" value="" />
+    <input type="hidden" name="duration" id="duration" value="" />
+
+    <tr>
+      <td>{{ entry.user.matricule }}</td>
+      <td>{{ entry.user }}</td>
+      <td>{{ entry.pickupLocation }}</td>
+      <td>{{ entry.DropoffLocation }}</td>
+      <td>{% if entry.heurePassage %}{{ entry.heurePassage|date('H:i') }} {% endif %}</td>
+      <td>
+
+      <a href="{{ path('reservation_entries.update', {id: entry.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
+          <i class="bi bi-pencil-square"></i> Modifier</a>
+
+      <a href="{{ path('navettes.detach', {id: navette.id, entry_id: entry.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
+          <i class="bi bi-trash"></i> Supprimer</a></td>
+    </tr>
+  {% endfor %}
+    <tr>
+      <td>
+</table>
+
+<table class="table table-hover table-basic mb-0">
+<tr>
+    <td colspan="7" class="styled-title mb-2">
+      <h3>{{ "Passagers non affectés à cette navette"|trans }}</h3>
+    </td>
+  </tr>
+<tr>
+    <th>Matricule</th>
+    <th>Nom</th>
+    <th>Pick-up</th>
+    <th>Drop-off</th>
+    <th>distance</th>
+    <th>Navette</th>
+    <th>Actions</th>
+  </tr>
+{% for entry in unaffected_entries %}
+
+    <tr>
+      <td>{{ entry.user.matricule }}</td>
+      <td>{{ entry.user }}</td>
+      <td>{{ entry.pickupLocation }}</td>
+      <td>{{ entry.DropoffLocation }}</td>
+      <td>{{ entry.distance }} km</td>
+      <td>{{ entry.navette }}</td>
+      <td><a href="{{ path('navettes.add', {id: navette.id, entry_id: entry.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
+          <i class="bi bi-plus"></i> Ajouter</a></td>
+    </tr>
+  {% endfor %}
+ </table>
+ 
+<div class="row">
+
+  <div class="col-lg-12 col-12">
+
+  <table class="table table-hover table-basic mb-0">
+<tr>
+    <td colspan="7" class="styled-title mb-2">
+      <h3>{{ "Calculateur d'itinéraire de véhicule avec trafic et arrêts"|trans }}</h3>
+    </td>
+  </tr>
+</table>
+    <br>
+
+
+<button id="calculateRouteBtn" class="btn btn-primary">{{ "Calculer l'itinéraire et synchroniser les informations."|trans }}</button>
+<button id="updateTraffic" class="btn btn-primary" style="display: none;">Mettre à jour les données de trafic.</button>
+<button id="openGoogleMapsBtn" class="btn btn-primary" style="display: none;">Open in Google Maps</button>
+
+
+
+    <div id="lastUpdate"></div>
+    <div id="result"></div>
+    <div id="map"></div>
+
+  <!-- Include Leaflet CSS -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.css" />
+
+    <!-- Include Leaflet JavaScript -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js"></script>
+
+{% block javascripts %}
+    {# Method 1: Data attributes #}
+    <div id="app" 
+         data-navette="{{ navetteData|json_encode|e('html_attr') }}"
+         data-entries="{{ entriesData|map(entry => {
+    'id': entry.id,
+    'pickupLatitude': entry.pickupLatitude,
+    'pickupLongitude': entry.pickupLongitude,
+    'pickupLocation': entry.pickupLocation,
+    'navetteId': entry.navetteId,
+    'dureeUp': entry.dureeUp
+})|json_encode|e('html_attr') }}"
+    </div>
+
+    {# Include your JavaScript file #}
+    <script src="{{ asset('assets/js/optis.js') }}"></script>
+{% endblock %}
+
+
+
+
+  </div>
+</div>
+ 
+
+
+<script>
+
+
+
+
+ 
+{% endblock %}
+
+
+
+
+
+
+
+
+
+
+
+

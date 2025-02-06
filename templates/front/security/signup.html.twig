@@ -1,0 +1,88 @@
+{% extends 'layout/auth.html.twig' %}
+
+{% block head %}
+	{{ parent() }}
+	<style>
+		body {
+			margin: 0;
+			height: 100vh;
+			overflow-x: hidden;
+			background-size: cover;
+			background-position: center;
+			background: var(--color-primary) url({{ asset('assets/img/190325-rental-cars-cs-229p.webp') }}) top right no-repeat;
+		}
+		.login-form {
+			background-color: #fff;
+			position: absolute;
+			top: 0;
+			right: 0;
+			height: 100%;
+			width: 100%;
+			max-width: 570px;
+		}
+		.divider p {
+			color: var(--color-secondary);
+		}
+		.divider:after,
+		.divider:before {
+			content: "";
+			flex: 1;
+			height: 1px;
+			background: var(--color-secondary);
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="login-form d-flex align-items-center">
+		<div class="card border-0 w-100 px-4">
+			<div class="card-body">
+				<div class="text-center my-5">
+					<img src="{{ asset('assets/img/logo-stjg.png') }}" alt="STJG" class="d-inline-block align-text-top" height="60">
+				</div>
+				
+				 <h3>Inscription</h3>
+
+		    {% for message in app.flashes('success') %}
+            <div class="alert alert-success">
+                {{ message }}
+            </div>
+        {% endfor %}
+
+    {{ form_start(registrationForm) }}
+
+
+        <div class="row">
+		      <div class="col"> {{ form_row(registrationForm.site) }} </div>
+		      <div class="col"> {{ form_row(registrationForm.matricule) }} </div>
+        </div>
+        <div class="row">
+          <div class="col"> {{ form_row(registrationForm.nom) }}</div>
+          <div class="col"> {{ form_row(registrationForm.prenom) }}</div>
+        </div>
+        <div class="row">
+          <div class="col"> {{ form_row(registrationForm.telephone) }}</div>
+          <div class="col"> {{ form_row(registrationForm.email) }}</div>
+        </div>
+
+        <div class="row">
+          <div class="col"> {{ form_row(registrationForm.adresse) }}</div>
+        </div>
+
+        {{ form_row(registrationForm.password, {
+            label: 'Mot de passe'
+        }) }}
+        {{ form_row(registrationForm.confirm_password) }}
+
+        <button type="submit" class="btn btn-primary px-5 text-white float-none float-sm-end">S'inscrire</button>
+
+        <a href="{{ path('login') }}" class="btn btn-primary">
+              {{ "Se connecter"|trans }}
+            </a>
+        {{ form_end(registrationForm) }}
+
+
+			</div>
+		</div>
+	</div>
+{% endblock %}

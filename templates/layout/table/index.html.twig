@@ -1,0 +1,11 @@
+<div class="card rounded-0 border-bottom-0">
+	<table class="table table-hover mb-0">
+		{% if data.rows|length %}
+			{% include "layout/table/head.html.twig" %}
+		{% endif %}
+		{% include "layout/table/body.html.twig" %}
+	</table>
+</div>
+{% if data.rows|length %}
+	{% include "layout/table/bottom.html.twig" %}
+{% endif %}

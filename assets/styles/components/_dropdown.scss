@@ -1,0 +1,23 @@
+.dropdown {
+  &:hover .dropdown-menu {
+    display: block !important;
+    right: 0px !important;
+    width: fit-content !important;
+  }
+}
+.dropdown-item {
+  &:hover,
+  &.active,
+  &:active {
+    color: white;
+    background-color: var(--color-secondary);
+  }
+}
+.action-delete {
+  a:hover,
+  a.active,
+  a:active {
+    color: white;
+    background-color: var(--color-danger);
+  }
+}

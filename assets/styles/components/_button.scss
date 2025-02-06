@@ -1,0 +1,12 @@
+.btn-primary,
+.btn-outline-primary {
+  &:hover,
+  &:focus,
+  &:active,
+  &:active:focus {
+    background-color: var(--color-secondary);
+    border-color: var(--color-secondary);
+    box-shadow: none;
+    color: white;
+  }
+}

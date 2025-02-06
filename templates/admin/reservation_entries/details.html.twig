@@ -1,0 +1,88 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+
+<div class="row mb-4">
+    <div class="col-lg-8 col-8">
+      <h1 class="page-name">
+        <i class="bi bi-clock"></i>
+        {{ "Réservations"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-4 col-4">
+      <div class="float-end">
+        <a href="{{ path('reservation_entries') }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-clock"></i>
+        <span class="d-none d-lg-inline-block">{{ "Liste des réservation"|trans }}</span>
+        </a>
+        {% if reservation.canValidate(user) %}
+        <a href="{{ path('reservation_entries.update', {id: reservation.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
+          <i class="bi bi-pencil-square"></i>
+          <span class="d-none d-lg-inline-block">{{ "Modifier"|trans }}</span>
+        </a>
+        {% endif %}
+      </div>
+    </div>
+  </div>
+ 
+
+<table class="table table-hover table-basic mb-0">
+  <tr>
+    <td>{{ "Date"|trans }}</td>
+    <td>{{ reservation.reservationDate|date("m/d/Y") }}</td>
+  </tr>
+  <tr>
+    <td>{{ "Direction"|trans }}</td>
+    <td>{{ reservation.direction }}</td>
+  </tr>
+  {% if reservation.navette %}
+  <tr>
+    <td>{{ "Nom du trajet"|trans }}</td>
+    <td>{{ reservation.navette.nomTrajet }}</td>
+  </tr>
+  {% endif %}
+  <tr>
+    <td>{{ "Pick-up"|trans }}</td>
+    <td>{{ reservation.pickupLocation }}</td>
+  </tr>
+  <tr>
+    <td>{{ "Drop-off"|trans }}</td>
+    <td>{{ reservation.dropoffLocation }}</td>
+  </tr>
+  <tr>
+    <td>{{ "Heure"|trans }}</td>
+    <td>{{ reservation.reservationHeure }}</td>
+  </tr>
+  {% if reservation.navette and reservation.navette.status == 'validée' %}
+  <tr>
+    <td>{{ "Heure de passage"|trans }}</td>
+    <td>{% if reservation.heurePassage %}{{ reservation.heurePassage|date('H:i') }} {% endif %}</td>
+  </tr>
+   <tr>
+    <td>{{ "Véhicule"|trans }}</td>
+    <td>{% if reservation.navette %}{{ reservation.navette.vehicule }} {% endif %}</td>
+  </tr>
+   <tr>
+    <td>{{ "Chauffeur"|trans }}</td>
+    <td>{% if reservation.navette and reservation.navette.vehicule %}
+    {{ reservation.navette.vehicule.user }}</td>
+  </tr>
+
+  <tr>
+    <td>{{ "Téléphone du chauffeur"|trans }}</td>
+    <td>{% if reservation.navette and reservation.navette.vehicule and reservation.navette.vehicule.user %}
+      <a href="tel:{{reservation.navette.vehicule.user.telephone}}">{{reservation.navette.vehicule.user.telephone}}</a> {% endif %}</td>
+    {% endif %}</td>
+  </tr>
+
+  {% endif %}
+</table>
+ 
+
+{% endblock %}
+
+{% block footer %}
+  {{ parent() }}
+
+  
+{% endblock %}

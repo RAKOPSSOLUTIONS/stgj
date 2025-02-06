@@ -1,0 +1,15 @@
+<thead>
+  <tr>
+    {% if data.bulk_actions|length %}
+      <th width="29">
+        <input type="checkbox" class="cb-check-all form-check-input cursor-pointer">
+      </th> 
+    {% endif %}
+    {% for column in data.columns %}
+      <th>{{ column.label }}</th>
+    {% endfor %}
+    {% if data.has_actions %}
+      <th width="50">{{ "Actions"|trans }}</th>
+    {% endif %}
+  </tr>
+</thead>

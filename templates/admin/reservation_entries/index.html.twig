@@ -1,0 +1,87 @@
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+  
+  <div class="row mb-4">
+    <div class="col-lg-9 col-9">
+      <h1 class="page-name">
+        <i class="bi bi-clock"></i>
+        {{ "Réservations"|trans }}
+      </h1>
+    </div>
+    <div class="col-lg-3 col-3">
+      <div class="float-end">
+      {% if is_granted('ROLE_ADMIN') %}   
+        {% include "partials/export-results.html.twig" with { path: path('reservation_entries.export') } %}
+
+        <a href="{{ path('reservation_entries.recap') }}" class="btn btn-outline-primary rounded-0 shadow-none">
+        <i class="bi bi-list"></i>
+        <span class="d-none d-lg-inline-block">{{ "Recap des réservations"|trans }}</span>
+        </a>
+
+      {% endif %}
+      </div>
+    </div>
+  </div>
+
+  {% if not app.request.get('sortable') %}
+    {% include "layout/form/search/index.html.twig" with { 
+      form: search_form,
+      tableId: "reservation_entries" 
+    } %}
+  {% endif %}
+
+  <ajax-table id="reservation_entries" url="{{ path('reservation_entries.table') }}" {% if app.request.get('sortable') %}sortable="reservation_entries"{% endif %}>
+    {{ table|raw }}
+  </ajax-table>
+{% if 'ROLE_CHAUFFEUR' in app.user.getroles()  %}
+  <div class="container">
+        <h1>Scanner le QR Codes</h1>
+        <div class="section">
+            <div id="my-qr-reader">
+            </div>
+        </div>
+    </div>
+{% endif %}
+{% endblock %}
+
+{% block footer %}
+  {{ parent() }}
+  {% if app.request.get('sortable') %}
+  <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+  <script src="https://code.jquery.com/ui/1.12.1/jquery-ui.min.js"></script>
+  {% endif %}
+ {% if 'ROLE_CHAUFFEUR' in app.user.getroles()  %}
+  <script src="https://unpkg.com/html5-qrcode"></script>
+
+<script>
+function domReady(fn) {
+    if (
+        document.readyState === "complete" ||
+        document.readyState === "interactive"
+    ) {
+        setTimeout(fn, 1000);
+    } else {
+        document.addEventListener("DOMContentLoaded", fn);
+    }
+}
+
+domReady(function () {
+
+    // If found you qr code
+    function onScanSuccess(decodeText, decodeResult) {
+        console.log("You Qr is : " + decodeText, decodeResult);
+         //var redirect_url = "https://127.0.0.1:8000/admin/reservation_entries/" + token + "/checkin";
+         document.location = decodeText;
+    }
+
+    let htmlscanner = new Html5QrcodeScanner(
+        "my-qr-reader",
+        { fps: 10, qrbos: 250 }
+    );
+    htmlscanner.render(onScanSuccess);
+});
+</script>
+ {% endif %}
+  
+{% endblock %}

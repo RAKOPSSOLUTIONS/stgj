@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.getLocale() }}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% include 'partials/service-worker-meta.html.twig' %}
+  <title>{% block title %}STJG{% endblock %}</title>
+  {% block head %}
+    {{ encore_entry_link_tags('app') }}
+  {% endblock %}
+</head>
+<body class="auth-layout">
+  {% include 'layout/alert.html.twig' %}
+  {% block body %}{% endblock %}
+
+  {% block footer %}
+    {{ encore_entry_script_tags('app') }}
+    {% include 'partials/webpush.html.twig' %}
+    {% include 'partials/service-worker-script.html.twig' %}
+  {% endblock %}
+</body>
+</html>

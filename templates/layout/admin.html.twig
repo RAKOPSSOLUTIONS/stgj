@@ -1,0 +1,426 @@
+<!DOCTYPE html>
+<html lang="{{ app.request.getLocale() }}">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  {% include 'partials/service-worker-meta.html.twig' %}
+  <title>{% block title %}STJG{% endblock %}</title>
+  {% block head %}
+    {{ encore_entry_link_tags('app') }}
+  {% endblock %}
+
+    
+
+</head>
+<body class="admin-layout">
+
+  {% set route_name = app.request.get('_route') %}
+
+  <nav class="navbar navbar-expand-lg navbar-light bg-white shadow-sm" id="primary-navbar">
+    <div class="container-fluid">
+      
+      <a class="navbar-brand ms-3 me-5" href="{{ path('reporting') }}" style="font-size: 1.5; font-weight: 800; color: #0075b9;">
+       <img src="{{ asset('assets/img/logo-stjg.png') }}" alt="STJG" class="d-inline-block align-text-top" height="60">
+       
+      </a>
+      <button 
+        type="button" 
+        class="navbar-toggler" 
+        data-bs-toggle="collapse" 
+        data-bs-target="#admin-navbar" 
+        aria-controls="admin-navbar" 
+        aria-expanded="false" 
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="admin-navbar">
+        <ul class="navbar-nav">
+          <li class="d-block d-lg-none mt-1">
+            <hr class="dropdown-divider">
+          </li>
+          {% block navbar %}
+
+        {# if is_granted('ROLE_CHAUFFEUR') #}  
+        {% if 'ROLE_CHAUFFEUR' in app.user.getroles()  %}
+          <li class="nav-item">
+            <a
+              href="{{ path('reporting_trajets') }}"
+              class="nav-link{{ route_name == 'reporting_trajets' ? ' active' }}"
+            >
+              <i class="bi bi-calendar-check"></i>
+                {{ "Trajets"|trans }}
+            </a>
+          </li> 
+          <li class="nav-item">
+            <a
+              href="{{ path('reservation_entries') }}"
+              class="nav-link{{ route_name == 'reservation_entries' ? ' active' }}"
+            >
+              <i class="bi bi-clock"></i>
+                {{ "Pointage"|trans }}
+            </a>
+          </li>
+          <li class="nav-item">
+                <a
+                  href="{{ path('annonces') }}"
+                  class="nav-link{{ route_name == 'annonces' ? ' active' }}"
+                >
+                  <i class="bi bi-megaphone"></i>
+                  {{ "Annonces"|trans }}
+                </a>
+          </li>
+
+          {% endif %}
+          
+        {% if is_granted('ROLE_ADMIN') %}  
+          <li class="nav-item">
+            <a
+              href="{{ path('reservations') }}"
+              class="nav-link{{ route_name == 'reservations' ? ' active' }}"
+            >
+              <i class="bi bi-calendar-check"></i>
+                {{ "Pré-réservations"|trans }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              href="{{ path('reservation_entries') }}"
+              class="nav-link{{ route_name == 'reservation_entries' ? ' active' }}"
+            >
+              <i class="bi bi-clock"></i>
+                {{ "Réservations"|trans }}
+            </a>
+          </li>
+         {% endif %}
+         {% if is_granted('ROLE_ADMIN') or is_granted('ROLE_MANAGER')  %}  
+          <li class="nav-item">
+            <a
+              href="{{ path('navettes') }}"
+              class="nav-link{{ route_name == 'navettes' ? ' active' }}"
+            >
+              <i class="bi bi-truck"></i>
+                {{ "Navettes"|trans }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              href="{{ path('users') }}"
+              class="nav-link{{ route_name == 'users' ? ' active' }}"
+            >
+              <i class="bi bi-people"></i>
+                {{ "Utilisateurs"|trans }}
+            </a>
+          </li>
+
+            <li class="nav-item">
+            <a
+              href="{{ path('reporting') }}"
+              class="nav-link{{ route_name == 'reporting' ? ' active' }}"
+            >
+              <i class="bi bi-people"></i>
+                {{ "Reporting"|trans }}
+            </a>
+          </li>
+
+         <!-- <li class="nav-item">
+                <a
+                  href="{{ path('reclamations') }}"
+                  class="nav-link{{ route_name == 'reclamations' ? ' active' }}"
+                >
+                  <i class="bi bi-question-circle"></i>
+                  {{ "Réclamations"|trans }}
+                </a>
+          </li>
+          <li class="nav-item">
+                <a
+                  href="{{ path('annonces') }}"
+                  class="nav-link{{ route_name == 'annonces' ? ' active' }}"
+                >
+                  <i class="bi bi-megaphone"></i>
+                  {{ "Annonces"|trans }}
+                </a>
+          </li>-->
+
+
+        {% endif %}
+
+
+
+         {% if 'ROLE_USER' in app.user.getroles()  %}
+        
+        <li class="nav-item">
+            <a
+              href="{{ path('reservations') }}"
+              class="nav-link{{ route_name == 'reservations' ? ' active' }}"
+            >
+              <i class="bi bi-calendar-check"></i>
+                {{ "Pré-réservations"|trans }}
+            </a>
+          </li>
+          <li class="nav-item">
+            <a
+              href="{{ path('reservation_entries') }}"
+              class="nav-link{{ route_name == 'reservation_entries' ? ' active' }}"
+            >
+              <i class="bi bi-clock"></i>
+                {{ "Réservations"|trans }}
+            </a>
+          </li>
+         <!-- <li class="nav-item">
+                <a
+                  href="{{ path('reclamations') }}"
+                  class="nav-link{{ route_name == 'reclamations' ? ' active' }}"
+                >
+                  <i class="bi bi-question-circle"></i>
+                  {{ "Réclamations"|trans }}
+                </a>
+          </li>
+          <li class="nav-item">
+                <a
+                  href="{{ path('annonces') }}"
+                  class="nav-link{{ route_name == 'annonces' ? ' active' }}"
+                >
+                  <i class="bi bi-megaphone"></i>
+                  {{ "Annonces"|trans }}
+                </a>
+          </li>
+          <li class="nav-item">
+                <a href="tel:0800005991" onclick="return confirm('Etes vous sure de voir déclencher l\'alerte ?');"
+                  class="text-danger nav-link{{ route_name == 'reclamations' ? ' active' }}"
+                >
+                  <i class="bi bi-phone-vibrate text-danger"></i>
+                  {{ "SOS Button"|trans }}
+                </a>
+          </li>-->
+
+        {% endif %}
+
+        <!--  <li class="nav-item">
+            <a
+              href="{{ path('reporting') }}"
+              class="nav-link{{ route_name == 'reporting' ? ' active' }}"
+            >
+              <i class="bi bi-clipboard-data"></i>
+              {{ "Reporting"|trans }}
+            </a>
+          </li>-->
+           
+          
+          {% endblock %}
+          {% if is_granted('ROLE_ADMIN') %}
+          <li class="d-block d-lg-none">
+            <hr class="dropdown-divider">
+          </li>
+          
+
+          <li class="nav-item d-block d-lg-none">
+                <a href="{{ path('vehicules') }}" class="nav-link{{ route_name == 'vehicules' ? ' active' }}">
+                 <i class="bi bi-truck"></i>
+                 {{ "Véhicules"|trans }}
+                </a>
+          </li>
+
+          <li class="nav-item  d-block d-lg-none">
+                <a href="{{ path('trajets') }}" class="nav-link{{ route_name == 'trajets' ? ' active'}}">
+                  <i class="bi bi-signpost"></i>
+                  {{ "Trajets"|trans }}
+                </a>
+          </li>
+
+          <li class="nav-item d-block d-lg-none">
+                <a href="{{ path('tarifs') }}" class="nav-link{{ route_name == 'tarifs' ? ' active' }}">
+                 <i class="bi bi-currency-dollar"></i>
+                 {{ "Tarif"|trans }}
+                </a>
+          </li>
+
+          <li class="nav-item  d-block d-lg-none">
+                <a href="{{ path('pickups') }}" class="nav-link{{ route_name == 'pickups' ? ' active'}}">
+                  <i class="bi bi-pin-map"></i>
+                  {{ "Points de ramassage"|trans }}
+                </a>
+          </li>
+
+          <li class="nav-item  d-block d-lg-none">
+                <a href="{{ path('shifts') }}" class="nav-link{{ route_name == 'shifts' ? ' active'}}">
+                  <i class="bi bi-clock"></i>
+                  {{ "Shifts"|trans }}
+                </a>
+          </li>
+
+          <li class="nav-item d-block d-lg-none">
+                <a href="{{ path('users') }}" class="nav-link{{ route_name == 'users' ? ' active' }}">
+                 <i class="bi bi-people"></i>
+                 {{ "Utilisateurs"|trans }}
+                </a>
+          </li>
+          <li class="nav-item d-block d-lg-none">
+                <a href="{{ path('societes') }}" class="nav-link{{ route_name == 'societes' ? ' active' }}">
+                 <i class="bi bi-building"></i>
+                 {{ "Sociétés"|trans }}
+                </a>
+          </li>
+          <li class="nav-item d-block d-lg-none">
+            <a href="{{ path('mail.history') }}" class="nav-link{{ route_name == 'mail.history' ? ' active' }}">
+              <i class="bi bi-envelope-open"></i>
+              {{ "Emails"|trans }}
+            </a>
+          </li>
+          <li class="nav-item d-block d-lg-none">
+            <a href="{{ path('cronjobs') }}" class="nav-link{{ route_name == 'cronjobs' ? ' active' }}">
+              <i class="bi bi-lightning"></i>
+              {{ "Cron Jobs"|trans }}
+            </a>
+          </li>
+          <li class="nav-item d-block d-lg-none">
+            <a href="{{ path('settings') }}" class="nav-link{{ route_name == 'settings' ? ' active' }}">
+              <i class="bi bi-gear"></i>
+              {{ "settings"|trans }}
+            </a>
+          </li>
+          <li class="d-block">
+            <hr class="dropdown-divider">
+          </li>
+          {% endif %}
+          <li class="nav-item d-block d-lg-none">
+            <a href="{{ path('user.details', {id: app.user.getId()}) }}" class="nav-link">
+              <i class="bi bi-person"></i>
+              {{ "Mon compte"|trans }}
+            </a>
+          </li>
+          <li class="nav-item d-block d-lg-none">
+            <a class="nav-link" href="{{ path('logout') }}">
+              <i class="bi bi-box-arrow-left"></i>
+              {{ "Se déconnecter"|trans }}
+            </a>
+          </li>
+        </ul>
+        <!-- user menu -->
+        <ul class="navbar-nav ms-auto mb-2 mb-lg-0 d-none d-lg-block">
+          <li class="nav-item dropdown dropdown-account">
+            <a class="nav-link dropdown-toggle" href="#" id="user-account" role="button" data-bs-toggle="dropdown" aria-expanded="false">
+              <span class="bg-secondary text-white rounded-circle fs-5" data-bs-toggle="tooltip" data-bs-placement="left" title="{{ app.user.getFullName() }}" style="width: 53px; height: 50px; display: block; text-align: center; padding: 11px 0px;">{{ app.user.getShortName() }}</span>
+            </a>
+            <ul class="dropdown-menu dropdown-menu-lg-end" aria-labelledby="user-account">
+              {% if is_granted('ROLE_ADMIN') %}
+              <li>
+                <a href="{{ path('societes') }}" class="dropdown-item{{ route_name == 'societes' ? ' active' }}">
+                 <i class="bi bi-building"></i>
+                 {{ "Sociétés"|trans }}
+                </a>
+              </li>
+              <li>
+                <a href="{{ path('sites') }}" class="dropdown-item{{ route_name == 'sites' ? ' active' }}">
+                 <i class="bi bi-house"></i>
+                 {{ "Sites"|trans }}
+                </a>
+              </li>
+              <li>
+                <a href="{{ path('users') }}" class="dropdown-item{{ route_name == 'users' ? ' active' }}">
+                 <i class="bi bi-people"></i>
+                 {{ "Utilisateurs"|trans }}
+                </a>
+              </li>
+              
+             <li>
+                <a href="{{ path('vehicules') }}" class="dropdown-item{{ route_name == 'vehicules' ? ' active' }}">
+                 <i class="bi bi-truck"></i>
+                 {{ "Véhicules"|trans }}
+                </a>
+              </li>
+              <li>
+                <a href="{{ path('trajets') }}" class="dropdown-item{{ route_name == 'trajets' ? ' active'}}">
+                  <i class="bi bi-signpost"></i>
+                  {{ "Trajets"|trans }}
+                </a>
+              </li>
+
+              <li>
+                <a href="{{ path('tarifs') }}" class="dropdown-item{{ route_name == 'tarifs' ? ' active'}}">
+                  <i class="bi bi-currency-dollar"></i>
+                  {{ "Tarif"|trans }}
+                </a>
+              </li>
+
+              <li>
+                <a href="{{ path('pickups') }}" class="dropdown-item{{ route_name == 'pickups' ? ' active'}}">
+                  <i class="bi bi-pin-map"></i>
+                  {{ "Pickups"|trans }}
+                </a>
+              </li>
+
+          <li>
+                <a href="{{ path('shifts') }}" class="dropdown-item{{ route_name == 'shifts' ? ' active'}}">
+                  <i class="bi bi-clock"></i>
+                  {{ "Shifts"|trans }}
+                </a>
+          </li>
+              
+              <li>
+                <a
+                  href="{{ path('mail.history') }}"
+                  class="dropdown-item{{ route_name == 'mail.history' ? ' active' }}"
+                >
+                  <i class="bi bi-envelope-open"></i>
+                  {{ "Emails"|trans }}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{{ path('cronjobs') }}"
+                  class="dropdown-item{{ route_name == 'cronjobs' ? ' active' }}"
+                >
+                  <i class="bi bi-lightning"></i>
+                  {{ "Cron Jobs"|trans }}
+                </a>
+              </li>
+              <li>
+                <a
+                  href="{{ path('settings') }}"
+                  class="dropdown-item{{ route_name == 'settings' ? ' active' }}"
+                >
+                  <i class="bi bi-gear"></i>
+                  {{ "Settings"|trans }}
+                </a>
+              </li>
+              <li class="d-block">
+                <hr class="dropdown-divider">
+              </li>
+              {% endif %}
+              <li>
+                
+                <a href="{{ path('user.details', {id: app.user.getId()}) }}" class="dropdown-item" >
+                <i class="bi bi-person"></i>
+                  {{ "Mon compte"|trans }}
+                </a>
+        
+              </li>
+              <li>
+                <a class="dropdown-item" href="{{ path('logout') }}">
+                  <i class="bi bi-box-arrow-left"></i>
+                  {{ "Se déconneter"|trans }}
+                </a>
+              </li>
+            </ul>
+          </li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  {% include 'partials/sidebar.html.twig' %}
+
+  <div class="container-fluid my-4 px-4">
+    {% include 'layout/alert.html.twig' %}
+    {% block body %}{% endblock %}
+  </div>
+
+  {% block footer %}
+    {{ encore_entry_script_tags('app') }}
+    {% include 'partials/webpush.html.twig' %}
+    {% include 'partials/service-worker-script.html.twig' %}
+  {% endblock %}
+
+</body>
+</html>

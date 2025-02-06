@@ -1,0 +1,50 @@
+#primary-navbar {
+  .account-icon {
+    font-size: 2rem;
+    color: var(--color-secondary);
+  }
+  .dropdown:hover .dropdown-menu {
+    display: block !important;
+    right: 0px !important;
+    width: 100% !important;
+  }
+  .dropdown-account .dropdown-toggle::after {
+    display: none;
+  }
+  .nav-link {
+    padding-right: 1rem;
+    padding-left: 1rem;
+    text-transform: uppercase;
+    font-weight: 600;
+    color: var(--color-primary) !important;
+    &:hover,
+    &.active {
+      color: var(--color-secondary) !important;
+    }
+  }
+}
+
+.header-primary {
+  margin: 0px;
+  padding: 15px 5px 20px;
+  min-height: 93px;
+  background-color: var(--color-primary);
+  h1 {
+    color: #fff;
+    margin-bottom: 0px;
+    font-size: 2.5rem;
+  }
+  .clock {
+    color: #fff;
+    font-size: 4rem;
+    font-weight: 600;
+    line-height: 3.5rem;
+  }
+  .full-date {
+    color: #fff;
+    font-size: 1.5rem;
+    font-weight: 600;
+    margin-left: 15px;
+    line-height: 1.8rem;
+  }
+}

@@ -1,0 +1,42 @@
+{% extends 'layout/email.html.twig' %}
+
+{% block title %}Activation de votre compte{% endblock %}
+
+{% block body %}
+<container>
+        <row class="float-center">
+            <columns>
+                <center>
+                <img src="{{ absolute_url(asset('assets/img/logo-stjg.png')) }}" width="216" height="135" alt="STJG TOUR"/>
+                </center>
+            </columns>
+         </row>   
+   <row class="body">
+   <p>Bonjour, </p>
+   <p>Votre RDV à {{ entity.societe }} est confirmé !</p>
+   <p>RDV organisé par : <b>{{ entity.user }}</b></p> 
+   <p>Le <b>{{ entity.dateVisite|date("d/m/Y") }}</b> à <b>{{ entity.dateVisite|date("H:i") }}</b></p>
+   <p><a href="{{ entity.societe.position }}">Cliquez ici pour nous géolocaliser </a></p>
+
+   <p><center><img src="{{ absolute_url(asset(entity.qr)) }}" alt="qrcode"></center></p>
+   <p><br><br>Ce QR code vous sera demandé à votre arrivée.</p>
+
+</row>
+  
+</container>
+{% endblock %}
+
+{% block footer %}
+<row>
+<columns small="12" large="12">
+<center>
+  <small><a href="http://www.stjg.ma">www.stjg.ma</a></small> 
+  <small style="color:#000"> | </small>
+  <small><a href="mailto:contact@stjg.ma">contact@stjg.ma</a></small> 
+  <small style="color:#000"> | </small>
+  <small><a href="tel:05377-71355">05377-71355</a></small> 
+</center>
+</columns>
+</row>
+
+{% endblock %}

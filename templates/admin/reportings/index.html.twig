@@ -1,0 +1,236 @@
+
+{% extends 'layout/admin.html.twig' %}
+
+{% block body %}
+{% if 'ROLE_CHAUFFEUR' in app.user.getroles() %}
+
+<div class="row mt-3">
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+        <i class="bi bi-signpost fs-1"></i>
+        <span class="fs-4 text-uppercase text-center"><a href="{{ path('reporting_trajets') }}">{{ "Trajets"|trans }}</a></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+        <i class="bi bi-clock fs-1"></i>
+        <span class="fs-4 text-uppercase text-center"><a href="{{ path('reservation_entries') }}">{{ "Pointage"|trans }}</a></span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+        <i class="bi bi-megaphone fs-1"></i>
+        <span class="fs-4 text-uppercase text-center"><a href="{{ path('annonces') }}">{{ "Annonces"|trans }}</a></span>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+{% else %}
+<div class="row">
+  <div class="col-sm-12">
+    <h1 class="page-name">
+      <i class="bi bi-clipboard-data"></i>
+      {{ "Reporting"|trans }}
+    </h1>
+  </div>
+</div>
+
+ <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+ <div class="card-body d-flex flex-column align-items-center">
+
+<form method="get" action="" class="row mb-3">
+  <div class="col-md-6">
+    <label for="startDate" class="form-label">{{ "Date de début"|trans }}</label>
+    <input type="date" id="startDate" name="startDate" class="form-control">
+  </div>
+  <div class="col-md-6">
+    <label for="endDate" class="form-label">{{ "Date de fin"|trans }}</label>
+    <input type="date" id="endDate" name="endDate" class="form-control">
+  </div>
+</form>
+
+<div class="row mt-3">
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+       
+        <span class="fs-5 text-uppercase text-center">{{ "Historique des inscrits"|trans }}</span>
+  
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+    
+        <span class="fs-5 text-uppercase text-center">
+          <a href="{{ path('reservation_entries') }}">{{ "Historique des désinscrits"|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+      
+        <span class="fs-5 text-uppercase text-center">
+          <a href="{{ path('reservation_entries') }}">{{ "Planning journalier"|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+    
+        <span class="fs-5 text-uppercase text-center">
+          <a href="{{ path('reclamations') }}">{{ "Planning journalier Réel"|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+      
+        <span class="fs-5 text-uppercase text-center">
+          <a href="{{ path('annonces') }}">{{ "Pointage des navettes"|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+      
+        <span class="fs-5 text-uppercase text-center">
+          <a href="{{ path('annonces') }}">{{ "Pointage des navettes annulées"|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+  
+        <span class="fs-5 text-uppercase text-center">
+          <a href="{{ path('annonces') }}">{{ "Planning des circuits journalier"|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+
+
+</div>
+
+
+
+{% endif %}
+
+</div>
+
+
+
+
+
+
+
+
+
+
+
+ <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+ <div class="card-body d-flex flex-column align-items-center">
+
+
+
+<div class="row mt-3">
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+       
+        <span class="fs-5 text-uppercase text-center">{{ "Base de l'effectif"|trans }}</span>
+    
+      </div>
+    </div>
+  </div>
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+    
+        <span class="fs-5 text-uppercase text-center">
+          <a href="{{ path('reservation_entries') }}">{{ "Base des adhérents "|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+      
+        <span class="fs-5 text-uppercase text-center">
+          <a href="{{ path('reservation_entries') }}">{{ "Tranches horaires actives "|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+  <div class="col">
+    <div class="card shadow-sm rounded-0 mb-4 mb-sm-2">
+      <div class="card-body d-flex flex-column align-items-center p-3">
+    
+        <span class="fs-5 text-uppercase text-center">
+          <a href="{{ path('reclamations') }}">{{ "Zones et points d’arrêt actives"|trans }}</a>
+        </span>
+      </div>
+    </div>
+  </div>
+
+
+ 
+
+
+
+
+</div>
+
+
+
+</div>
+
+
+{% endblock %}
+
+{% block footer %}
+  {{ parent() }}
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+{% endblock %}

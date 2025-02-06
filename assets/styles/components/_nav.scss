@@ -1,0 +1,14 @@
+.nav-tabs {
+  border-bottom: 2px solid var(--color-secondary);
+  .nav-link {
+    &:focus,
+    &:hover {
+      border-color: transparent;
+    }
+    &.active {
+      color: #fff !important;
+      border-color: var(--color-secondary);
+      background: var(--color-secondary);
+    }
+  }
+}

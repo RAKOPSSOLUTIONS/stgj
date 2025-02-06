@@ -1,0 +1,87 @@
+{% extends 'layout/auth.html.twig' %}
+
+{% block head %}
+	{{ parent() }}
+	<style>
+		body {
+			margin: 0;
+			height: 100vh;
+			overflow-x: hidden;
+			background-size: cover;
+			background-position: center;
+			background: var(--color-primary) url({{ asset('assets/img/hello.jpg') }}) top right no-repeat;
+		}
+		.login-form {
+			background-color: #fff;
+			position: absolute;
+			top: 0;
+			right: 0;
+			height: 100%;
+			width: 100%;
+			max-width: 570px;
+		}
+		.divider p {
+			color: var(--color-secondary);
+		}
+		.divider:after,
+		.divider:before {
+			content: "";
+			flex: 1;
+			height: 1px;
+			background: var(--color-secondary);
+		}
+	</style>
+{% endblock %}
+
+{% block body %}
+	<div class="login-form d-flex align-items-center">
+		<div class="card border-0 w-100 px-4">
+			<div class="card-body">
+				<div class="text-center my-5">
+					<a href="#" style="font-size: 1.5; font-weight: 800; color: #0075b9;"><img src="{{ asset('assets/img/logo-stjg.png') }}" alt="STJG" class="d-inline-block align-text-top" height="60"></a>
+<br />
+					 <h3>Connexion</h3>
+				</div>
+				{% if error %}
+					<div class="alert alert-danger" role="alert">
+						{{ error.messageKey|trans(error.messageData) }}
+					</div>
+				{% endif %}
+				{% for message in app.flashes('error') %}
+					<div class="alert alert-danger" role="alert">
+						<ul class="list-unstyled m-0 p-0">
+							<li>{{ message }}</li>
+						</ul>
+					</div>
+				{% endfor %}
+				 
+				<form action="{{ path('login') }}" method="post">
+					<input type="hidden" name="_csrf_token" value="{{ csrf_token('authenticate') }}">
+					<div class="mb-3">
+						<label class="mb-2 text-muted" for="username_or_email">
+							{{ "Email ou matricule"|trans }}
+						</label>
+						<input type="text" name="username_or_email" value="{{ username_or_email }}" class="form-control" autofocus required/>
+					</div>
+					<div class="mb-4">
+						<div class="mb-2 w-100">
+							<label class="text-muted" for="password">
+								{{ "Password"|trans }}
+							</label>
+						</div>
+						<input type="password" name="password" autocomplete="off" class="form-control" required/>
+					</div>
+					<div class="mb-4 text-center">
+						<ajax-modal url="{{ path('password.reset') }}" width="400" class="text-muted cursor-pointer mb-4 mb-sm-0 mt-0 mt-sm-2 d-block d-sm-inline-block float-none float-sm-start">
+							{{ "Mot de passe oublié"|trans }}
+						</ajax-modal>
+						<a href="{{ path('signup') }}" class="text-muted cursor-pointer mb-4 mb-sm-0 mt-0 mt-sm-2 d-block d-sm-inline-block ">S'enregistrer</a>
+						<button type="submit" class="btn btn-primary rounded-pill px-5 text-white float-none float-sm-end">{{ "Se connecter"|trans }}</button>
+					</div>
+				</form>
+				
+			</div>
+
+		</div>
+	</div>
+{% endblock %}
