@@ -61,6 +61,7 @@ return [
         '/admin/reservations/export' => [[['_route' => 'reservations.export', '_controller' => 'App\\Controller\\Admin\\ReservationController::export'], null, ['GET' => 0], null, false, false, null]],
         '/admin/reservations/create' => [[['_route' => 'reservations.create', '_controller' => 'App\\Controller\\Admin\\ReservationController::create'], null, ['GET' => 0], null, false, false, null]],
         '/admin/reservation_entries' => [[['_route' => 'reservation_entries', '_controller' => 'App\\Controller\\Admin\\ReservationEntriesController::index'], null, ['GET' => 0], null, false, false, null]],
+        '/admin/create_navettes' => [[['_route' => 'create_navettes', '_controller' => 'App\\Controller\\Admin\\ReservationEntriesController::createNavettes'], null, ['POST' => 0], null, false, false, null]],
         '/admin/reservation_entries/table' => [[['_route' => 'reservation_entries.table', '_controller' => 'App\\Controller\\Admin\\ReservationEntriesController::table'], null, ['GET' => 0], null, false, false, null]],
         '/admin/reservation_entries/export' => [[['_route' => 'reservation_entries.export', '_controller' => 'App\\Controller\\Admin\\ReservationEntriesController::export'], null, ['GET' => 0], null, false, false, null]],
         '/admin/reservation_entries/recap' => [[['_route' => 'reservation_entries.recap', '_controller' => 'App\\Controller\\Admin\\ReservationEntriesController::recap'], null, ['GET' => 0], null, false, false, null]],
@@ -310,31 +311,32 @@ return [
                         .'|store(*:1913)'
                     .')'
                 .')'
+                .'|/navettes/([^/]++)/bulk\\-add(*:1952)'
                 .'|/generate\\-report/([^/]++)(?'
-                    .'|(*:1953)'
-                    .'|/preview(*:1970)'
+                    .'|(*:1990)'
+                    .'|/preview(*:2007)'
                 .')'
-                .'|/password/new/([^/]++)(*:2002)'
-                .'|/qr\\-code/([^/]++)/([\\w\\W]+)(*:2039)'
+                .'|/password/new/([^/]++)(*:2039)'
+                .'|/qr\\-code/([^/]++)/([\\w\\W]+)(*:2076)'
                 .'|/_(?'
-                    .'|error/(\\d+)(?:\\.([^/]++))?(*:2079)'
-                    .'|wdt/([^/]++)(*:2100)'
+                    .'|error/(\\d+)(?:\\.([^/]++))?(*:2116)'
+                    .'|wdt/([^/]++)(*:2137)'
                     .'|profiler/([^/]++)(?'
                         .'|/(?'
-                            .'|search/results(*:2147)'
-                            .'|router(*:2162)'
+                            .'|search/results(*:2184)'
+                            .'|router(*:2199)'
                             .'|exception(?'
-                                .'|(*:2183)'
-                                .'|\\.css(*:2197)'
+                                .'|(*:2220)'
+                                .'|\\.css(*:2234)'
                             .')'
                         .')'
-                        .'|(*:2208)'
+                        .'|(*:2245)'
                     .')'
                 .')'
                 .'|/oauth/connect/(?'
-                    .'|([^/]++)(*:2245)'
-                    .'|service/([^/]++)(*:2270)'
-                    .'|registration/([^/]++)(*:2300)'
+                    .'|([^/]++)(*:2282)'
+                    .'|service/([^/]++)(*:2307)'
+                    .'|registration/([^/]++)(*:2337)'
                 .')'
             .')/?$}sDu',
     ],
@@ -433,20 +435,21 @@ return [
         1883 => [[['_route' => 'vehicule.delete', 'id' => 0, '_controller' => 'App\\Controller\\Admin\\VehiculeController::delete'], ['id'], ['GET' => 0, 'POST' => 1], null, false, false, null]],
         1899 => [[['_route' => 'vehicule.update', '_controller' => 'App\\Controller\\Admin\\VehiculeController::update'], ['id'], ['GET' => 0], null, false, false, null]],
         1913 => [[['_route' => 'vehicule.store', '_controller' => 'App\\Controller\\Admin\\VehiculeController::store'], ['id'], ['POST' => 0], null, false, false, null]],
-        1953 => [[['_route' => 'generate_report', '_controller' => 'App\\Controller\\Admin\\ReportController::generateReport'], ['reportType'], ['GET' => 0], null, false, true, null]],
-        1970 => [[['_route' => 'preview_report', '_controller' => 'App\\Controller\\Admin\\ReportController::previewReport'], ['reportType'], ['GET' => 0], null, false, false, null]],
-        2002 => [[['_route' => 'password.new', '_controller' => 'App\\Controller\\Front\\PasswordResetController::new'], ['token'], null, null, false, true, null]],
-        2039 => [[['_route' => 'qr_code_generate', '_controller' => 'Endroid\\QrCodeBundle\\Controller\\GenerateController'], ['builder', 'data'], null, null, false, true, null]],
-        2079 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
-        2100 => [[['_route' => '_wdt', '_controller' => 'web_profiler.controller.profiler::toolbarAction'], ['token'], null, null, false, true, null]],
-        2147 => [[['_route' => '_profiler_search_results', '_controller' => 'web_profiler.controller.profiler::searchResultsAction'], ['token'], null, null, false, false, null]],
-        2162 => [[['_route' => '_profiler_router', '_controller' => 'web_profiler.controller.router::panelAction'], ['token'], null, null, false, false, null]],
-        2183 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
-        2197 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
-        2208 => [[['_route' => '_profiler', '_controller' => 'web_profiler.controller.profiler::panelAction'], ['token'], null, null, false, true, null]],
-        2245 => [[['_route' => 'hwi_oauth_service_redirect', '_controller' => 'HWI\\Bundle\\OAuthBundle\\Controller\\RedirectToServiceController::redirectToServiceAction'], ['service'], null, null, false, true, null]],
-        2270 => [[['_route' => 'hwi_oauth_connect_service', '_controller' => 'HWI\\Bundle\\OAuthBundle\\Controller\\ConnectController::connectServiceAction'], ['service'], null, null, false, true, null]],
-        2300 => [
+        1952 => [[['_route' => 'navettes.bulk_add', '_controller' => 'App\\Controller\\Admin\\NavetteController::bulkAdd'], ['id'], ['POST' => 0], null, false, false, null]],
+        1990 => [[['_route' => 'generate_report', '_controller' => 'App\\Controller\\Admin\\ReportController::generateReport'], ['reportType'], ['GET' => 0], null, false, true, null]],
+        2007 => [[['_route' => 'preview_report', '_controller' => 'App\\Controller\\Admin\\ReportController::previewReport'], ['reportType'], ['GET' => 0], null, false, false, null]],
+        2039 => [[['_route' => 'password.new', '_controller' => 'App\\Controller\\Front\\PasswordResetController::new'], ['token'], null, null, false, true, null]],
+        2076 => [[['_route' => 'qr_code_generate', '_controller' => 'Endroid\\QrCodeBundle\\Controller\\GenerateController'], ['builder', 'data'], null, null, false, true, null]],
+        2116 => [[['_route' => '_preview_error', '_controller' => 'error_controller::preview', '_format' => 'html'], ['code', '_format'], null, null, false, true, null]],
+        2137 => [[['_route' => '_wdt', '_controller' => 'web_profiler.controller.profiler::toolbarAction'], ['token'], null, null, false, true, null]],
+        2184 => [[['_route' => '_profiler_search_results', '_controller' => 'web_profiler.controller.profiler::searchResultsAction'], ['token'], null, null, false, false, null]],
+        2199 => [[['_route' => '_profiler_router', '_controller' => 'web_profiler.controller.router::panelAction'], ['token'], null, null, false, false, null]],
+        2220 => [[['_route' => '_profiler_exception', '_controller' => 'web_profiler.controller.exception_panel::body'], ['token'], null, null, false, false, null]],
+        2234 => [[['_route' => '_profiler_exception_css', '_controller' => 'web_profiler.controller.exception_panel::stylesheet'], ['token'], null, null, false, false, null]],
+        2245 => [[['_route' => '_profiler', '_controller' => 'web_profiler.controller.profiler::panelAction'], ['token'], null, null, false, true, null]],
+        2282 => [[['_route' => 'hwi_oauth_service_redirect', '_controller' => 'HWI\\Bundle\\OAuthBundle\\Controller\\RedirectToServiceController::redirectToServiceAction'], ['service'], null, null, false, true, null]],
+        2307 => [[['_route' => 'hwi_oauth_connect_service', '_controller' => 'HWI\\Bundle\\OAuthBundle\\Controller\\ConnectController::connectServiceAction'], ['service'], null, null, false, true, null]],
+        2337 => [
             [['_route' => 'hwi_oauth_connect_registration', '_controller' => 'HWI\\Bundle\\OAuthBundle\\Controller\\ConnectController::registrationAction'], ['key'], null, null, false, true, null],
             [null, null, null, null, false, false, 0],
         ],

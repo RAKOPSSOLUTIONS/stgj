@@ -43,6 +43,12 @@ class NavetteController extends BaseController
     ]);
   }
 
+
+
+
+
+
+  
   /**
    * @Route(methods={"GET"}, path="/admin/navettes/mapquest", name="navettes.mapquest")
    * @IsGranted("ROLE_ADMIN")
@@ -103,6 +109,44 @@ class NavetteController extends BaseController
   {
     return new Response($this->getTable($request, $user, $table));
   }
+
+
+    /**
+     * @Route("/navettes/{id}/bulk-add", name="navettes.bulk_add", methods={"POST"})
+     */
+    public function bulkAdd(Request $request, Navette $navette): JsonResponse
+    {
+        // Decode the JSON request body
+        $data = json_decode($request->getContent(), true);
+        $entryIds = $data['entryIds'] ?? [];
+        
+        $entityManager = $this->getDoctrine()->getManager();
+        
+        try {
+            // Get all entries
+            $entries = $entityManager->getRepository(ReservationEntries::class)
+                ->findBy(['id' => $entryIds]);
+            
+            // Update each entry
+            foreach ($entries as $entry) {
+                $entry->setNavette($navette);
+                $entityManager->persist($entry);
+            }
+            
+            $entityManager->flush();
+            
+            return new JsonResponse(['success' => true]);
+        } catch (\Exception $e) {
+            return new JsonResponse([
+                'success' => false,
+                'error' => $e->getMessage()
+            ], 500);
+        }
+    }
+
+
+
+  
 
   /**
    * @Route(methods={"GET"}, path="/admin/navettes/{id}/add/{entry_id}", name="navettes.add")

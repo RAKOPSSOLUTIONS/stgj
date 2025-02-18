@@ -1,7 +1,7 @@
 <?php
     
 namespace App\Controller\Admin;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
 use App\Entity\Log;
 use App\Helpers\Base;
 use App\Entity\Reservation;
@@ -174,6 +174,154 @@ class ReservationEntriesController extends BaseController
       'search_form' => $this->getSearchForm($request, $user)->createView()
     ]);
   }
+
+
+
+
+/**
+ * @Route(methods={"POST"}, path="/admin/create_navettes", name="create_navettes")
+ */
+/**
+ * @Route(methods={"POST"}, path="/admin/create_navettes", name="create_navettes")
+ */
+public function createNavettes(Request $request)
+{
+    try {
+        // Debug incoming request
+        $rawContent = $request->getContent();
+        error_log('Raw request content: ' . $rawContent);
+
+        $data = json_decode($rawContent, true);
+        error_log('Decoded data: ' . print_r($data, true));
+
+        if (json_last_error() !== JSON_ERROR_NONE) {
+            throw new \Exception('JSON decode error: ' . json_last_error_msg());
+        }
+
+        // Validate required fields
+        $requiredFields = ['date', 'direction', 'heure', 'routes'];
+        foreach ($requiredFields as $field) {
+            if (!isset($data[$field])) {
+                throw new \Exception("Missing required field: {$field}");
+            }
+        }
+
+        $date = $data['date'];
+        $direction = $data['direction'];
+        $heure = $data['heure'];
+        $routes = $data['routes'];
+
+        error_log('Processing routes: ' . print_r($routes, true));
+        
+        $em = $this->getDoctrine()->getManager();
+        $response = [];
+        
+        foreach ($routes as $routeIndex => $route) {
+            error_log('Processing route ' . $routeIndex);
+            
+            // Create new navette for each route
+            $new_navette = new Navette();
+            $new_navette->setStatus('en attente');
+            $new_navette->setDirection($direction);
+            $new_navette->setHeureNavette($heure);
+            $new_navette->setNomTrajet('Home Pickup ' . $direction . ' ' . $heure . ' Route ' . ($routeIndex + 1));
+            $new_navette->setVehicule(null);
+            $new_navette->setDateNavette(new \DateTime($date));
+            
+            // Get entry IDs for this route
+            $entryIds = [];
+            foreach ($route['route'] as $point) {
+                if (isset($point['points']) && is_array($point['points'])) {
+                    foreach ($point['points'] as $pointDetail) {
+                        if (isset($pointDetail['id'])) {
+                            $entryIds[] = $pointDetail['id'];
+                        }
+                    }
+                }
+            }
+            error_log('Found entry IDs: ' . print_r($entryIds, true));
+            
+            // Filter out null values
+            $entryIds = array_filter($entryIds);
+            
+            if (empty($entryIds)) {
+                error_log('No valid entry IDs found for route ' . $routeIndex);
+                continue;
+            }
+            
+            // Fetch all relevant entries
+            $entries = $this->getDoctrine()->getRepository(ReservationEntries::class)->findBy([
+                'id' => $entryIds,
+                'status' => 'validée',
+                'navette_id' => null
+            ]);
+            
+            error_log('Found entries: ' . count($entries));
+            
+            if (empty($entries)) {
+                error_log('No valid entries found for route ' . $routeIndex);
+                continue;
+            }
+            
+            // Set initial pickup/dropoff points based on direction
+            $firstEntry = reset($entries);
+            if ($direction == 'Entrée') {
+                $new_navette->setDropoffLatitude($firstEntry->getDropoffLatitude());
+                $new_navette->setDropoffLongitude($firstEntry->getDropoffLongitude());
+                $new_navette->setDropoffLocation($firstEntry->getDropoffLocation());
+                
+                $firstPoint = reset($route['route']);
+                $new_navette->setPickupLatitude($firstPoint['optimizedLat']);
+                $new_navette->setPickupLongitude($firstPoint['optimizedLon']);
+            } else {
+                $new_navette->setPickupLatitude($firstEntry->getPickupLatitude());
+                $new_navette->setPickupLongitude($firstEntry->getPickupLongitude());
+                
+                $lastPoint = end($route['route']);
+                $new_navette->setDropoffLatitude($lastPoint['optimizedLat']);
+                $new_navette->setDropoffLongitude($lastPoint['optimizedLon']);
+            }
+            
+            error_log('Persisting navette');
+            $em->persist($new_navette);
+            $em->flush();
+            
+            error_log('Created navette with ID: ' . $new_navette->getId());
+            
+            // Associate entries with this navette
+            foreach ($entries as $entry) {
+                $entry->setNavette($new_navette);
+                $em->persist($entry);
+            }
+            
+            $response[] = [
+                'navette_id' => $new_navette->getId(),
+                'entry_count' => count($entries)
+            ];
+        }
+        
+        $em->flush();
+        error_log('Final response: ' . print_r($response, true));
+        
+        return new JsonResponse([
+            'success' => true,
+            'navettes' => $response
+        ]);
+        
+    } catch (\Exception $e) {
+        error_log('Error in createNavettes: ' . $e->getMessage());
+        error_log('Stack trace: ' . $e->getTraceAsString());
+        
+        return new JsonResponse([
+            'success' => false,
+            'error' => $e->getMessage(),
+            'trace' => $e->getTraceAsString()
+        ], 500);
+    }
+}
+
+
+
 
   /**
    * @Route(methods={"GET"}, path="/admin/reservation_entries/table", name="reservation_entries.table")
@@ -511,6 +659,12 @@ class ReservationEntriesController extends BaseController
         if ( $navette == null ){
           $items[$key][8] += 1;
           $items[$key][9] .= '<div>- '.str_replace('"', "'", $pickup).'</div>'; 
+          $items[$key][13][] = [
+            'id' => $entry->getId(), // Entry ID
+            'pickupLatitude' => $entry->getPickupLatitude(), // Pickup latitude
+            'pickupLongitude' => $entry->getPickupLongitude(), // Pickup longitude
+            'pickupLocation' => $entry->getPickupLocation() // Pickup location
+        ];
         }
         else{
           $items[$key][10] += 1;

@@ -164,13 +164,16 @@
       <td>
 </table>
 
-<table class="table table-hover table-basic mb-0">
-<tr>
-    <td colspan="7" class="styled-title mb-2">
+<table class="table table-hover table-basic mb-0" id="unaffected-passengers">
+  <tr>
+    <td colspan="8" class="styled-title mb-2">
       <h3>{{ "Passagers non affectés à cette navette"|trans }}</h3>
     </td>
   </tr>
-<tr>
+  <tr>
+    <th style="width: 30px">
+      <input type="checkbox" class="select-all form-check-input" style="width: 16px; height: 16px;">
+    </th>
     <th>Matricule</th>
     <th>Nom</th>
     <th>Pick-up</th>
@@ -179,20 +182,133 @@
     <th>Navette</th>
     <th>Actions</th>
   </tr>
-{% for entry in unaffected_entries %}
-
+  {% for entry in unaffected_entries %}
     <tr>
+      <td>
+        <input type="checkbox" class="entry-select form-check-input" data-entry-id="{{ entry.id }}" style="width: 16px; height: 16px;">
+      </td>
       <td>{{ entry.user.matricule }}</td>
       <td>{{ entry.user }}</td>
       <td>{{ entry.pickupLocation }}</td>
       <td>{{ entry.DropoffLocation }}</td>
       <td>{{ entry.distance }} km</td>
       <td>{{ entry.navette }}</td>
-      <td><a href="{{ path('navettes.add', {id: navette.id, entry_id: entry.id}) }}" class="btn btn-outline-primary rounded-0 shadow-none">
-          <i class="bi bi-plus"></i> Ajouter</a></td>
+      <td>
+        <a href="{{ path('navettes.add', {id: navette.id, entry_id: entry.id}) }}" 
+           class="btn btn-outline-primary rounded-0 shadow-none single-add">
+          <i class="bi bi-plus"></i> Ajouter
+        </a>
+      </td>
     </tr>
   {% endfor %}
- </table>
+</table>
+
+<div class="bulk-actions-footer d-none mt-3">
+  <div class="d-flex justify-content-between align-items-center bg-light p-3 border">
+    <div class="selected-count">
+      <span class="count-number">0</span> éléments sélectionnés
+    </div>
+    <div>
+      <button class="btn btn-outline-primary rounded-0 shadow-none bulk-add">
+        <i class="bi bi-plus"></i> Ajouter la sélection
+      </button>
+    </div>
+  </div>
+</div>
+
+<style>
+.bulk-actions-footer {
+  transition: all 0.3s ease;
+}
+.bulk-actions-footer.d-none {
+  opacity: 0;
+  pointer-events: none;
+  transform: translateY(-10px);
+}
+.bulk-actions-footer:not(.d-none) {
+  opacity: 1;
+  transform: translateY(0);
+}
+.form-check-input {
+  cursor: pointer;
+}
+th:first-child, td:first-child {
+  width: 30px;
+  padding-left: 1rem !important;
+  padding-right: 0.5rem !important;
+}
+</style>
+
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+  const table = document.getElementById('unaffected-passengers');
+  const selectAll = table.querySelector('.select-all');
+  const bulkActions = document.querySelector('.bulk-actions-footer');
+  const bulkAddBtn = document.querySelector('.bulk-add');
+  const checkboxes = table.querySelectorAll('.entry-select');
+  const selectedCount = document.querySelector('.selected-count .count-number');
+  
+  // Handle select all checkbox
+  selectAll.addEventListener('change', function() {
+    checkboxes.forEach(checkbox => {
+      checkbox.checked = this.checked;
+    });
+    updateBulkActionsVisibility();
+  });
+
+  // Handle individual checkboxes
+  checkboxes.forEach(checkbox => {
+    checkbox.addEventListener('change', function() {
+      updateSelectAllState();
+      updateBulkActionsVisibility();
+    });
+  });
+
+  // Handle bulk add button
+  bulkAddBtn.addEventListener('click', function() {
+    const selectedIds = Array.from(checkboxes)
+      .filter(cb => cb.checked)
+      .map(cb => cb.dataset.entryId);
+
+    if (selectedIds.length > 0) {
+      const url = "{{ path('navettes.bulk_add', {id: navette.id}) }}";
+      
+      fetch(url, {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+          'X-CSRF-TOKEN': '{{ csrf_token('bulk_add') }}'
+        },
+        body: JSON.stringify({ entryIds: selectedIds })
+      })
+      .then(response => response.json())
+      .then(data => {
+        if (data.success) {
+          window.location.reload();
+        } else {
+          alert('Error: ' + (data.error || 'Unknown error occurred'));
+        }
+      })
+      .catch(error => {
+        console.error('Error:', error);
+        alert('An error occurred while processing your request');
+      });
+    }
+  });
+
+  function updateSelectAllState() {
+    const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+    selectAll.checked = checkedCount === checkboxes.length;
+    selectAll.indeterminate = checkedCount > 0 && checkedCount < checkboxes.length;
+  }
+
+  function updateBulkActionsVisibility() {
+    const checkedCount = Array.from(checkboxes).filter(cb => cb.checked).length;
+    selectedCount.textContent = checkedCount;
+    bulkActions.classList.toggle('d-none', checkedCount === 0);
+  }
+});
+</script>
  
 <div class="row">
 
@@ -233,13 +349,15 @@
     'pickupLatitude': entry.pickupLatitude,
     'pickupLongitude': entry.pickupLongitude,
     'pickupLocation': entry.pickupLocation,
+    'dropoffLatitude': entry.dropoffLatitude,
+    'dropoffLongitude': entry.dropoffLongitude,
     'navetteId': entry.navetteId,
     'dureeUp': entry.dureeUp
 })|json_encode|e('html_attr') }}"
     </div>
 
     {# Include your JavaScript file #}
-    <script src="{{ asset('assets/js/optis.js') }}"></script>
+   <script src="{{ asset('assets/js/optis.js') }}?v=2.0.2"></script>
 {% endblock %}
 
 

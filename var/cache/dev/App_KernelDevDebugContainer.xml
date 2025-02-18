@@ -8215,6 +8215,12 @@
         <argument key="mapQuestService" type="service_closure" id="App\Service\MapQuestService"/>
       </argument>
     </service>
+    <service id=".service_locator.smuG_VU" class="Symfony\Component\DependencyInjection\ServiceLocator">
+      <tag name="container.service_locator"/>
+      <argument type="collection">
+        <argument key="navette" type="service_closure" id=".errored..service_locator.smuG_VU.App\Entity\Navette"/>
+      </argument>
+    </service>
     <service id=".service_locator.B2BTaq9" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
@@ -8321,7 +8327,7 @@
       <tag name="container.service_locator"/>
       <argument type="collection"/>
     </service>
-    <service id=".service_locator.u9UzMoU" class="Symfony\Component\DependencyInjection\ServiceLocator">
+    <service id=".service_locator.4GPg5yp" class="Symfony\Component\DependencyInjection\ServiceLocator">
       <tag name="container.service_locator"/>
       <argument type="collection">
         <argument key="App\Controller\Admin\AnnonceController::create" type="service_closure" id=".service_locator.unrfpnW"/>
@@ -8364,6 +8370,7 @@
         <argument key="App\Controller\Admin\NavetteController::Notify" type="service_closure" id=".service_locator.i1P5WdL"/>
         <argument key="App\Controller\Admin\NavetteController::add" type="service_closure" id=".service_locator.unrfpnW"/>
         <argument key="App\Controller\Admin\NavetteController::batch" type="service_closure" id=".service_locator.unrfpnW"/>
+        <argument key="App\Controller\Admin\NavetteController::bulkAdd" type="service_closure" id=".service_locator.smuG_VU"/>
         <argument key="App\Controller\Admin\NavetteController::calculateRoute" type="service_closure" id=".service_locator.yDeArgd"/>
         <argument key="App\Controller\Admin\NavetteController::cancel" type="service_closure" id=".service_locator.i1P5WdL"/>
         <argument key="App\Controller\Admin\NavetteController::checkin" type="service_closure" id=".service_locator.unrfpnW"/>
@@ -8545,6 +8552,7 @@
         <argument key="App\Controller\Admin\NavetteController:Notify" type="service_closure" id=".service_locator.i1P5WdL"/>
         <argument key="App\Controller\Admin\NavetteController:add" type="service_closure" id=".service_locator.unrfpnW"/>
         <argument key="App\Controller\Admin\NavetteController:batch" type="service_closure" id=".service_locator.unrfpnW"/>
+        <argument key="App\Controller\Admin\NavetteController:bulkAdd" type="service_closure" id=".service_locator.smuG_VU"/>
         <argument key="App\Controller\Admin\NavetteController:calculateRoute" type="service_closure" id=".service_locator.yDeArgd"/>
         <argument key="App\Controller\Admin\NavetteController:cancel" type="service_closure" id=".service_locator.i1P5WdL"/>
         <argument key="App\Controller\Admin\NavetteController:checkin" type="service_closure" id=".service_locator.unrfpnW"/>
@@ -9509,12 +9517,12 @@
       <argument type="service" id="security.token_storage"/>
     </service>
     <service id="debug.argument_resolver.service.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\ServiceValueResolver">
-      <argument type="service" id=".service_locator.u9UzMoU"/>
+      <argument type="service" id=".service_locator.4GPg5yp"/>
     </service>
     <service id="debug.argument_resolver.default.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\DefaultValueResolver"/>
     <service id="debug.argument_resolver.variadic.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\VariadicValueResolver"/>
     <service id="debug.argument_resolver.not_tagged_controller.inner" class="Symfony\Component\HttpKernel\Controller\ArgumentResolver\NotTaggedControllerValueResolver">
-      <argument type="service" id=".service_locator.u9UzMoU"/>
+      <argument type="service" id=".service_locator.4GPg5yp"/>
     </service>
     <service id=".debug.http_client.inner" class="Symfony\Contracts\HttpClient\HttpClientInterface">
       <argument type="collection"/>
@@ -9537,6 +9545,7 @@
     <service id=".errored..service_locator.xUrKPVU.Symfony\Component\Config\Loader\LoaderInterface" class="Symfony\Component\Config\Loader\LoaderInterface"/>
     <service id=".errored..service_locator.vQRwr2q.Symfony\Component\Security\Core\User\UserInterface" class="Symfony\Component\Security\Core\User\UserInterface"/>
     <service id=".errored..service_locator.unrfpnW.Symfony\Component\Security\Core\User\UserInterface" class="Symfony\Component\Security\Core\User\UserInterface"/>
+    <service id=".errored..service_locator.smuG_VU.App\Entity\Navette" class="App\Entity\Navette"/>
     <service id=".errored..service_locator.B2BTaq9.App\Entity\Navette" class="App\Entity\Navette"/>
     <service id=".errored..service_locator.i1P5WdL.App\Entity\Navette" class="App\Entity\Navette"/>
     <service id=".errored..service_locator.4OHKGj7.Symfony\Component\Security\Core\User\UserInterface" class="Symfony\Component\Security\Core\User\UserInterface"/>
@@ -10461,7 +10470,7 @@
     <service id="Knp\Snappy\Image" alias="knp_snappy.image"/>
     <service id="container.env_var_processors_locator" alias=".service_locator.gSv9zYw" public="true"/>
     <service id="twig.loader.filesystem" alias="twig.loader.native_filesystem"/>
-    <service id="argument_resolver.controller_locator" alias=".service_locator.u9UzMoU"/>
+    <service id="argument_resolver.controller_locator" alias=".service_locator.4GPg5yp"/>
     <service id="session" alias=".session.do-not-use" public="true">
       <deprecated package="symfony/framework-bundle" version="5.3">The "%alias_id%" service and "SessionInterface" alias are deprecated, use "$requestStack-&gt;getSession()" instead.</deprecated>
     </service>
@@ -10496,7 +10505,7 @@
     <service id=".service_locator.7WC9XnQ" alias=".service_locator.NRS_U1B"/>
     <service id=".service_locator.s1jKSZa" alias=".service_locator.PeIkZgO"/>
     <service id=".service_locator.lyaUYuf" alias=".service_locator.h1xhtcK"/>
-    <service id=".service_locator.CotLvk2" alias=".service_locator.u9UzMoU"/>
+    <service id=".service_locator.qgXpj6i" alias=".service_locator.4GPg5yp"/>
     <service id=".service_locator.wKF4yn1" alias=".service_locator.19_mNxd"/>
     <service id=".service_locator.wlgpyrG" alias=".service_locator.rC8txX2"/>
     <service id=".service_locator.4hi2aOY" alias=".service_locator.bBRwv06"/>
@@ -10537,6 +10546,7 @@
     <service id=".service_locator..40sf5s" alias=".service_locator.5llVZv5"/>
     <service id=".service_locator.426yQGu" alias=".service_locator.q2ji3lu"/>
     <service id=".service_locator.9CHlPzX" alias=".service_locator.yDeArgd"/>
+    <service id=".service_locator.ZYEAR3p" alias=".service_locator.smuG_VU"/>
     <service id=".service_locator.RJXQJrH" alias=".service_locator.B2BTaq9"/>
     <service id=".service_locator.r0ook4Z" alias=".service_locator.i1P5WdL"/>
     <service id=".service_locator.pbYdchU" alias=".service_locator.4OHKGj7"/>
