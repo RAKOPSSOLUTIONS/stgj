@@ -187,6 +187,6 @@ class __TwigTemplate_ab8602268a1f5901b87e1d7dc06fadf1 extends Template
 
     {{ include('@WebProfiler/Profiler/toolbar_item.html.twig', { link: false }) }}
 {% endblock %}
-", "@WebProfiler/Collector/ajax.html.twig", "C:\\Users\\Hp\\Desktop\\stgj\\vendor\\symfony\\web-profiler-bundle\\Resources\\views\\Collector\\ajax.html.twig");
+", "@WebProfiler/Collector/ajax.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\symfony\\web-profiler-bundle\\Resources\\views\\Collector\\ajax.html.twig");
     }
 }

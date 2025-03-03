@@ -166,7 +166,7 @@
 
 <table class="table table-hover table-basic mb-0" id="unaffected-passengers">
   <tr>
-    <td colspan="8" class="styled-title mb-2">
+    <td colspan="9" class="styled-title mb-2">
       <h3>{{ "Passagers non affectés à cette navette"|trans }}</h3>
     </td>
   </tr>
@@ -180,9 +180,10 @@
     <th>Drop-off</th>
     <th>distance</th>
     <th>Navette</th>
+    <th>Trajet</th>
     <th>Actions</th>
   </tr>
-  {% for entry in unaffected_entries %}
+  {% for entry in unaffected_entries|sort((a, b) => a.navette <=> b.navette) %}
     <tr>
       <td>
         <input type="checkbox" class="entry-select form-check-input" data-entry-id="{{ entry.id }}" style="width: 16px; height: 16px;">
@@ -193,6 +194,7 @@
       <td>{{ entry.DropoffLocation }}</td>
       <td>{{ entry.distance }} km</td>
       <td>{{ entry.navette }}</td>
+      <td>{{ entry.Trajet }}</td>
       <td>
         <a href="{{ path('navettes.add', {id: navette.id, entry_id: entry.id}) }}" 
            class="btn btn-outline-primary rounded-0 shadow-none single-add">

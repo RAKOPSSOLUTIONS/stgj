@@ -203,6 +203,6 @@ class __TwigTemplate_894e74bb939ac3bc067d12f415ec20b2 extends Template
   </ajax-table>
 
 {% endblock %}
-", "admin/user/index.html.twig", "C:\\Users\\Hp\\Desktop\\stgj\\templates\\admin\\user\\index.html.twig");
+", "admin/user/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\user\\index.html.twig");
     }
 }

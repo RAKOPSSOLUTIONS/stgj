@@ -1038,6 +1038,6 @@ class __TwigTemplate_3f3e8635f31e820d5b04319dc9ed2597 extends Template
         {% endif %}
     {% endfor %}
 {% endblock %}
-", "@Swiftmailer/Collector/swiftmailer.html.twig", "C:\\Users\\Hp\\Desktop\\stgj\\vendor\\symfony\\swiftmailer-bundle\\Resources\\views\\Collector\\swiftmailer.html.twig");
+", "@Swiftmailer/Collector/swiftmailer.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\symfony\\swiftmailer-bundle\\Resources\\views\\Collector\\swiftmailer.html.twig");
     }
 }

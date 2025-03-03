@@ -1,0 +1,3 @@
+<?php //App%255CController%255CAdmin%255CSocieteController
+
+return [PHP_INT_MAX, []];

@@ -1,0 +1,33 @@
+<?php //App%255CController%255CAdmin%255CAnnonceController%2523delete
+
+return [PHP_INT_MAX, static function () { return \Symfony\Component\VarExporter\Internal\Hydrator::hydrate(
+    $o = [
+        clone (\Symfony\Component\VarExporter\Internal\Registry::$prototypes['Symfony\\Component\\Routing\\Annotation\\Route'] ?? \Symfony\Component\VarExporter\Internal\Registry::p('Symfony\\Component\\Routing\\Annotation\\Route')),
+    ],
+    null,
+    [
+        'Symfony\\Component\\Routing\\Annotation\\Route' => [
+            'path' => [
+                '/admin/annonces/{id}/delete',
+            ],
+            'name' => [
+                'annonces.delete',
+            ],
+            'defaults' => [
+                [
+                    'id' => 0,
+                ],
+            ],
+            'methods' => [
+                [
+                    'GET',
+                    'POST',
+                ],
+            ],
+        ],
+    ],
+    [
+        $o[0],
+    ],
+    []
+); }];

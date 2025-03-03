@@ -100,6 +100,6 @@ class __TwigTemplate_e8effd4ad17257d8cd9ce9122219d601 extends Template
         });
       });
     }
-</script>", "partials/service-worker-script.html.twig", "C:\\Users\\Hp\\Desktop\\stgj\\templates\\partials\\service-worker-script.html.twig");
+</script>", "partials/service-worker-script.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\partials\\service-worker-script.html.twig");
     }
 }

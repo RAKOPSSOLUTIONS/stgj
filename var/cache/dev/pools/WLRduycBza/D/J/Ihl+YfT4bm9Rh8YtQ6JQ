@@ -1,0 +1,3 @@
+<?php //App%255CController%255CFront%255CSecurity%255CConnectAzureController
+
+return [PHP_INT_MAX, []];
