@@ -760,8 +760,21 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
     $table->addColumn('id', 'Id', ['sortable' => true]);
     $table->addColumn('zone', 'Zone', ['sortable' => true]);
     $table->addColumn('nomTrajet', 'Trajet', ['sortable' => true]);
-    $table->addColumn('dureeUp', 'Durée', ['sortable' => true]);
-    $table->addColumn('distanceUp', 'KM', ['sortable' => true]);
+    $table->addColumn('dureeUp', 'Durée', [
+      'sortable' => true,
+      'render' => function($entity) {
+          // Check if dureeUp is null, if so, return duree
+          return $entity->getDureeUp() ?? $entity->getDuree();
+      }
+  ]);
+  
+  $table->addColumn('distanceUp', 'KM', [
+      'sortable' => true,
+      'render' => function($entity) {
+          // Check if distanceUp is null, if so, return distance
+          return $entity->getDistanceUp() ?? $entity->getDistance();
+      }
+  ]);
     $table->addColumn('vehicule.immatriculation', 'Véhicule', ['sortable' => true]);
 
 
