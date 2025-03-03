@@ -1,0 +1,18 @@
+{
+  "build/app.css": "/build/app.css",
+  "build/app.js": "/build/app.js",
+  "build/salles.js": "/build/salles.js",
+  "build/calendar.js": "/build/calendar.js",
+  "build/courses_calendar.js": "/build/courses_calendar.js",
+  "build/runtime.js": "/build/runtime.js",
+  "build/vendors-node_modules_moment_locale_af_js-node_modules_moment_locale_ar-dz_js-node_modules_mom-7969cc.js": "/build/vendors-node_modules_moment_locale_af_js-node_modules_moment_locale_ar-dz_js-node_modules_mom-7969cc.js",
+  "build/vendors-node_modules_popperjs_core_lib_createPopper_js-node_modules_popperjs_core_lib_modifie-b5b9e9.js": "/build/vendors-node_modules_popperjs_core_lib_createPopper_js-node_modules_popperjs_core_lib_modifie-b5b9e9.js",
+  "build/vendors-node_modules_react-big-calendar_lib_css_react-big-calendar_css-node_modules_react-big-7eb01a.css": "/build/vendors-node_modules_react-big-calendar_lib_css_react-big-calendar_css-node_modules_react-big-7eb01a.css",
+  "build/vendors-node_modules_react-big-calendar_lib_css_react-big-calendar_css-node_modules_react-big-7eb01a.js": "/build/vendors-node_modules_react-big-calendar_lib_css_react-big-calendar_css-node_modules_react-big-7eb01a.js",
+  "build/vendors-node_modules_bootstrap_js_src_collapse_js-node_modules_bootstrap_js_src_dropdown_js-n-582c35.css": "/build/vendors-node_modules_bootstrap_js_src_collapse_js-node_modules_bootstrap_js_src_dropdown_js-n-582c35.css",
+  "build/vendors-node_modules_bootstrap_js_src_collapse_js-node_modules_bootstrap_js_src_dropdown_js-n-582c35.js": "/build/vendors-node_modules_bootstrap_js_src_collapse_js-node_modules_bootstrap_js_src_dropdown_js-n-582c35.js",
+  "build/vendors-node_modules_react-bootstrap_esm_OverlayTrigger_js-node_modules_react-bootstrap_esm_P-f22cac.js": "/build/vendors-node_modules_react-bootstrap_esm_OverlayTrigger_js-node_modules_react-bootstrap_esm_P-f22cac.js",
+  "build/vendors-node_modules_styled-components_dist_styled-components_browser_esm_js-node_modules_cor-854e11.js": "/build/vendors-node_modules_styled-components_dist_styled-components_browser_esm_js-node_modules_cor-854e11.js",
+  "build/fonts/bootstrap-icons.woff?": "/build/fonts/bootstrap-icons.39795c0b.woff",
+  "build/fonts/bootstrap-icons.woff2?": "/build/fonts/bootstrap-icons.b7bcc075.woff2"
+}

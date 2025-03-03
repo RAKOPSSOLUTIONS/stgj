@@ -1466,6 +1466,6 @@ class __TwigTemplate_c5f7a032b892afbfdec6aca37012d3e9 extends Template
 
 </body>
 </html>
-", "layout/admin.html.twig", "C:\\Users\\Hp\\Desktop\\stgj\\templates\\layout\\admin.html.twig");
+", "layout/admin.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\admin.html.twig");
     }
 }

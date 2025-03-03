@@ -248,6 +248,6 @@ class __TwigTemplate_094bc03f904f2109462de68fbd80c152 extends Template
   {% endblock %}
 </body>
 </html>
-", "layout/auth.html.twig", "C:\\Users\\Hp\\Desktop\\stgj\\templates\\layout\\auth.html.twig");
+", "layout/auth.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\auth.html.twig");
     }
 }

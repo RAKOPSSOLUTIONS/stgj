@@ -411,7 +411,7 @@ class __TwigTemplate_8c6acbf9314aa571d8744f666c8a700a extends Template
 
 <table class=\"table table-hover table-basic mb-0\" id=\"unaffected-passengers\">
   <tr>
-    <td colspan=\"8\" class=\"styled-title mb-2\">
+    <td colspan=\"9\" class=\"styled-title mb-2\">
       <h3>";
         // line 170
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\TranslationExtension']->trans("Passagers non affectés à cette navette"), "html", null, true);
@@ -428,49 +428,54 @@ class __TwigTemplate_8c6acbf9314aa571d8744f666c8a700a extends Template
     <th>Drop-off</th>
     <th>distance</th>
     <th>Navette</th>
+    <th>Trajet</th>
     <th>Actions</th>
   </tr>
   ";
-        // line 185
+        // line 186
         $context['_parent'] = $context;
-        $context['_seq'] = CoreExtension::ensureTraversable((isset($context["unaffected_entries"]) || array_key_exists("unaffected_entries", $context) ? $context["unaffected_entries"] : (function () { throw new RuntimeError('Variable "unaffected_entries" does not exist.', 185, $this->source); })()));
+        $context['_seq'] = CoreExtension::ensureTraversable(Twig\Extension\CoreExtension::sort($this->env, (isset($context["unaffected_entries"]) || array_key_exists("unaffected_entries", $context) ? $context["unaffected_entries"] : (function () { throw new RuntimeError('Variable "unaffected_entries" does not exist.', 186, $this->source); })()), function ($__a__, $__b__) use ($context, $macros) { $context["a"] = $__a__; $context["b"] = $__b__; return (CoreExtension::getAttribute($this->env, $this->source, (isset($context["a"]) || array_key_exists("a", $context) ? $context["a"] : (function () { throw new RuntimeError('Variable "a" does not exist.', 186, $this->source); })()), "navette", [], "any", false, false, false, 186) <=> CoreExtension::getAttribute($this->env, $this->source, (isset($context["b"]) || array_key_exists("b", $context) ? $context["b"] : (function () { throw new RuntimeError('Variable "b" does not exist.', 186, $this->source); })()), "navette", [], "any", false, false, false, 186)); }));
         foreach ($context['_seq'] as $context["_key"] => $context["entry"]) {
-            // line 186
+            // line 187
             yield "    <tr>
       <td>
         <input type=\"checkbox\" class=\"entry-select form-check-input\" data-entry-id=\"";
-            // line 188
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "id", [], "any", false, false, false, 188), "html", null, true);
+            // line 189
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "id", [], "any", false, false, false, 189), "html", null, true);
             yield "\" style=\"width: 16px; height: 16px;\">
       </td>
       <td>";
-            // line 190
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "user", [], "any", false, false, false, 190), "matricule", [], "any", false, false, false, 190), "html", null, true);
-            yield "</td>
-      <td>";
             // line 191
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "user", [], "any", false, false, false, 191), "html", null, true);
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "user", [], "any", false, false, false, 191), "matricule", [], "any", false, false, false, 191), "html", null, true);
             yield "</td>
       <td>";
             // line 192
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "pickupLocation", [], "any", false, false, false, 192), "html", null, true);
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "user", [], "any", false, false, false, 192), "html", null, true);
             yield "</td>
       <td>";
             // line 193
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "DropoffLocation", [], "any", false, false, false, 193), "html", null, true);
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "pickupLocation", [], "any", false, false, false, 193), "html", null, true);
             yield "</td>
       <td>";
             // line 194
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "distance", [], "any", false, false, false, 194), "html", null, true);
-            yield " km</td>
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "DropoffLocation", [], "any", false, false, false, 194), "html", null, true);
+            yield "</td>
       <td>";
             // line 195
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "navette", [], "any", false, false, false, 195), "html", null, true);
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "distance", [], "any", false, false, false, 195), "html", null, true);
+            yield " km</td>
+      <td>";
+            // line 196
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "navette", [], "any", false, false, false, 196), "html", null, true);
+            yield "</td>
+      <td>";
+            // line 197
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "Trajet", [], "any", false, false, false, 197), "html", null, true);
             yield "</td>
       <td>
         <a href=\"";
-            // line 197
-            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("navettes.add", ["id" => CoreExtension::getAttribute($this->env, $this->source, (isset($context["navette"]) || array_key_exists("navette", $context) ? $context["navette"] : (function () { throw new RuntimeError('Variable "navette" does not exist.', 197, $this->source); })()), "id", [], "any", false, false, false, 197), "entry_id" => CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "id", [], "any", false, false, false, 197)]), "html", null, true);
+            // line 199
+            yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("navettes.add", ["id" => CoreExtension::getAttribute($this->env, $this->source, (isset($context["navette"]) || array_key_exists("navette", $context) ? $context["navette"] : (function () { throw new RuntimeError('Variable "navette" does not exist.', 199, $this->source); })()), "id", [], "any", false, false, false, 199), "entry_id" => CoreExtension::getAttribute($this->env, $this->source, $context["entry"], "id", [], "any", false, false, false, 199)]), "html", null, true);
             yield "\" 
            class=\"btn btn-outline-primary rounded-0 shadow-none single-add\">
           <i class=\"bi bi-plus\"></i> Ajouter
@@ -482,7 +487,7 @@ class __TwigTemplate_8c6acbf9314aa571d8744f666c8a700a extends Template
         $_parent = $context['_parent'];
         unset($context['_seq'], $context['_key'], $context['entry'], $context['_parent']);
         $context = array_intersect_key($context, $_parent) + $_parent;
-        // line 204
+        // line 206
         yield "</table>
 
 <div class=\"bulk-actions-footer d-none mt-3\">
@@ -554,8 +559,8 @@ document.addEventListener('DOMContentLoaded', function() {
 
     if (selectedIds.length > 0) {
       const url = \"";
-        // line 274
-        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("navettes.bulk_add", ["id" => CoreExtension::getAttribute($this->env, $this->source, (isset($context["navette"]) || array_key_exists("navette", $context) ? $context["navette"] : (function () { throw new RuntimeError('Variable "navette" does not exist.', 274, $this->source); })()), "id", [], "any", false, false, false, 274)]), "html", null, true);
+        // line 276
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\RoutingExtension']->getPath("navettes.bulk_add", ["id" => CoreExtension::getAttribute($this->env, $this->source, (isset($context["navette"]) || array_key_exists("navette", $context) ? $context["navette"] : (function () { throw new RuntimeError('Variable "navette" does not exist.', 276, $this->source); })()), "id", [], "any", false, false, false, 276)]), "html", null, true);
         yield "\";
       
       fetch(url, {
@@ -563,7 +568,7 @@ document.addEventListener('DOMContentLoaded', function() {
         headers: {
           'Content-Type': 'application/json',
           'X-CSRF-TOKEN': '";
-        // line 280
+        // line 282
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->env->getRuntime('Symfony\Component\Form\FormRenderer')->renderCsrfToken("bulk_add"), "html", null, true);
         yield "'
         },
@@ -606,7 +611,7 @@ document.addEventListener('DOMContentLoaded', function() {
 <tr>
     <td colspan=\"7\" class=\"styled-title mb-2\">
       <h3>";
-        // line 320
+        // line 322
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\TranslationExtension']->trans("Calculateur d'itinéraire de véhicule avec trafic et arrêts"), "html", null, true);
         yield "</h3>
     </td>
@@ -616,7 +621,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 <button id=\"calculateRouteBtn\" class=\"btn btn-primary\">";
-        // line 327
+        // line 329
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\TranslationExtension']->trans("Calculer l'itinéraire et synchroniser les informations."), "html", null, true);
         yield "</button>
 <button id=\"updateTraffic\" class=\"btn btn-primary\" style=\"display: none;\">Mettre à jour les données de trafic.</button>
@@ -635,9 +640,9 @@ document.addEventListener('DOMContentLoaded', function() {
     <script src=\"https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/leaflet.js\"></script>
 
 ";
-        // line 343
+        // line 345
         yield from $this->unwrap()->yieldBlock('javascripts', $context, $blocks);
-        // line 362
+        // line 364
         yield "
 
 
@@ -663,7 +668,7 @@ document.addEventListener('DOMContentLoaded', function() {
         yield from [];
     }
 
-    // line 343
+    // line 345
     /**
      * @return iterable<null|scalar|\Stringable>
      */
@@ -676,31 +681,31 @@ document.addEventListener('DOMContentLoaded', function() {
         $__internal_6f47bbe9983af81f1e7450e9a3e3768f = $this->extensions["Symfony\\Bridge\\Twig\\Extension\\ProfilerExtension"];
         $__internal_6f47bbe9983af81f1e7450e9a3e3768f->enter($__internal_6f47bbe9983af81f1e7450e9a3e3768f_prof = new \Twig\Profiler\Profile($this->getTemplateName(), "block", "javascripts"));
 
-        // line 344
+        // line 346
         yield "    ";
-        // line 345
+        // line 347
         yield "    <div id=\"app\" 
          data-navette=\"";
-        // line 346
-        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(json_encode((isset($context["navetteData"]) || array_key_exists("navetteData", $context) ? $context["navetteData"] : (function () { throw new RuntimeError('Variable "navetteData" does not exist.', 346, $this->source); })())), "html_attr");
+        // line 348
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(json_encode((isset($context["navetteData"]) || array_key_exists("navetteData", $context) ? $context["navetteData"] : (function () { throw new RuntimeError('Variable "navetteData" does not exist.', 348, $this->source); })())), "html_attr");
         yield "\"
          data-entries=\"";
-        // line 347
-        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(json_encode(Twig\Extension\CoreExtension::map($this->env, (isset($context["entriesData"]) || array_key_exists("entriesData", $context) ? $context["entriesData"] : (function () { throw new RuntimeError('Variable "entriesData" does not exist.', 347, $this->source); })()), function ($__entry__) use ($context, $macros) { $context["entry"] = $__entry__; return ["id" => CoreExtension::getAttribute($this->env, $this->source,         // line 348
-(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 348, $this->source); })()), "id", [], "any", false, false, false, 348), "pickupLatitude" => CoreExtension::getAttribute($this->env, $this->source,         // line 349
-(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 349, $this->source); })()), "pickupLatitude", [], "any", false, false, false, 349), "pickupLongitude" => CoreExtension::getAttribute($this->env, $this->source,         // line 350
-(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 350, $this->source); })()), "pickupLongitude", [], "any", false, false, false, 350), "pickupLocation" => CoreExtension::getAttribute($this->env, $this->source,         // line 351
-(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 351, $this->source); })()), "pickupLocation", [], "any", false, false, false, 351), "dropoffLatitude" => CoreExtension::getAttribute($this->env, $this->source,         // line 352
-(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 352, $this->source); })()), "dropoffLatitude", [], "any", false, false, false, 352), "dropoffLongitude" => CoreExtension::getAttribute($this->env, $this->source,         // line 353
-(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 353, $this->source); })()), "dropoffLongitude", [], "any", false, false, false, 353), "navetteId" => CoreExtension::getAttribute($this->env, $this->source,         // line 354
-(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 354, $this->source); })()), "navetteId", [], "any", false, false, false, 354), "dureeUp" => CoreExtension::getAttribute($this->env, $this->source,         // line 355
-(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 355, $this->source); })()), "dureeUp", [], "any", false, false, false, 355)]; })), "html_attr");
-        // line 356
+        // line 349
+        yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape(json_encode(Twig\Extension\CoreExtension::map($this->env, (isset($context["entriesData"]) || array_key_exists("entriesData", $context) ? $context["entriesData"] : (function () { throw new RuntimeError('Variable "entriesData" does not exist.', 349, $this->source); })()), function ($__entry__) use ($context, $macros) { $context["entry"] = $__entry__; return ["id" => CoreExtension::getAttribute($this->env, $this->source,         // line 350
+(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 350, $this->source); })()), "id", [], "any", false, false, false, 350), "pickupLatitude" => CoreExtension::getAttribute($this->env, $this->source,         // line 351
+(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 351, $this->source); })()), "pickupLatitude", [], "any", false, false, false, 351), "pickupLongitude" => CoreExtension::getAttribute($this->env, $this->source,         // line 352
+(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 352, $this->source); })()), "pickupLongitude", [], "any", false, false, false, 352), "pickupLocation" => CoreExtension::getAttribute($this->env, $this->source,         // line 353
+(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 353, $this->source); })()), "pickupLocation", [], "any", false, false, false, 353), "dropoffLatitude" => CoreExtension::getAttribute($this->env, $this->source,         // line 354
+(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 354, $this->source); })()), "dropoffLatitude", [], "any", false, false, false, 354), "dropoffLongitude" => CoreExtension::getAttribute($this->env, $this->source,         // line 355
+(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 355, $this->source); })()), "dropoffLongitude", [], "any", false, false, false, 355), "navetteId" => CoreExtension::getAttribute($this->env, $this->source,         // line 356
+(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 356, $this->source); })()), "navetteId", [], "any", false, false, false, 356), "dureeUp" => CoreExtension::getAttribute($this->env, $this->source,         // line 357
+(isset($context["entry"]) || array_key_exists("entry", $context) ? $context["entry"] : (function () { throw new RuntimeError('Variable "entry" does not exist.', 357, $this->source); })()), "dureeUp", [], "any", false, false, false, 357)]; })), "html_attr");
+        // line 358
         yield "\"
     </div>
 
     ";
-        // line 360
+        // line 362
         yield "   <script src=\"";
         yield $this->env->getRuntime('Twig\Runtime\EscaperRuntime')->escape($this->extensions['Symfony\Bridge\Twig\Extension\AssetExtension']->getAssetUrl("assets/js/optis.js"), "html", null, true);
         yield "?v=2.0.2\"></script>
@@ -735,7 +740,7 @@ document.addEventListener('DOMContentLoaded', function() {
      */
     public function getDebugInfo(): array
     {
-        return array (  704 => 360,  699 => 356,  697 => 355,  696 => 354,  695 => 353,  694 => 352,  693 => 351,  692 => 350,  691 => 349,  690 => 348,  689 => 347,  685 => 346,  682 => 345,  680 => 344,  667 => 343,  641 => 362,  639 => 343,  620 => 327,  610 => 320,  567 => 280,  558 => 274,  486 => 204,  473 => 197,  468 => 195,  464 => 194,  460 => 193,  456 => 192,  452 => 191,  448 => 190,  443 => 188,  439 => 186,  435 => 185,  417 => 170,  408 => 163,  398 => 159,  392 => 156,  383 => 153,  379 => 152,  375 => 151,  371 => 150,  367 => 149,  357 => 141,  354 => 140,  349 => 139,  347 => 138,  330 => 124,  317 => 114,  313 => 113,  306 => 109,  302 => 108,  298 => 107,  294 => 106,  288 => 103,  284 => 102,  280 => 101,  276 => 100,  266 => 97,  262 => 96,  258 => 95,  254 => 94,  248 => 91,  244 => 90,  240 => 89,  236 => 88,  230 => 85,  226 => 84,  222 => 83,  218 => 82,  209 => 79,  205 => 78,  198 => 77,  194 => 76,  188 => 73,  184 => 72,  177 => 71,  173 => 70,  166 => 66,  154 => 56,  147 => 52,  142 => 50,  136 => 47,  130 => 45,  128 => 44,  123 => 42,  118 => 40,  109 => 34,  77 => 4,  64 => 3,  41 => 1,);
+        return array (  709 => 362,  704 => 358,  702 => 357,  701 => 356,  700 => 355,  699 => 354,  698 => 353,  697 => 352,  696 => 351,  695 => 350,  694 => 349,  690 => 348,  687 => 347,  685 => 346,  672 => 345,  646 => 364,  644 => 345,  625 => 329,  615 => 322,  572 => 282,  563 => 276,  491 => 206,  478 => 199,  473 => 197,  469 => 196,  465 => 195,  461 => 194,  457 => 193,  453 => 192,  449 => 191,  444 => 189,  440 => 187,  436 => 186,  417 => 170,  408 => 163,  398 => 159,  392 => 156,  383 => 153,  379 => 152,  375 => 151,  371 => 150,  367 => 149,  357 => 141,  354 => 140,  349 => 139,  347 => 138,  330 => 124,  317 => 114,  313 => 113,  306 => 109,  302 => 108,  298 => 107,  294 => 106,  288 => 103,  284 => 102,  280 => 101,  276 => 100,  266 => 97,  262 => 96,  258 => 95,  254 => 94,  248 => 91,  244 => 90,  240 => 89,  236 => 88,  230 => 85,  226 => 84,  222 => 83,  218 => 82,  209 => 79,  205 => 78,  198 => 77,  194 => 76,  188 => 73,  184 => 72,  177 => 71,  173 => 70,  166 => 66,  154 => 56,  147 => 52,  142 => 50,  136 => 47,  130 => 45,  128 => 44,  123 => 42,  118 => 40,  109 => 34,  77 => 4,  64 => 3,  41 => 1,);
     }
 
     public function getSourceContext(): Source
@@ -908,7 +913,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 <table class=\"table table-hover table-basic mb-0\" id=\"unaffected-passengers\">
   <tr>
-    <td colspan=\"8\" class=\"styled-title mb-2\">
+    <td colspan=\"9\" class=\"styled-title mb-2\">
       <h3>{{ \"Passagers non affectés à cette navette\"|trans }}</h3>
     </td>
   </tr>
@@ -922,9 +927,10 @@ document.addEventListener('DOMContentLoaded', function() {
     <th>Drop-off</th>
     <th>distance</th>
     <th>Navette</th>
+    <th>Trajet</th>
     <th>Actions</th>
   </tr>
-  {% for entry in unaffected_entries %}
+  {% for entry in unaffected_entries|sort((a, b) => a.navette <=> b.navette) %}
     <tr>
       <td>
         <input type=\"checkbox\" class=\"entry-select form-check-input\" data-entry-id=\"{{ entry.id }}\" style=\"width: 16px; height: 16px;\">
@@ -935,6 +941,7 @@ document.addEventListener('DOMContentLoaded', function() {
       <td>{{ entry.DropoffLocation }}</td>
       <td>{{ entry.distance }} km</td>
       <td>{{ entry.navette }}</td>
+      <td>{{ entry.Trajet }}</td>
       <td>
         <a href=\"{{ path('navettes.add', {id: navette.id, entry_id: entry.id}) }}\" 
            class=\"btn btn-outline-primary rounded-0 shadow-none single-add\">
@@ -1129,6 +1136,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-", "admin/navette/details.html.twig", "C:\\Users\\Hp\\Desktop\\stgj\\templates\\admin\\navette\\details.html.twig");
+", "admin/navette/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\navette\\details.html.twig");
     }
 }

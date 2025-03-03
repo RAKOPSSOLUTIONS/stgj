@@ -274,6 +274,6 @@ class __TwigTemplate_ab491623b72ec64b1b4c9560531586ff extends Template
   <script src=\"https://code.jquery.com/ui/1.12.1/jquery-ui.min.js\"></script>
   {% endif %}
 {% endblock %}
-", "admin/navette/index.html.twig", "C:\\Users\\Hp\\Desktop\\stgj\\templates\\admin\\navette\\index.html.twig");
+", "admin/navette/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\navette\\index.html.twig");
     }
 }

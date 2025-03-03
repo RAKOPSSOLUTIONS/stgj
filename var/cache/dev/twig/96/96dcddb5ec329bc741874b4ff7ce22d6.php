@@ -133,6 +133,6 @@ class __TwigTemplate_294dc83ed4310805615461e930a5245a extends Template
     {% endif %}
   </tr>
 </thead>
-", "layout/table/head.html.twig", "C:\\Users\\Hp\\Desktop\\stgj\\templates\\layout\\table\\head.html.twig");
+", "layout/table/head.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\table\\head.html.twig");
     }
 }

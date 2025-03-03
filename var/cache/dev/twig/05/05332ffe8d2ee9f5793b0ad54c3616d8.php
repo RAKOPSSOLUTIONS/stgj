@@ -505,6 +505,6 @@ $context["loop"], "index", [], "any", false, false, false, 89)]));
         {% endfor %}
     </div>
 {% endblock %}
-", "@Httplug/webprofiler.html.twig", "C:\\Users\\Hp\\Desktop\\stgj\\vendor\\php-http\\httplug-bundle\\src\\Resources\\views\\webprofiler.html.twig");
+", "@Httplug/webprofiler.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\php-http\\httplug-bundle\\src\\Resources\\views\\webprofiler.html.twig");
     }
 }

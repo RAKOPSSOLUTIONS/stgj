@@ -120,6 +120,6 @@ class __TwigTemplate_7cf8e990f257ff89b49ba0fd46bc22fa extends Template
         });
     }
 </script>
-{% endif %}", "partials/webpush.html.twig", "C:\\Users\\Hp\\Desktop\\stgj\\templates\\partials\\webpush.html.twig");
+{% endif %}", "partials/webpush.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\partials\\webpush.html.twig");
     }
 }

@@ -334,7 +334,7 @@ return optimizedRoute;
     async function calculateRouteSegment(startLat, startLon, endLat, endLon, date_navette) {
         const start = `${startLat},${startLon}`;
         const end = `${endLat},${endLon}`;
-        console.log(start , end)
+
         const formattedDate = encodeURIComponent(date_navette);
         const routeUrl = `https://www.mapquestapi.com/directions/v2/route?key=CuZK1UDkQKkiiQOArmVsBJttIvCup0FB&from=${start}&to=${end}&routeType=fastest&doReverseGeocode=false&timeType=1&date=${formattedDate}`;
         const routeResponse = await fetch(routeUrl);
@@ -446,16 +446,17 @@ async function calculateRoute() {
             timeLimit -= 10; // Reduce time limit by 10 minutes for "Entrée"
         }
 
-        console.log(selectedRoute);
+
         let date_navette = await calculerDateNavette(selectedRoute.date_navette, selectedRoute.heure_navette, selectedRoute.navette_direction);
-        console.log(date_navette);
+
 
         let endPoint = {
-            lat:  selectedRoute.navette_direction !== "Sortie" ? selectedRoute.pickup_latitude : selectedRoute.dropoff_latitude,
-            lon:  selectedRoute.navette_direction !== "Sortie" ?  selectedRoute.pickup_longitude : selectedRoute.dropoff_longitude,
-            location: selectedRoute.navette_direction !== "Sortie"  ? selectedRoute.pickup_location :selectedRoute.dropoff_location,
-            isEnd: selectedRoute.navette_direction !== "Sortie"  ? false : true,
+            lat:  selectedRoute.navette_direction === "Sortie" ? selectedRoute.pickup_latitude : selectedRoute.dropoff_latitude,
+            lon:  selectedRoute.navette_direction === "Sortie" ?  selectedRoute.pickup_longitude : selectedRoute.dropoff_longitude,
+            location: selectedRoute.navette_direction === "Sortie"  ? selectedRoute.pickup_location :selectedRoute.dropoff_location,
+            isEnd: selectedRoute.navette_direction === "Sortie"  ? false : true,
         };
+        console.log("endpoint",endPoint)
         const processedStops = processEntriesWithUniqueStopTime(
             routeData.reservation_entries.filter(entry => entry.navette_id === selectedRouteId)
         );
