@@ -494,6 +494,6 @@ domReady(function () {
 });
 </script>
 {% endif %}
-{% endblock %}", "admin/navette/checkin.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\navette\\checkin.html.twig");
+{% endblock %}", "admin/navette/checkin.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\navette\\checkin.html.twig");
     }
 }

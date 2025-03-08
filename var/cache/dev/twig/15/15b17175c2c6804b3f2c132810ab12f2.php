@@ -119,6 +119,6 @@ class __TwigTemplate_83051dbc40fd77b5773934b4fda7028a extends Template
 \t\t<h3>Customers</h3>
 \t</div>
 {% endblock %}
-", "front/home/customers.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\front\\home\\customers.html.twig");
+", "front/home/customers.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\front\\home\\customers.html.twig");
     }
 }

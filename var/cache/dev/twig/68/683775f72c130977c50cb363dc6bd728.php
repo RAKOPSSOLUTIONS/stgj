@@ -127,6 +127,6 @@ document.addEventListener(\"DOMContentLoaded\", function () {
        });
     });
 })
-", "@Httplug/script/httplug.js.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\php-http\\httplug-bundle\\src\\Resources\\views\\script\\httplug.js.twig");
+", "@Httplug/script/httplug.js.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\php-http\\httplug-bundle\\src\\Resources\\views\\script\\httplug.js.twig");
     }
 }

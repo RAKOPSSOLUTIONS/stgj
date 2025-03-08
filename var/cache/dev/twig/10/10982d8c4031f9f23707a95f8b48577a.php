@@ -119,6 +119,6 @@ class __TwigTemplate_fb3f96d298b9cea3cea32c9b3ffd49f5 extends Template
 \t\t
 \t</div>
 {% endblock %}
-", "front/home/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\front\\home\\index.html.twig");
+", "front/home/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\front\\home\\index.html.twig");
     }
 }

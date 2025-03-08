@@ -441,6 +441,6 @@ class __TwigTemplate_2aaeb31fb56872761526c7d918ec20f7 extends Template
         </div>
     {% endfor %}
 {% endblock %}
-", "@Debug/Profiler/dump.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\symfony\\debug-bundle\\Resources\\views\\Profiler\\dump.html.twig");
+", "@Debug/Profiler/dump.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\symfony\\debug-bundle\\Resources\\views\\Profiler\\dump.html.twig");
     }
 }

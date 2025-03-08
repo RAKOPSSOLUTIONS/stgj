@@ -1090,6 +1090,6 @@ function formatTime(totalTime) {
     <script src=\"https://code.jquery.com/jquery-3.6.0.min.js\"></script>
     <script src=\"https://code.jquery.com/ui/1.12.1/jquery-ui.min.js\"></script>
   {% endif %}
-{% endblock %}", "admin/reservation_entries/recap.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\reservation_entries\\recap.html.twig");
+{% endblock %}", "admin/reservation_entries/recap.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\reservation_entries\\recap.html.twig");
     }
 }

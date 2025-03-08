@@ -334,6 +334,6 @@ class __TwigTemplate_e3ca003ec34c07bd707c0ff37f65c828 extends Template
 </script>
 
 </body>
-</html>", "reports/preview.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\reports\\preview.html.twig");
+</html>", "reports/preview.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\reports\\preview.html.twig");
     }
 }

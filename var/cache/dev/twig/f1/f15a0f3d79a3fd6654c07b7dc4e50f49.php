@@ -399,6 +399,6 @@ $context["child"], "id" => ((            // line 73
         }, with_context=false) }}
     </div>
 {% endfor %}
-", "@Httplug/stack.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\php-http\\httplug-bundle\\src\\Resources\\views\\stack.html.twig");
+", "@Httplug/stack.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\php-http\\httplug-bundle\\src\\Resources\\views\\stack.html.twig");
     }
 }

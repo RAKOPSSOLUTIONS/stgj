@@ -259,6 +259,6 @@ class __TwigTemplate_bccca10a752e9a525f6597280b469c8f extends Template
   <script src=\"https://code.jquery.com/ui/1.12.1/jquery-ui.min.js\"></script>
   {% endif %}
 {% endblock %}
-", "admin/reservation/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\reservation\\index.html.twig");
+", "admin/reservation/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\reservation\\index.html.twig");
     }
 }

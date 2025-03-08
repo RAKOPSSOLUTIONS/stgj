@@ -94,6 +94,6 @@ class __TwigTemplate_7522899576022153c3a87ea800d971af extends Template
     {
         return new Source("<ajax-table id=\"{{ id }}\" url=\"{{ url }}\" params='{{ app.request.query.all|json_encode|escape }}'>
   {{ table|raw }}
-</div>", "layout/table/render.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\table\\render.html.twig");
+</div>", "layout/table/render.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\table\\render.html.twig");
     }
 }

@@ -119,6 +119,6 @@ class __TwigTemplate_99f71ad2faf2871673b24988bb6a9017 extends Template
 \t\t<h3>Contact us</h3>
 \t</div>
 {% endblock %}
-", "front/home/contact.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\front\\home\\contact.html.twig");
+", "front/home/contact.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\front\\home\\contact.html.twig");
     }
 }

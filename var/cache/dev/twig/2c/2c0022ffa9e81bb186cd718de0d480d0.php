@@ -329,6 +329,6 @@ class __TwigTemplate_9e18c697e9e996cf5193126ed85ab9e8 extends Template
   </script>
 
 {% endblock %}
-", "admin/annonce/form.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\annonce\\form.html.twig");
+", "admin/annonce/form.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\annonce\\form.html.twig");
     }
 }

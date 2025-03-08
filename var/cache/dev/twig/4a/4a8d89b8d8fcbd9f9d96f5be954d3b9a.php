@@ -188,6 +188,6 @@ class __TwigTemplate_7a0534e3b32f9f38e1897efd22f2b4fa extends Template
     <p>Le matricule doit être unique</p>
 
 {% endblock %}
-", "admin/user/import.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\user\\import.html.twig");
+", "admin/user/import.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\user\\import.html.twig");
     }
 }

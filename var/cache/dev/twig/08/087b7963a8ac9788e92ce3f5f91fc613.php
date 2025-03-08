@@ -119,6 +119,6 @@ class __TwigTemplate_4ea558fb46f43afe8c4c0eac5b150357 extends Template
 \t\t<h3>Princing</h3>
 \t</div>
 {% endblock %}
-", "front/home/pricing.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\front\\home\\pricing.html.twig");
+", "front/home/pricing.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\front\\home\\pricing.html.twig");
     }
 }

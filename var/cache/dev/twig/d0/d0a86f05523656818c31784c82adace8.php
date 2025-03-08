@@ -269,6 +269,6 @@ class __TwigTemplate_f7c4b9cca22dbbfdde5783419c028470 extends Template
     </div>
   </section>
 
-{% endblock %}", "front/security/password-new.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\front\\security\\password-new.html.twig");
+{% endblock %}", "front/security/password-new.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\front\\security\\password-new.html.twig");
     }
 }

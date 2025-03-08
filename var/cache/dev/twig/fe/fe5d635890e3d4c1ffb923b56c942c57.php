@@ -236,6 +236,6 @@ $context["action"], "type", [], "any", false, false, false, 22) == "modal")) {
     {% endfor %}
   </ul>
 </div>
-", "layout/table/actions.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\table\\actions.html.twig");
+", "layout/table/actions.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\table\\actions.html.twig");
     }
 }

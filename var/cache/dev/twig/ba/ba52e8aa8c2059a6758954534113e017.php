@@ -437,6 +437,6 @@ class __TwigTemplate_7ba43ee21f5465b33cd5ed1f5ef82a75 extends Template
 .httplug-method-trace.label {
     background: #ebebeb;
 }
-", "@Httplug/style/httplug.css.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\php-http\\httplug-bundle\\src\\Resources\\views\\style\\httplug.css.twig");
+", "@Httplug/style/httplug.css.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\php-http\\httplug-bundle\\src\\Resources\\views\\style\\httplug.css.twig");
     }
 }

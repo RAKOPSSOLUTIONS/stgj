@@ -124,6 +124,6 @@ class __TwigTemplate_1c19bd66f81dd970025a16d31d1c25ce extends Template
         </div>
     </body>
 </html>
-", "@HWIOAuth/layout.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\hwi\\oauth-bundle\\Resources\\views\\layout.html.twig");
+", "@HWIOAuth/layout.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\hwi\\oauth-bundle\\Resources\\views\\layout.html.twig");
     }
 }

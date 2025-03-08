@@ -1136,6 +1136,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
 
-", "admin/navette/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\navette\\details.html.twig");
+", "admin/navette/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\navette\\details.html.twig");
     }
 }

@@ -334,6 +334,6 @@ class __TwigTemplate_d50015005ffa47b5504f6872444b5dd4 extends Template
   </script>
 
 {% endblock %}
-", "admin/tarif/form.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\tarif\\form.html.twig");
+", "admin/tarif/form.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\tarif\\form.html.twig");
     }
 }

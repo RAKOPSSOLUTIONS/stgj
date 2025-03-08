@@ -362,6 +362,6 @@ class __TwigTemplate_b0e0ee518533ad7abb5805723876dd78 extends Template
 \t\t</div>
 \t</div>
 {% endblock %}
-", "front/security/signup.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\front\\security\\signup.html.twig");
+", "front/security/signup.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\front\\security\\signup.html.twig");
     }
 }

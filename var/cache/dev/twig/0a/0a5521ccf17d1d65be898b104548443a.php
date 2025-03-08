@@ -153,6 +153,6 @@ class __TwigTemplate_2a74266602264d820b8fee9a2c6611ef extends Template
       </div>
     </div>
   </div>
-</div>", "layout/form/search/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\form\\search\\index.html.twig");
+</div>", "layout/form/search/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\form\\search\\index.html.twig");
     }
 }

@@ -236,6 +236,6 @@ class __TwigTemplate_54c5674e1b424996fdea227b2de94e01 extends Template
 \t<h3>{{ \"Photos\"|trans }}</h3>
 </div>
 {{ form_row(form.images) }}
-", "admin/vehicule/form.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\vehicule\\form.html.twig");
+", "admin/vehicule/form.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\vehicule\\form.html.twig");
     }
 }

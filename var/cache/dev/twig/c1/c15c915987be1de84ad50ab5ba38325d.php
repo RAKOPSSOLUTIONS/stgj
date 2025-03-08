@@ -117,6 +117,6 @@ class __TwigTemplate_b5c3981abfe38017dac31760fce1b152 extends Template
 {% block hwi_oauth_content %}
     <h3>{{ 'header.success' | trans({'%name%': userInformation.realName}, 'HWIOAuthBundle') }}</h3>
 {% endblock hwi_oauth_content %}
-", "@HWIOAuth/Connect/connect_success.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\hwi\\oauth-bundle\\Resources\\views\\Connect\\connect_success.html.twig");
+", "@HWIOAuth/Connect/connect_success.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\hwi\\oauth-bundle\\Resources\\views\\Connect\\connect_success.html.twig");
     }
 }

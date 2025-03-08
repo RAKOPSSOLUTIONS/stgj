@@ -231,6 +231,6 @@ class __TwigTemplate_4232564612de8797bc5e24902b713885 extends Template
 </center>
 </columns>
 </row>
-{% endblock %}", "emails/password-reset.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\emails\\password-reset.html.twig");
+{% endblock %}", "emails/password-reset.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\emails\\password-reset.html.twig");
     }
 }

@@ -391,6 +391,6 @@ function updateData() {
 <!-- HTML -->
 <div id=\"chartdiv\"></div>
 
-", "admin/reportings/map.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\reportings\\map.html.twig");
+", "admin/reportings/map.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\reportings\\map.html.twig");
     }
 }

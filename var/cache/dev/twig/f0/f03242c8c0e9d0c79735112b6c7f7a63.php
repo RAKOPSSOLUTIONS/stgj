@@ -98,6 +98,6 @@ class __TwigTemplate_65f8bc798219fa550095cd04690e0e6e extends Template
   <label class=\"mb-2 text-muted\" for=\"email\">{{ \"Email\"|trans }}</label>
   <input type=\"email\" name=\"email\" class=\"form-control\" id=\"email\" required autofocus />
 </div>
-", "front/security/password-reset.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\front\\security\\password-reset.html.twig");
+", "front/security/password-reset.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\front\\security\\password-reset.html.twig");
     }
 }

@@ -257,6 +257,6 @@ class __TwigTemplate_80820870ce63be5da01bd8e0a05eca3d extends Template
   </ajax-table>
 
 {% endblock %}
-", "admin/reclamation/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\reclamation\\index.html.twig");
+", "admin/reclamation/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\reclamation\\index.html.twig");
     }
 }

@@ -220,6 +220,6 @@ class __TwigTemplate_44db8236465a8748c6989586e8e0bd91 extends Template
   </tr>
   {% endif %}
 </tbody>
-", "layout/table/body.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\table\\body.html.twig");
+", "layout/table/body.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\table\\body.html.twig");
     }
 }

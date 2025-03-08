@@ -714,6 +714,6 @@ class __TwigTemplate_a1aa85fc77788a7c888dd286cd544935 extends Template
   {% endfor %}
 
 </table>
-{% endblock %}", "admin/reclamation/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\reclamation\\details.html.twig");
+{% endblock %}", "admin/reclamation/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\reclamation\\details.html.twig");
     }
 }

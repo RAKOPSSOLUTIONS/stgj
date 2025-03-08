@@ -242,6 +242,6 @@ class __TwigTemplate_9f6d6437f108d33ddac801b771d7edd4 extends Template
   <script src=\"https://code.jquery.com/ui/1.12.1/jquery-ui.min.js\"></script>
   {% endif %}
 {% endblock %}
-", "admin/shift/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\shift\\index.html.twig");
+", "admin/shift/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\shift\\index.html.twig");
     }
 }

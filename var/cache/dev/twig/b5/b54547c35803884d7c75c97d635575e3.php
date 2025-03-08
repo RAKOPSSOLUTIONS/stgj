@@ -136,6 +136,6 @@ class __TwigTemplate_fd4b9824ca0094ad5b865c1c01557b20 extends Template
   <button type=\"button\" class=\"btn btn-outline-secondary rounded-0 shadow-none bulk-apply\">
     {{ \"Appliquer\"|trans }}
   </button>
-{% endif %}", "layout/table/bulk-actions.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\table\\bulk-actions.html.twig");
+{% endif %}", "layout/table/bulk-actions.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\table\\bulk-actions.html.twig");
     }
 }

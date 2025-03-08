@@ -164,19 +164,16 @@ class ReservationController extends BaseController
     $e_pickups = $this->getDoctrine()->getRepository(Pickup::class)->getItemsForSelect($user);
     $s_pickups = $this->getDoctrine()->getRepository(Pickup::class)->getItemsForSelect($user, 'Sortie');
     
-    $dates = $this->GetCurrentWeekDates($user);
-     
-
-
-    //print_r($options_entree['Trajet']);exit;
-
+    $datesInfo = $this->GetCurrentWeekDates($user);
+    $dates = [$datesInfo[0], $datesInfo[1]];
+    $disabledDates = $datesInfo[2];
+    
     return $this->render('admin/reservation/form.html.twig', [
       'entity' => null,
       'e_pickups' => $e_pickups,
       's_pickups' => $s_pickups,
-      //'e_home_pickup' => false,
-      //'s_home_pickup' => false,
       'dates' => $dates,
+      'disabledDates' => $disabledDates,
       'form' => $this->getForm($request, $user, $e_pickups, $s_pickups, $dates)->createView(),
     ]);
 
@@ -663,46 +660,135 @@ class ReservationController extends BaseController
 
   private function GetCurrentWeekDates($user)
   {
-
-    $startDate = new \DateTime();
-    $days = 0;
-    if ( date('H') > 13 ){
-      $startDate->modify('+2 day');
-    }
-    else{
-      $startDate->modify('+1 day');
-    }
+      $currentDateTime = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
+      $currentHour = (int)$currentDateTime->format('H');
+      $currentDay = (int)$currentDateTime->format('N'); // 1 (Monday) to 7 (Sunday)
       
-    $days += 7;
-    
-    $nextWeekDates = [];
-
-    for ($i = 0; $i < $days; $i++) {
-      $nextWeekDates[$startDate->format('Y-m-d')] = $startDate->format('Y-m-d');
-      $startDate->modify('+1 day');
-    }
-
-     $entries = $this->getDoctrine()->getRepository(ReservationEntries::class)->findBy(['user_id' => $user->getId(), 'reservation_date' => $nextWeekDates]);
-     $dates_entree = $nextWeekDates;
-     $dates_sortie = $nextWeekDates;
-    
-     foreach ($entries as $entry) {
-       $date = $entry->getReservationDate()->format('Y-m-d');
-       $direction = $entry->getDirection();
+      // Debug current date info
+      error_log("Current date: " . $currentDateTime->format('Y-m-d H:i'));
+      error_log("Current day: " . $currentDay . " (1=Monday, 7=Sunday)");
+      error_log("Current hour: " . $currentHour);
       
-       if ( $direction == 'Entrée' ) {
-         if ( $entry->getStatus() != 'annulée' && in_array($date, $dates_entree) ) unset($dates_entree[$date]);
-          //echo 'entree : ' . $date . '<br />';
-       }
-       else {
-         if ( $entry->getStatus() != 'annulée' && in_array($date, $dates_sortie) ) unset($dates_sortie[$date]);
-          //echo 'sortie: ' . $date . '<br />';
-       }
-
-     }
- 
-   return [$dates_entree ,$dates_sortie];
-
+      // Check if it's within the restricted period (Friday 13:00 to Tuesday 00:00)
+      $isFridayAfternoonToTuesdayMorning = false;
+      $dayOfWeek = (int)$currentDateTime->format('N');
+      
+      if (($dayOfWeek == 5 && $currentHour >= 13) || // Friday after 1 PM
+          $dayOfWeek == 6 || // Saturday
+          $dayOfWeek == 7 || // Sunday
+          $dayOfWeek == 1) { // Monday
+          $isFridayAfternoonToTuesdayMorning = true;
+      }
+      
+      error_log("Is Friday afternoon to Tuesday morning: " . ($isFridayAfternoonToTuesdayMorning ? 'Yes' : 'No'));
+      
+      // Determine the start date for generating the next 7 days
+      $startDate = clone $currentDateTime;
+      if ($currentHour >= 13) {
+          $startDate->modify('+2 days'); // Shift to day after tomorrow if past 1 PM
+      } else {
+          $startDate->modify('+1 day'); // Shift to tomorrow if before 1 PM
+      }
+      
+      error_log("Start date for next 7 days: " . $startDate->format('Y-m-d'));
+      
+      $days = 7; // Set to 7 days for a week
+      $nextWeekDates = [];
+      $disabledDates = [];
+      
+      // Determine the Friday of the current week to base the disabling logic
+      $fridayOfCurrentWeek = clone $currentDateTime;
+      if ($currentDay < 5) { // Before Friday
+          $fridayOfCurrentWeek->modify('last Friday');
+      } elseif ($currentDay > 5) { // After Friday
+          $fridayOfCurrentWeek->modify('last Friday');
+      } // If it's Friday (day 5), keep the current date
+      
+      // Define the three days to potentially disable (Saturday, Sunday, Monday) after Friday
+      $saturday = clone $fridayOfCurrentWeek;
+      $saturday->modify('+1 day');
+      $sunday = clone $fridayOfCurrentWeek;
+      $sunday->modify('+2 days');
+      $monday = clone $fridayOfCurrentWeek;
+      $monday->modify('+3 days');
+      
+      $disableSaturday = $saturday->format('Y-m-d');
+      $disableSunday = $sunday->format('Y-m-d');
+      $disableMonday = $monday->format('Y-m-d');
+      
+      error_log("Friday of current week: " . $fridayOfCurrentWeek->format('Y-m-d'));
+      error_log("Potential disable Saturday: " . $disableSaturday);
+      error_log("Potential disable Sunday: " . $disableSunday);
+      error_log("Potential disable Monday: " . $disableMonday);
+      
+      // Determine which dates to disable based on current day and time
+      if ($isFridayAfternoonToTuesdayMorning) {
+          if ($currentDay == 5 && $currentHour >= 13) { // Friday after 1 PM
+              $disabledDates = [$disableSaturday, $disableSunday, $disableMonday];
+          } elseif ($currentDay == 6) { // Saturday
+              if ($currentHour < 13) {
+                  $disabledDates = [$disableSaturday, $disableSunday, $disableMonday];
+              } else {
+                  $disabledDates = [$disableSunday, $disableMonday];
+              }
+          } elseif ($currentDay == 7) { // Sunday
+              if ($currentHour < 13) {
+                  $disabledDates = [$disableSunday, $disableMonday];
+              } else {
+                  $disabledDates = [$disableMonday];
+              }
+          } elseif ($currentDay == 1) { // Monday
+              if ($currentHour < 13) {
+                  $disabledDates = [$disableMonday];
+              } else {
+                  $disabledDates = [];
+              }
+          }
+      }
+      
+      // Generate the next 7 days starting from startDate
+      $tempDate = clone $startDate;
+      error_log("Generating dates:");
+      for ($i = 0; $i < $days; $i++) {
+          $dateStr = $tempDate->format('Y-m-d');
+          $dayOfWeek = (int)$tempDate->format('N');
+          
+          $nextWeekDates[$dateStr] = $dateStr;
+          
+          $shouldDisable = in_array($dateStr, $disabledDates);
+          error_log("Date: $dateStr, Day: $dayOfWeek, Should disable: " . ($shouldDisable ? 'Yes' : 'No'));
+          
+          $tempDate->modify('+1 day');
+      }
+      
+      error_log("Disabled dates: " . implode(", ", $disabledDates));
+      
+      // Fetch existing reservations
+      $entries = $this->getDoctrine()->getRepository(ReservationEntries::class)->findBy([
+          'user_id' => $user->getId(),
+          'reservation_date' => array_keys($nextWeekDates)
+      ]);
+      
+      $dates_entree = $nextWeekDates;
+      $dates_sortie = $nextWeekDates;
+      
+      // Filter out reserved dates
+      foreach ($entries as $entry) {
+          $date = $entry->getReservationDate()->format('Y-m-d');
+          $direction = $entry->getDirection();
+          
+          if ($direction == 'Entrée') {
+              if ($entry->getStatus() != 'annulée' && array_key_exists($date, $dates_entree)) {
+                  unset($dates_entree[$date]);
+              }
+          } else {
+              if ($entry->getStatus() != 'annulée' && array_key_exists($date, $dates_sortie)) {
+                  unset($dates_sortie[$date]);
+              }
+          }
+      }
+      
+      return [$dates_entree, $dates_sortie, $disabledDates];
   }
 
   /**

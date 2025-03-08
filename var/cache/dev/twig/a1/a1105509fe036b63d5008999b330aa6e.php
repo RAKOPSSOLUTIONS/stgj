@@ -359,6 +359,6 @@ class __TwigTemplate_c739f81c2eb8d6da5b60ffd5997720eb extends Template
 \t</g>
 </g>
 </svg>
-", "@Httplug/Icon/httplug.svg", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\php-http\\httplug-bundle\\src\\Resources\\views\\Icon\\httplug.svg");
+", "@Httplug/Icon/httplug.svg", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\php-http\\httplug-bundle\\src\\Resources\\views\\Icon\\httplug.svg");
     }
 }

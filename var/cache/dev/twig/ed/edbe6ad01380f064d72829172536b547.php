@@ -118,6 +118,6 @@ class __TwigTemplate_c0ae5954f8fccd3ac200b796b3f63741 extends Template
       {% endfor %}
     </ul>
   </div>
-{% endfor %}", "layout/alert.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\alert.html.twig");
+{% endfor %}", "layout/alert.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\alert.html.twig");
     }
 }

@@ -100,6 +100,6 @@ class __TwigTemplate_eb6587926b4d5b268c0c61c1963b647a extends Template
 <meta name=\"mobile-web-app-capable\" content=\"yes\">
 <meta name=\"apple-mobile-web-app-capable\" content=\"yes\">
 <link rel=\"shortcut icon\" href=\"{{ asset('assets/icons/icon-192x192.png') }}\">
-<link rel=\"icon\" type=\"image/x-icon\" href=\"{{ asset('favicon.ico') }}\" />", "partials/service-worker-meta.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\partials\\service-worker-meta.html.twig");
+<link rel=\"icon\" type=\"image/x-icon\" href=\"{{ asset('favicon.ico') }}\" />", "partials/service-worker-meta.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\partials\\service-worker-meta.html.twig");
     }
 }

@@ -1,9 +1,8 @@
 
 ###> symfony/framework-bundle ###
 /vendor/
-###< symfony/framework-bundle ###
-
 ###> symfony/webpack-encore-bundle ###
+/var/
 /node_modules/
 npm-debug.log
 yarn-error.log

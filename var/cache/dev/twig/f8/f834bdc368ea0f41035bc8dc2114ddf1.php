@@ -255,6 +255,6 @@ class __TwigTemplate_dc82d9e204831eea78bb656d65a02c92 extends Template
 </center>
 </columns>
 </row>
-{% endblock %}", "emails/register.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\emails\\register.html.twig");
+{% endblock %}", "emails/register.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\emails\\register.html.twig");
     }
 }

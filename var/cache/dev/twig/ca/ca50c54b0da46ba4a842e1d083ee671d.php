@@ -244,6 +244,6 @@ class __TwigTemplate_9d602aad6452b48b0519a4cacbf07864 extends Template
   {% endblock %}
 </body>
 </html>
-", "layout/tablette.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\tablette.html.twig");
+", "layout/tablette.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\tablette.html.twig");
     }
 }

@@ -243,6 +243,6 @@ class __TwigTemplate_10949e739224017ab2fbf0e7cda95c32 extends Template
 <!-- Bootstrap JS and required Popper.js -->
 <script src=\"https://cdn.jsdelivr.net/npm/@popperjs/core@2.11.6/dist/umd/popper.min.js\"></script>
 <script src=\"https://cdn.jsdelivr.net/npm/bootstrap@5.3.0-alpha1/dist/js/bootstrap.min.js\"></script>
-", "reports/show_report.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\reports\\show_report.html.twig");
+", "reports/show_report.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\reports\\show_report.html.twig");
     }
 }

@@ -269,6 +269,6 @@ $context["name"], ["textarea", "json"])) {
 \t</div>
 \t{{ form_end(form) }}
 </ajax-form>
-", "admin/setting/form.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\setting\\form.html.twig");
+", "admin/setting/form.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\setting\\form.html.twig");
     }
 }

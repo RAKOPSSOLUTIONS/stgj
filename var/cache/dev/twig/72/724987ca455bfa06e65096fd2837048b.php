@@ -251,6 +251,6 @@ class __TwigTemplate_45782541e90efbe9348515018cef0a98 extends Template
   <script src=\"https://code.jquery.com/ui/1.12.1/jquery-ui.min.js\"></script>
   {% endif %}
 {% endblock %}
-", "admin/annonce/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\annonce\\index.html.twig");
+", "admin/annonce/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\annonce\\index.html.twig");
     }
 }

@@ -1338,6 +1338,6 @@ $context["voter_detail"], "vote", [], "array", false, false, false, 357) == Twig
         </table>
     {% endif %}
 {% endblock %}
-", "@Security/Collector/security.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\symfony\\security-bundle\\Resources\\views\\Collector\\security.html.twig");
+", "@Security/Collector/security.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\symfony\\security-bundle\\Resources\\views\\Collector\\security.html.twig");
     }
 }

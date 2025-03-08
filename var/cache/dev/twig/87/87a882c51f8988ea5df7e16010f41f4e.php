@@ -150,6 +150,6 @@ class __TwigTemplate_73536f42e39e060c906c0d3eae207704 extends Template
   </ajax-table>
 
 {% endblock %}
-", "admin/cronjobs/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\cronjobs\\index.html.twig");
+", "admin/cronjobs/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\cronjobs\\index.html.twig");
     }
 }

@@ -292,6 +292,6 @@ class __TwigTemplate_0da80807b772fd99fc8721ff5ae57cef extends Template
   {{ parent() }}
   <script src=\"https://cdn.jsdelivr.net/npm/chart.js\"></script>
 {% endblock %}
-", "admin/reportings/trajets.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\reportings\\trajets.html.twig");
+", "admin/reportings/trajets.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\reportings\\trajets.html.twig");
     }
 }

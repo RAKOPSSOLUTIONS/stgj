@@ -222,6 +222,6 @@ class __TwigTemplate_1b84fbfa8884a2d5471b0099e9fccde8 extends Template
 </row>
 
 {% endblock %}
-", "emails/activate.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\emails\\activate.html.twig");
+", "emails/activate.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\emails\\activate.html.twig");
     }
 }

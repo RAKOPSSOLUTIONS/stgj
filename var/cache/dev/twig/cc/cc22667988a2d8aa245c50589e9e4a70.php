@@ -347,6 +347,6 @@ domReady(function () {
  {% endif %}
   
 {% endblock %}
-", "admin/reservation_entries/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\reservation_entries\\index.html.twig");
+", "admin/reservation_entries/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\reservation_entries\\index.html.twig");
     }
 }

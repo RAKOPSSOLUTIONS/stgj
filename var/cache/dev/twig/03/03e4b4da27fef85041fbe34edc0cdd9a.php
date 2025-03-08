@@ -163,6 +163,6 @@ table.button table td {
   border-color: #477626;
   box-shadow: 0 0 0 0.25rem #477626;
 }
-", "@assets/css/email.css", "C:\\Users\\lamfa\\Bureau\\stgj\\public\\assets\\css\\email.css");
+", "@assets/css/email.css", "C:\\Users\\lamfa\\Bureau\\stgja\\public\\assets\\css\\email.css");
     }
 }

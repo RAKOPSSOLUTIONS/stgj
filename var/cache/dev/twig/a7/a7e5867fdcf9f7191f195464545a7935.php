@@ -113,6 +113,6 @@ class __TwigTemplate_e72a9c674076d75411f99680c5aa964a extends Template
 \t\t</div>
 \t</div>
 </div>
-", "partials/sidebar.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\partials\\sidebar.html.twig");
+", "partials/sidebar.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\partials\\sidebar.html.twig");
     }
 }

@@ -212,6 +212,6 @@ class __TwigTemplate_416f732828f2312ca342d5b012f1d04d extends Template
 </table>
 
 <div class='httplug-http-body httplug-hidden'>{{ content ? content|httplug_markup_body : noContent }}</div>
-", "@Httplug/http_message.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\php-http\\httplug-bundle\\src\\Resources\\views\\http_message.html.twig");
+", "@Httplug/http_message.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\php-http\\httplug-bundle\\src\\Resources\\views\\http_message.html.twig");
     }
 }

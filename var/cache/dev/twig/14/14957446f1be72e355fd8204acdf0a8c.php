@@ -333,6 +333,6 @@ class __TwigTemplate_81dae877a0e2af917c6fb6b1f3f59a0d extends Template
 
 </table>
 
-{% endblock %}", "admin/trajet/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\trajet\\details.html.twig");
+{% endblock %}", "admin/trajet/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\trajet\\details.html.twig");
     }
 }

@@ -134,6 +134,6 @@ class __TwigTemplate_8a8d3b9858b7fd2cde6841274f85b02f extends Template
 \t</div>
 \t{{ form_end(form) }}
 </ajax-form>
-", "layout/form.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\form.html.twig");
+", "layout/form.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\form.html.twig");
     }
 }

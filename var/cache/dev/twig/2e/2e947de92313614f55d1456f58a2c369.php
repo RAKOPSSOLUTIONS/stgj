@@ -180,6 +180,6 @@ class __TwigTemplate_2a3d0e76c5d84aba588dc8754f552f9e extends Template
      </form>
     </div>
 
-{% endblock %}", "admin/user/adhesion.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\user\\adhesion.html.twig");
+{% endblock %}", "admin/user/adhesion.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\user\\adhesion.html.twig");
     }
 }

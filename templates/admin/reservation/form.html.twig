@@ -38,46 +38,60 @@
     color: var(--color-primary);
   }
 </style>
- <ajax-form>
- {{ form_start(form) }}
 
+<ajax-form>
+    {{ form_start(form) }}
     
-<div class="row">
-  <div class="col-sm-6">
-    <h3 class="btn btn-danger text-withe">ENTREE</h3> 
-    {{ form_row(form.dates_entree) }}
-    {{ form_row(form.shift_entree) }} 
-    <div id="div_trajet_entree" {% if entity and entity.isHomePickup %}style="display:none;" {% endif %}>{{ form_row(form.trajet_entree) }}</div>
-    <div id="div_pickup_entree" {% if entity and entity.isHomePickup %}style="display:none;" {% endif %}>{{ form_row(form.pickup_entree) }}</div>
-    <div id="div_adresse_entree" {% if entity and entity.isHomePickup!=1 %}style="display:none;" {% endif %}>{{ form_row(form.adresse_entree) }}</div>
-    {% if form.repere_entree is defined %} {{ form_row(form.repere_entree) }}{% endif %}
+    <div class="row">
+      <div class="col-sm-6">
+        <h3 class="btn btn-danger text-withe">ENTREE</h3> 
+        {{ form_row(form.dates_entree) }}
+        {{ form_row(form.shift_entree) }} 
+        <div id="div_trajet_entree" {% if entity and entity.isHomePickup %}style="display:none;" {% endif %}>
+          {{ form_row(form.trajet_entree) }}
+        </div>
+        <div id="div_pickup_entree" {% if entity and entity.isHomePickup %}style="display:none;" {% endif %}>
+          {{ form_row(form.pickup_entree) }}
+        </div>
+        <div id="div_adresse_entree" {% if entity and entity.isHomePickup!=1 %}style="display:none;" {% endif %}>
+          {{ form_row(form.adresse_entree) }}
+        </div>
+        {% if form.repere_entree is defined %} 
+          {{ form_row(form.repere_entree) }}
+        {% endif %}
+      </div>
+      
+      <div class="col-sm-6">
+        <h3 class="btn btn-danger text-withe">SORTIE</h3> 
+        {{ form_row(form.dates_sortie) }}
+        {{ form_row(form.shift_sortie) }} 
+        <div id="div_trajet_sortie" {% if entity and entity.isHomePickup %}style="display:none" {% endif %}>
+          {{ form_row(form.trajet_sortie) }}
+        </div>
+        <div id="div_pickup_sortie" {% if entity and entity.isHomePickup %}style="display:none" {% endif %}>
+          {{ form_row(form.pickup_sortie) }}
+        </div>
+        <div id="div_adresse_sortie" {% if entity and entity.isHomePickup!=1 %}style="display:none;" {% endif %}>
+          {{ form_row(form.adresse_sortie) }}
+        </div>
+        {% if form.repere_sortie is defined %} 
+          {{ form_row(form.repere_sortie) }}
+        {% endif %}
+      </div>
+    </div>
     
-
-  </div>
-  <div class="col-sm-6">
-    <h3 class="btn btn-danger text-withe">SORTIE</h3> 
-     {{ form_row(form.dates_sortie) }}
-     {{ form_row(form.shift_sortie) }} 
-    <div id="div_trajet_sortie" {% if entity and entity.isHomePickup %}style="display:none" {% endif %}>{{ form_row(form.trajet_sortie) }} </div>
-    <div id="div_pickup_sortie" {% if entity and entity.isHomePickup %}style="display:none" {% endif %}>{{ form_row(form.pickup_sortie) }} </div>
-    <div id="div_adresse_sortie" {% if entity and entity.isHomePickup!=1 %}style="display:none;" {% endif %}>{{ form_row(form.adresse_sortie) }}</div>
-    {% if form.repere_sortie is defined %} {{ form_row(form.repere_sortie) }}{% endif %}
-   
-  </div>
-</div>
-    
-<hr class="border-2 border-top border-secondary">
+    <hr class="border-2 border-top border-secondary">
     <button type="button" class="btn btn-outline-danger rounded-0 shadow-none" onclick="history.go(-1);">
       <i class="bi bi-x-lg"></i>
       {{ "Annuler"|trans }}
     </button>
-    <button type="submit" class="btn btn-outline-secondary rounded-0 shadow-none  ">
+    <button type="submit" class="btn btn-outline-secondary rounded-0 shadow-none">
       <i class="bi bi-check2-square"></i>
       {{ "Enregistrer"|trans }}
     </button>
 
-{{ form_end(form) }}
-</ajax-form>
+    {{ form_end(form) }}
+  </ajax-form>
 
 {% endblock %}
 
@@ -85,7 +99,6 @@
   {{ parent() }}
   <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.21.0/moment.min.js" type="text/javascript"></script>
- 
  
   <script>
   document.querySelector("ajax-form").addEventListener("ajax.form.success", function() {
@@ -96,178 +109,354 @@
   </script>
 
   <script>
-
-  $('#reservation_shift_entree').change(function() {
-    let shift_entree = $(this).val();
-    console.log(shift_entree);
-    if ( shift_entree < 8 || shift_entree > 20 ){
-      console.log('show adresse and hide trajet');
-      $('#div_trajet_entree').hide();
-      $('#div_pickup_entree').hide();
-      $('#div_adresse_entree').show();
-    }
-    else{
-      console.log('show trajet and hide adress');
-      $('#div_trajet_entree').show();
-      $('#div_pickup_entree').show();
-      $('#div_adresse_entree').hide();
-    }
-   }); 
-
-   $('#reservation_shift_sortie').change(function() {
-    let shift_sortie = $(this).val();
-    console.log(shift_sortie);
-    if ( shift_sortie < 8 || shift_sortie > 20 ){
-      console.log('show adresse and hide trajet');
-      $('#div_trajet_sortie').hide();
-      $('#div_pickup_sortie').hide();
-      $('#div_adresse_sortie').show();
-    }
-    else{
-      console.log('show trajet and hide adress');
-      $('#div_trajet_sortie').show();
-      $('#div_pickup_sortie').show();
-      $('#div_adresse_sortie').hide();
-    }
-   }); 
+  console.log("aaa")
+  $(document).ready(function() {
+    // Initialize validation states
 
 
-   
-</script>
- 
-<script>
-
-
-//var array = document.getElementsByTagName("input");
-
- if ( $('#reservation_dates_entree_0') ){
-   $('#reservation_dates_entree_0').change(function() {
-     $('#reservation_shift_entree').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_entree_1') ){
-   $('#reservation_dates_entree_1').change(function() {
-     $('#reservation_shift_entree').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_entree_2') ){
-   $('#reservation_dates_entree_2').change(function() {
-     $('#reservation_shift_entree').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_entree_3') ){
-   $('#reservation_dates_entree_3').change(function() {
-     $('#reservation_shift_entree').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_entree_4') ){
-   $('#reservation_dates_entree_4').change(function() {
-     $('#reservation_shift_entree').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_entree_5') ){
-   $('#reservation_dates_entree_5').change(function() {
-     $('#reservation_shift_entree').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_entree_6') ){
-   $('#reservation_dates_entree_6').change(function() {
-     $('#reservation_shift_entree').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_sortie_0') ){
-   $('#reservation_dates_sortie_0').change(function() {
-     $('#reservation_shift_sortie').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_sortie_1') ){
-   $('#reservation_dates_sortie_1').change(function() {
-     $('#reservation_shift_sortie').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_sortie_2') ){
-   $('#reservation_dates_sortie_2').change(function() {
-     $('#reservation_shift_sortie').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_sortie_3') ){
-   $('#reservation_dates_sortie_3').change(function() {
-     $('#reservation_shift_sortie').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_sortie_4') ){
-   $('#reservation_dates_sortie_4').change(function() {
-     $('#reservation_shift_sortie').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_sortie_5') ){
-   $('#reservation_dates_sortie_5').change(function() {
-     $('#reservation_shift_sortie').prop('disabled', false);
-   }); 
- }
-
- if ( $('#reservation_dates_sortie_6') ){
-   $('#reservation_dates_sortie_6').change(function() {
-     $('#reservation_shift_sortie').prop('disabled', false);
-   }); 
- }
- 
-
-
-  $('#reservation_trajet_entree').change(function() {
-    let trajet_id = $(this).val();
-    console.log(trajet_id);
-
-
-    var selectElement = document.getElementById('reservation_pickup_entree');
-    var options = selectElement.options;
-
-    for (var i = 0; i < options.length; i++) {
-      var option = options[i];
-      var customAttribute = option.getAttribute('data-trajet') ? parseInt(option.getAttribute('data-trajet')) : 0;
-      console.log('Option value:', option.value, 'Custom Attribute:', customAttribute);
-      if ( customAttribute == trajet_id ){
-       $(option).css("display", "block");
-      }
-      else {
-       $(option).css("display", "none");
+const disabledDates = {{ disabledDates|json_encode|raw }};
+  console.log(disabledDates)
+  // Disable checkboxes for the specified dates
+  function disableWeekendCheckboxes() {
+    // Process all entree date inputs
+    for (let i = 0; i <= 6; i++) {
+      const entrieCheckbox = document.getElementById('reservation_dates_entree_' + i);
+      if (entrieCheckbox) {
+        const dateValue = entrieCheckbox.value;
+        if (disabledDates.includes(dateValue)) {
+          entrieCheckbox.disabled = true;
+          entrieCheckbox.checked = false;
+          const label = entrieCheckbox.closest('label');
+          if (label) {
+            label.style.opacity = '0.5';
+            label.title = 'Reservations not available for weekends and Mondays after Friday 1 PM';
+          }
+        }
       }
     }
-   }); 
-
-   $('#reservation_trajet_sortie').change(function() {
-    let trajet_id = $(this).val();
-    console.log(trajet_id);
-
-    var selectElement = document.getElementById('reservation_pickup_sortie');
-    var options = selectElement.options;
-
-    for (var i = 0; i < options.length; i++) {
-      var option = options[i];
-      var customAttribute = option.getAttribute('data-trajet') ? parseInt(option.getAttribute('data-trajet')) : 0;
-      console.log('Option value:', option.value, 'Custom Attribute:', customAttribute);
-      if ( customAttribute == trajet_id ){
-       $(option).css("display", "block");
-      }
-      else {
-       $(option).css("display", "none");
+    
+    // Process all sortie date inputs
+    for (let i = 0; i <= 6; i++) {
+      const sortieCheckbox = document.getElementById('reservation_dates_sortie_' + i);
+      if (sortieCheckbox) {
+        const dateValue = sortieCheckbox.value;
+        if (disabledDates.includes(dateValue)) {
+          sortieCheckbox.disabled = true;
+          sortieCheckbox.checked = false;
+          const label = sortieCheckbox.closest('label');
+          if (label) {
+            label.style.opacity = '0.5';
+            label.title = 'Reservations not available for weekends and Mondays after Friday 1 PM';
+          }
+        }
       }
     }
-   }); 
-</script>
+  }
+  
+  // Run the function on page load
+  disableWeekendCheckboxes();
 
- 
 
+
+    let entreeSelected = false;
+    let sortieSelected = false;
+    
+    
+    // Function to update required fields based on selection state and visibility
+    function updateRequiredFields() {
+      // Check shift values
+      let shiftEntree = $('#reservation_shift_entree').val();
+      let shiftSortie = $('#reservation_shift_sortie').val();
+      
+      // Set required for visible entree fields
+      if (entreeSelected) {
+        $('#reservation_shift_entree').attr('required', 'required');
+        
+        if (shiftEntree) {
+          if (shiftEntree < 8 || shiftEntree > 20) {
+            // Only address is required, trajet/pickup are not
+            $('#reservation_adresse_entree').attr('required', 'required');
+            $('#reservation_trajet_entree, #reservation_pickup_entree').removeAttr('required');
+          } else {
+            // Only trajet/pickup are required, address is not
+            $('#reservation_trajet_entree, #reservation_pickup_entree').attr('required', 'required');
+            $('#reservation_adresse_entree').removeAttr('required');
+          }
+        } else {
+          // If no shift selected yet, make all potentially visible
+          $('#reservation_adresse_entree, #reservation_trajet_entree, #reservation_pickup_entree').attr('required', 'required');
+        }
+      } else if (!sortieSelected) {
+        // Neither entree nor sortie selected, all fields required
+        $('#reservation_shift_entree').attr('required', 'required');
+        if (shiftEntree) {
+          if (shiftEntree < 8 || shiftEntree > 20) {
+            $('#reservation_adresse_entree').attr('required', 'required');
+            $('#reservation_trajet_entree, #reservation_pickup_entree').removeAttr('required');
+          } else {
+            $('#reservation_trajet_entree, #reservation_pickup_entree').attr('required', 'required');
+            $('#reservation_adresse_entree').removeAttr('required');
+          }
+        } else {
+          $('#reservation_adresse_entree, #reservation_trajet_entree, #reservation_pickup_entree').attr('required', 'required');
+        }
+      } else {
+        // Only sortie selected, entree not required
+        $('#reservation_shift_entree, #reservation_trajet_entree, #reservation_pickup_entree, #reservation_adresse_entree').removeAttr('required');
+      }
+      
+      // Set required for visible sortie fields
+      if (sortieSelected) {
+        $('#reservation_shift_sortie').attr('required', 'required');
+        
+        if (shiftSortie) {
+          if (shiftSortie < 8 || shiftSortie > 20) {
+            // Only address is required, trajet/pickup are not
+            $('#reservation_adresse_sortie').attr('required', 'required');
+            $('#reservation_trajet_sortie, #reservation_pickup_sortie').removeAttr('required');
+          } else {
+            // Only trajet/pickup are required, address is not
+            $('#reservation_trajet_sortie, #reservation_pickup_sortie').attr('required', 'required');
+            $('#reservation_adresse_sortie').removeAttr('required');
+          }
+        } else {
+          // If no shift selected yet, make all potentially visible
+          $('#reservation_adresse_sortie, #reservation_trajet_sortie, #reservation_pickup_sortie').attr('required', 'required');
+        }
+      } else if (!entreeSelected) {
+        // Neither sortie nor entree selected, all fields required
+        $('#reservation_shift_sortie').attr('required', 'required');
+        if (shiftSortie) {
+          if (shiftSortie < 8 || shiftSortie > 20) {
+            $('#reservation_adresse_sortie').attr('required', 'required');
+            $('#reservation_trajet_sortie, #reservation_pickup_sortie').removeAttr('required');
+          } else {
+            $('#reservation_trajet_sortie, #reservation_pickup_sortie').attr('required', 'required');
+            $('#reservation_adresse_sortie').removeAttr('required');
+          }
+        } else {
+          $('#reservation_adresse_sortie, #reservation_trajet_sortie, #reservation_pickup_sortie').attr('required', 'required');
+        }
+      } else {
+        // Only entree selected, sortie not required
+        $('#reservation_shift_sortie, #reservation_trajet_sortie, #reservation_pickup_sortie, #reservation_adresse_sortie').removeAttr('required');
+      }
+    }
+    
+    // Check if any entree date is selected
+    function checkEntreeDates() {
+      for (let i = 0; i <= 6; i++) {
+        if ($('#reservation_dates_entree_' + i).is(':checked')) {
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    // Check if any sortie date is selected
+    function checkSortieDates() {
+      for (let i = 0; i <= 6; i++) {
+        if ($('#reservation_dates_sortie_' + i).is(':checked')) {
+          return true;
+        }
+      }
+      return false;
+    }
+    
+    // Event listener for entree date changes
+    for (let i = 0; i <= 6; i++) {
+      $('#reservation_dates_entree_' + i).change(function() {
+        $('#reservation_shift_entree').prop('disabled', false);
+        entreeSelected = checkEntreeDates();
+        updateRequiredFields();
+      });
+    }
+    
+    // Event listener for sortie date changes
+    for (let i = 0; i <= 6; i++) {
+      $('#reservation_dates_sortie_' + i).change(function() {
+        $('#reservation_shift_sortie').prop('disabled', false);
+        sortieSelected = checkSortieDates();
+        updateRequiredFields();
+      });
+    }
+    
+    // Update validation on page load
+    entreeSelected = checkEntreeDates();
+    sortieSelected = checkSortieDates();
+    updateRequiredFields();
+    
+    // Toggle fields based on shift selection for entree
+    $('#reservation_shift_entree').change(function() {
+      let shift_entree = $(this).val();
+      if (shift_entree < 8 || shift_entree > 20) {
+        // Show address field, hide trajet/pickup
+        $('#div_trajet_entree').hide();
+        $('#div_pickup_entree').hide();
+        $('#div_adresse_entree').show();
+        
+        // Update required attributes - only adresse is required
+        if (entreeSelected || !sortieSelected) {
+          $('#reservation_adresse_entree').attr('required', 'required');
+          $('#reservation_trajet_entree, #reservation_pickup_entree').removeAttr('required');
+        }
+      } else {
+        // Show trajet/pickup fields, hide address
+        $('#div_trajet_entree').show();
+        $('#div_pickup_entree').show();
+        $('#div_adresse_entree').hide();
+        
+        // Update required attributes - only trajet/pickup are required
+        if (entreeSelected || !sortieSelected) {
+          $('#reservation_trajet_entree, #reservation_pickup_entree').attr('required', 'required');
+          $('#reservation_adresse_entree').removeAttr('required');
+        }
+      }
+      updateRequiredFields();
+    });
+    
+    // Toggle fields based on shift selection for sortie
+    $('#reservation_shift_sortie').change(function() {
+      let shift_sortie = $(this).val();
+      if (shift_sortie < 8 || shift_sortie > 20) {
+        // Show address field, hide trajet/pickup
+        $('#div_trajet_sortie').hide();
+        $('#div_pickup_sortie').hide();
+        $('#div_adresse_sortie').show();
+        
+        // Update required attributes - only adresse is required
+        if (sortieSelected || !entreeSelected) {
+          $('#reservation_adresse_sortie').attr('required', 'required');
+          $('#reservation_trajet_sortie, #reservation_pickup_sortie').removeAttr('required');
+        }
+      } else {
+        // Show trajet/pickup fields, hide address
+        $('#div_trajet_sortie').show();
+        $('#div_pickup_sortie').show();
+        $('#div_adresse_sortie').hide();
+        
+        // Update required attributes - only trajet/pickup are required
+        if (sortieSelected || !entreeSelected) {
+          $('#reservation_trajet_sortie, #reservation_pickup_sortie').attr('required', 'required');
+          $('#reservation_adresse_sortie').removeAttr('required');
+        }
+      }
+      updateRequiredFields();
+    });
+    
+    // Update pickup options based on trajet selection for entree
+    $('#reservation_trajet_entree').change(function() {
+      let trajet_id = $(this).val();
+      var selectElement = document.getElementById('reservation_pickup_entree');
+      var options = selectElement.options;
+      
+      for (var i = 0; i < options.length; i++) {
+        var option = options[i];
+        var customAttribute = option.getAttribute('data-trajet') ? parseInt(option.getAttribute('data-trajet')) : 0;
+        
+        if (customAttribute == trajet_id) {
+          $(option).css("display", "block");
+        } else {
+          $(option).css("display", "none");
+        }
+      }
+    });
+    
+    // Update pickup options based on trajet selection for sortie
+    $('#reservation_trajet_sortie').change(function() {
+      let trajet_id = $(this).val();
+      var selectElement = document.getElementById('reservation_pickup_sortie');
+      var options = selectElement.options;
+      
+      for (var i = 0; i < options.length; i++) {
+        var option = options[i];
+        var customAttribute = option.getAttribute('data-trajet') ? parseInt(option.getAttribute('data-trajet')) : 0;
+        
+        if (customAttribute == trajet_id) {
+          $(option).css("display", "block");
+        } else {
+          $(option).css("display", "none");
+        }
+      }
+    });
+    
+    // Form submission validation
+    $('form').submit(function(e) {
+      // Check if at least one date is selected
+      if (!entreeSelected && !sortieSelected) {
+        alert('Please select at least one date for entree or sortie');
+        e.preventDefault();
+        return false;
+      }
+      
+      // Validate entree fields if entree date is selected
+      if (entreeSelected) {
+        let shiftEntree = $('#reservation_shift_entree').val();
+        if (!shiftEntree) {
+          alert('Please select a shift for entree');
+          e.preventDefault();
+          return false;
+        }
+        
+        if (shiftEntree >= 8 && shiftEntree <= 20) {
+          let trajetEntree = $('#reservation_trajet_entree').val();
+          let pickupEntree = $('#reservation_pickup_entree').val();
+          
+          if (!trajetEntree) {
+            alert('Please select a trajet for entree');
+            e.preventDefault();
+            return false;
+          }
+          
+          if (!pickupEntree) {
+            alert('Please select a pickup for entree');
+            e.preventDefault();
+            return false;
+          }
+        } else {
+          let adresseEntree = $('#reservation_adresse_entree').val();
+          if (!adresseEntree) {
+            alert('Please enter an address for entree');
+            e.preventDefault();
+            return false;
+          }
+        }
+      }
+      
+      // Validate sortie fields if sortie date is selected
+      if (sortieSelected) {
+        let shiftSortie = $('#reservation_shift_sortie').val();
+        if (!shiftSortie) {
+          alert('Please select a shift for sortie');
+          e.preventDefault();
+          return false;
+        }
+        
+        if (shiftSortie >= 8 && shiftSortie <= 20) {
+          let trajetSortie = $('#reservation_trajet_sortie').val();
+          let pickupSortie = $('#reservation_pickup_sortie').val();
+          
+          if (!trajetSortie) {
+            alert('Please select a trajet for sortie');
+            e.preventDefault();
+            return false;
+          }
+          
+          if (!pickupSortie) {
+            alert('Please select a pickup for sortie');
+            e.preventDefault();
+            return false;
+          }
+        } else {
+          let adresseSortie = $('#reservation_adresse_sortie').val();
+          if (!adresseSortie) {
+            alert('Please enter an address for sortie');
+            e.preventDefault();
+            return false;
+          }
+        }
+      }
+    });
+  });
+  </script>
 {% endblock %}

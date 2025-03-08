@@ -251,6 +251,6 @@ class __TwigTemplate_1eb0d40647f2b39d0f6b28dc04d30a0b extends Template
   <script src=\"https://code.jquery.com/ui/1.12.1/jquery-ui.min.js\"></script>
   {% endif %}
 {% endblock %}
-", "admin/tarif/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\tarif\\index.html.twig");
+", "admin/tarif/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\tarif\\index.html.twig");
     }
 }

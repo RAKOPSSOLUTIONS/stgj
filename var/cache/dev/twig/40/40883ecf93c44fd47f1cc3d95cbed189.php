@@ -241,6 +241,6 @@ class __TwigTemplate_4e64c51347456f280369d7c0f403ca82 extends Template
     </container>
 
 {% endapply %}
-", "layout/email.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\email.html.twig");
+", "layout/email.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\email.html.twig");
     }
 }

@@ -219,6 +219,6 @@ class __TwigTemplate_7b084d6b2094c9792dd04e53ae9d3f23 extends Template
         {% block body %}{% endblock %}
     </body>
 </html>
-", "base.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\base.html.twig");
+", "base.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\base.html.twig");
     }
 }

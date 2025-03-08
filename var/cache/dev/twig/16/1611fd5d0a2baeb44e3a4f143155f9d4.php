@@ -497,6 +497,6 @@ class __TwigTemplate_b422944130ec5959be30bd1acfb41ddd extends Template
 
   
 {% endblock %}
-", "admin/reservation/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\reservation\\details.html.twig");
+", "admin/reservation/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\reservation\\details.html.twig");
     }
 }

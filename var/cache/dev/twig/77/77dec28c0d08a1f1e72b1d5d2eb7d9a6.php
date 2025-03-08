@@ -166,6 +166,6 @@ class __TwigTemplate_dc698992c1bd2bd8293659da5f4a72b8 extends Template
       <i class=\"bi bi-arrow-right\"></i>
     </button>
   </div>
-</div>", "layout/table/pagination.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\table\\pagination.html.twig");
+</div>", "layout/table/pagination.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\table\\pagination.html.twig");
     }
 }

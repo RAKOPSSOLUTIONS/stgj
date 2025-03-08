@@ -119,6 +119,6 @@ class __TwigTemplate_95589e4989a56e2c9b4a0f8b6e310fac extends Template
 \t\t<h3>Services</h3>
 \t</div>
 {% endblock %}
-", "front/home/services.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\front\\home\\services.html.twig");
+", "front/home/services.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\front\\home\\services.html.twig");
     }
 }

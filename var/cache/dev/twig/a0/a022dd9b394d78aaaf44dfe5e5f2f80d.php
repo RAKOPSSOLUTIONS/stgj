@@ -454,6 +454,6 @@ class __TwigTemplate_3550699f0eb21f6ad61319bdea7f29dc extends Template
 </body>
 </html>
 {% endapply %}
-", "@email/zurb_2/notification/body.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\symfony\\twig-bridge\\Resources\\views\\Email\\zurb_2\\notification\\body.html.twig");
+", "@email/zurb_2/notification/body.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\symfony\\twig-bridge\\Resources\\views\\Email\\zurb_2\\notification\\body.html.twig");
     }
 }

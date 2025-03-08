@@ -231,6 +231,6 @@ class __TwigTemplate_bd7d15863f111ebf27691adb714acd4c extends Template
 
 
 
-", "block/footer.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\block\\footer.html.twig");
+", "block/footer.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\block\\footer.html.twig");
     }
 }

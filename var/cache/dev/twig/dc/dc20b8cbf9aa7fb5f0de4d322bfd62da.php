@@ -150,6 +150,6 @@ class __TwigTemplate_ef0043df612a73908e5c1948e8c5601a extends Template
   </ajax-table>
 
 {% endblock %}
-", "admin/mail-history/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\mail-history\\index.html.twig");
+", "admin/mail-history/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\mail-history\\index.html.twig");
     }
 }

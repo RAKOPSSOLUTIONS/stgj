@@ -563,6 +563,6 @@ if (\"geolocation\" in navigator) {
 
 
 
-{% endblock %}", "admin/user/location.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\user\\location.html.twig");
+{% endblock %}", "admin/user/location.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\user\\location.html.twig");
     }
 }

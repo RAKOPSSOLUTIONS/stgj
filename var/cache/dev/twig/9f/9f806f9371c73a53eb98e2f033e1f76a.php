@@ -3323,6 +3323,6 @@ body.outlook p {
     min-width: 0;
   }
 }
-", "@assets/css/foundation.css", "C:\\Users\\lamfa\\Bureau\\stgj\\public\\assets\\css\\foundation.css");
+", "@assets/css/foundation.css", "C:\\Users\\lamfa\\Bureau\\stgja\\public\\assets\\css\\foundation.css");
     }
 }

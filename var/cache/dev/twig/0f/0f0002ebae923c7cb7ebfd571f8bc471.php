@@ -185,6 +185,6 @@ class __TwigTemplate_cccb4c8632d4594e6ffb5219fb4eb7d9 extends Template
     <td>{{ \"Délai de réservation\"|trans }}</td>
     <td>{% if societe.deadline %}{{ societe.deadline|date(\"H:i\") }}{% endif %}</td>
   </tr>
-</table>", "admin/societe/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\societe\\details.html.twig");
+</table>", "admin/societe/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\societe\\details.html.twig");
     }
 }

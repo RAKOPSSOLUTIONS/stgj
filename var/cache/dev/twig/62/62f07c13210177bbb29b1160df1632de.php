@@ -578,6 +578,6 @@ class __TwigTemplate_19a0799144639af7a40045ba62b2cad1 extends Template
         });
     });
   </script>
-{% endblock %}", "reports/list.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\reports\\list.html.twig");
+{% endblock %}", "reports/list.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\reports\\list.html.twig");
     }
 }

@@ -548,6 +548,6 @@ class __TwigTemplate_7d486278862dc6104abd57f6d14649ba extends Template
   {% endblock %}
 </body>
 </html>
-", "layout/front.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\front.html.twig");
+", "layout/front.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\front.html.twig");
     }
 }

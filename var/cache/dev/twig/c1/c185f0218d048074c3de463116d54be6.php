@@ -182,6 +182,6 @@ class __TwigTemplate_05d348113ce4ef14f66149f0b11d38e1 extends Template
         </div>
     </div>
 {% endblock hwi_oauth_content %}
-", "@HWIOAuth/Connect/connect_confirm.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\hwi\\oauth-bundle\\Resources\\views\\Connect\\connect_confirm.html.twig");
+", "@HWIOAuth/Connect/connect_confirm.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\hwi\\oauth-bundle\\Resources\\views\\Connect\\connect_confirm.html.twig");
     }
 }

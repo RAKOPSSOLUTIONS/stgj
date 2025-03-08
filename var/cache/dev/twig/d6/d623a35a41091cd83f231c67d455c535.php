@@ -271,6 +271,6 @@ class __TwigTemplate_e26e278c1a6f60ca214b3f2d017a3aab extends Template
 
 </body>
 </html>
-", "@Twig/Exception/error.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\bundles\\TwigBundle\\Exception\\error.html.twig");
+", "@Twig/Exception/error.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\bundles\\TwigBundle\\Exception\\error.html.twig");
     }
 }

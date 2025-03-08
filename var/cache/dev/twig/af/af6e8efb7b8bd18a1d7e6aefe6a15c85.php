@@ -115,6 +115,6 @@ class __TwigTemplate_4f03e48c06b362fbde93c7168071f62e extends Template
 {% if data.rows|length %}
 \t{% include \"layout/table/bottom.html.twig\" %}
 {% endif %}
-", "layout/table/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\table\\index.html.twig");
+", "layout/table/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\table\\index.html.twig");
     }
 }

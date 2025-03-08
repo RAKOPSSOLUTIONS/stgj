@@ -125,6 +125,6 @@ class __TwigTemplate_f27b5472d593367ec5440693492f7f0e extends Template
   <div class=\"modal-body\">
     {{ body|raw }}
   </div>
-{% endif %}", "layout/modal/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\layout\\modal\\index.html.twig");
+{% endif %}", "layout/modal/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\layout\\modal\\index.html.twig");
     }
 }

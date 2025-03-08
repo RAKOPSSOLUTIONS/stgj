@@ -176,6 +176,6 @@ class __TwigTemplate_ba5c9bedbddab4f2bf59bc7a2c9b4ff1 extends Template
   </ajax-table>
 
 {% endblock %}
-", "admin/societe/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\societe\\index.html.twig");
+", "admin/societe/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\societe\\index.html.twig");
     }
 }

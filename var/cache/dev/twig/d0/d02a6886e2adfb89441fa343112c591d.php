@@ -399,6 +399,6 @@ class __TwigTemplate_c24380736cddcb660316abf5a2a82998 extends Template
   </div> 
 
 
-{% endblock %}", "admin/vehicule/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\vehicule\\details.html.twig");
+{% endblock %}", "admin/vehicule/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\vehicule\\details.html.twig");
     }
 }

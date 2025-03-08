@@ -142,6 +142,6 @@ class __TwigTemplate_11a9e7584c46dcdf120e3395fef9d525 extends Template
     <a href=\"{{ hwi_oauth_login_url(owner) }}\">{{ owner | trans({}, 'HWIOAuthBundle') }}</a> <br />
     {% endfor %}
 {% endblock hwi_oauth_content %}
-", "@HWIOAuth/Connect/login.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\hwi\\oauth-bundle\\Resources\\views\\Connect\\login.html.twig");
+", "@HWIOAuth/Connect/login.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\hwi\\oauth-bundle\\Resources\\views\\Connect\\login.html.twig");
     }
 }

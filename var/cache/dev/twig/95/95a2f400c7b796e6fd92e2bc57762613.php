@@ -458,6 +458,6 @@ class __TwigTemplate_ab6c000e0a6fc5c4559c92fc59c520c3 extends Template
 </table>
 
   
-{% endblock %}", "admin/user/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\user\\details.html.twig");
+{% endblock %}", "admin/user/details.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\user\\details.html.twig");
     }
 }

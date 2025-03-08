@@ -175,6 +175,6 @@ class __TwigTemplate_f758006a9fcee571521b50b6ae37bc1d extends Template
     </div>
 
 {% endblock hwi_oauth_content %}
-", "@HWIOAuth/Connect/registration.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\vendor\\hwi\\oauth-bundle\\Resources\\views\\Connect\\registration.html.twig");
+", "@HWIOAuth/Connect/registration.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\vendor\\hwi\\oauth-bundle\\Resources\\views\\Connect\\registration.html.twig");
     }
 }

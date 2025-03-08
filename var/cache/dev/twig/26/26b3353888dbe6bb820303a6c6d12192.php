@@ -119,6 +119,6 @@ class __TwigTemplate_758686dfb44e1e115d15312b9923c67e extends Template
 \t\t<h3>Ressources</h3>
 \t</div>
 {% endblock %}
-", "front/home/ressources.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\front\\home\\ressources.html.twig");
+", "front/home/ressources.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\front\\home\\ressources.html.twig");
     }
 }

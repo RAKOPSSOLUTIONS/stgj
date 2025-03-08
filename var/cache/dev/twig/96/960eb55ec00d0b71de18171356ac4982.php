@@ -81,6 +81,6 @@ IHDR\000\000\000\000\000\000\000\000\000óÿa\000\000\000sRGB\000®Îé\000\00
         return new Source("‰PNG
 
 \000\000\000IHDR\000\000\000\000\000\000\000\000\000óÿa\000\000\000sRGB\000®Îé\000\000ÅIDAT8OU“_H“QÆß¾)5·Œ,[RöGDr\tº¨ÈÄIx#ÞD]tÓŸï\"r‰ÙEaw)ÕÊH‰Ê(¡B'axUdSgIèJ1çrsó;qÎq“ÎÅ9ç=ßû=<ïó¾a\t!@`` Ô™^:FòQ¦é‹|Uùr–°„LR±ÌQ›¡~XÁ‚Á Ë©ååû¨òùÈÊÊÒÉFH\000¥ýNtaÃe<žR|>6ÓÎ`p÷ïßÒÔÔ‚ÛíÖ¤ÄJ\ti\000Jzíí·©ª®¦¤¸\$ƒ/±§¦¦èì¸‹ßï×…Ç<É±0Vl+ÇyªŽxÿ k«»÷˜ìýåd×Å´™ØLÉR©w©ÏÌù‹bÍ‘˜îÍÄž<cCk#Óµ'¥8¸.^ 5÷‡–Oðz½l!Çáâ÷Ì/òóó)ÝíÁ˜¿Ó!õàji ñêÆúâÁ˜Nöâ]\$G'è«9D*µÄ÷ï“LL„Ù^XÈRr‰sç.`,„„ÍåÄp8 ö—åÙ9lîMØ’#ßø™ˆu¬ÁnšD\"œN§êÂìì,%%»1„%µTådf ô-DQq†€ùh”Èt„Åø\"¹¹.‰\$–e‡)++K·Qö}µ“~ÍÍÍØlæÊT\t†úxñ0@Åž½Tœ9ÍåÆ+\\»ÞªÛ¨&Pèiêîî!7w=••™Ù}¥®®Žx<ÁÕÃÕˆÊƒ;~Ã’%dèk©T’úúzšššq¹ÖÑÕõˆ¶¶ämÈc<<ÎYÓÉ¥/ÃYvÙ-­šC}ULÆÆÆèí}I `ròW®è\"÷+jØÙykÅ–Š¹!m+\"ìg4ÂnÏæMßk¶¥7óvàyÀÌß¸
- H».ãFí;‰m-¦#S8†?ãô–bn-È´Lif ]ðŸ§2pL»T»UúÕ*DÒ dÅ\000\000\000\000IEND®B`‚", "@assets/icons/favicon.png", "C:\\Users\\lamfa\\Bureau\\stgj\\public\\assets\\icons\\favicon.png");
+ H».ãFí;‰m-¦#S8†?ãô–bn-È´Lif ]ðŸ§2pL»T»UúÕ*DÒ dÅ\000\000\000\000IEND®B`‚", "@assets/icons/favicon.png", "C:\\Users\\lamfa\\Bureau\\stgja\\public\\assets\\icons\\favicon.png");
     }
 }

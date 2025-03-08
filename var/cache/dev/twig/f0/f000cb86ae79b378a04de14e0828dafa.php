@@ -136,6 +136,6 @@ class __TwigTemplate_91b74c88e7b676a264ee40a3141ae8e8 extends Template
   </div>
 
 {% endblock %}
-", "admin/log/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\admin\\log\\index.html.twig");
+", "admin/log/index.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\admin\\log\\index.html.twig");
     }
 }

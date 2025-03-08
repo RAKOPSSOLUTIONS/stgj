@@ -226,6 +226,6 @@ class __TwigTemplate_5ee1355a624ed58a2bd416828ec45e78 extends Template
 </center>
 </columns>
 </row>
-{% endblock %}", "emails/navette-annulee.html.twig", "C:\\Users\\lamfa\\Bureau\\stgj\\templates\\emails\\navette-annulee.html.twig");
+{% endblock %}", "emails/navette-annulee.html.twig", "C:\\Users\\lamfa\\Bureau\\stgja\\templates\\emails\\navette-annulee.html.twig");
     }
 }
