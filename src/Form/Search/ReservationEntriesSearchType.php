@@ -35,6 +35,8 @@ class ReservationEntriesSearchType extends AbstractType
     $date = $options['request']->get('date');
     $status = $options['request']->get('status');
     $heure = $options['request']->get('heure');
+    $heure = !empty($heure) ? (int)$heure : null;
+    error_log($heure . " ". gettype($heure));
     $direction = $options['request']->get('direction');
     $trajet_id = $options['request']->get('trajet_id');
     $pickup_id = $options['request']->get('pickup_id');

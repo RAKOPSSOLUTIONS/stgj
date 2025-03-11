@@ -241,6 +241,13 @@ class ReservationController extends BaseController
         'message' => (string) $form->getErrors(true, false)
       ]);
     }
+    $validationError = $this->validateReservationDates($form->getData(), $dates);
+    if ($validationError) {
+        return $this->json([
+            'status' => 'error',
+            'message' => $validationError
+        ]);
+    }
     $user_id = $user->getId();
     $em = $this->getDoctrine()->getManager();
     $entity = $form->getData();
@@ -356,6 +363,62 @@ class ReservationController extends BaseController
       'message' => $translator->trans("Vos demandes de réservations sont enregistrées")
     ]);
   }
+
+
+  private function validateReservationDates($reservation, $dates): ?string
+  {
+      $entreeShift = $reservation->getShiftEntree();
+      $sortieShift = $reservation->getShiftSortie();
+      $entreeDates = $reservation->getDatesEntree();
+      $sortieDates = $reservation->getDatesSortie();
+  
+      $today = new \DateTime();
+  
+      // Check entree conditions (7 AM)
+      if ($entreeShift == 7 && !empty($entreeDates)) {
+          $entreeDate = new \DateTime(reset($entreeDates));
+  
+          // Check if the selected date is Tuesday to Friday
+          if ($entreeDate->format('N') >= 2 && $entreeDate->format('N') <= 5) {
+              $cutoffDate = (clone $entreeDate)->modify('-2 days');
+              if ($today > $cutoffDate) {
+                  return "La date sélectionnée pour l'entrée n'est plus disponible. Les réservations pour 7h du matin doivent être faites au moins 2 jours à l'avance.";
+              }
+          }
+  
+          // Check if the selected date is Saturday, Sunday, or Monday
+          if ($entreeDate->format('N') === 6 || $entreeDate->format('N') === 7 || $entreeDate->format('N') === 1) {
+              $previousThursday = (clone $entreeDate)->modify('last thursday');
+              if ($today > $previousThursday) {
+                  return "La date sélectionnée pour l'entrée n'est plus disponible. Les réservations pour 7h du matin doivent être faites avant jeudi 23h59 de la semaine précédente.";
+              }
+          }
+      }
+  
+      // Check sortie conditions (21, 22, 23)
+      if (in_array($sortieShift, [21, 22, 23]) && !empty($sortieDates)) {
+          $sortieDate = new \DateTime(reset($sortieDates));
+  
+          // Check if the selected date is Tuesday to Friday
+          if ($sortieDate->format('N') >= 2 && $sortieDate->format('N') <= 5) {
+              $cutoffDate = (clone $sortieDate)->modify('-2 days');
+              if ($today > $cutoffDate) {
+                  return "La date sélectionnée pour la sortie n'est plus disponible. Les réservations pour 21h, 22h ou 23h doivent être faites au moins 2 jours à l'avance.";
+              }
+          }
+  
+          // Check if the selected date is Saturday, Sunday, or Monday
+          if ($sortieDate->format('N') === 6 || $sortieDate->format('N') === 7 || $sortieDate->format('N') === 1) {
+              $previousThursday = (clone $sortieDate)->modify('last thursday');
+              if ($today > $previousThursday) {
+                  return "La date sélectionnée pour la sortie n'est plus disponible. Les réservations pour 21h, 22h ou 23h doivent être faites avant jeudi 23h59 de la semaine précédente.";
+              }
+          }
+      }
+  
+      return null; // No validation errors
+  }
+
 
   /**
    * @Route(methods={"GET", "POST"}, path="/admin/reservations/{id}/delete", name="reservations.delete", defaults={"id"=0})

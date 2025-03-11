@@ -35,8 +35,9 @@ class ReservationEntriesController extends BaseController
     $date = $request->get('date', date('Y-m-d'));
     $direction = $request->get('direction', '');
     $heure = $request->get('heure', '');
-
-   // echo $date.'::'.$heure.'::'.$trajet_id.'::'.$direction.'::'.$create; exit;
+    $heure = !empty($heure) ? (int)$heure : null;
+    error_log( gettype($heure) ." aaa ".$heure);
+   // echo $date.'::'.$heure.'::'.$trajet_id.r'::'.$direction.'::'.$create; exit;
 
     //date=2024-12-14&zone%5B__isInitialized__%5D=1&trajet_id=42&direction=Entrée&heure=8
 
@@ -87,18 +88,20 @@ class ReservationEntriesController extends BaseController
        $reservationEntriesRepo = $this->getDoctrine()->getRepository(ReservationEntries::class);
        $entries = $reservationEntriesRepo->findBy(
         [
-          'reservation_date' => new \DateTime($date), 
-          'reservation_heure' => $heure, 
-          'direction' => $direction, 
-          'trajet_id' => empty($trajet_id) ? null : $trajet_id,
-          'status' => 'validée',
-          'navette_id' => null 
+            'reservation_date' => new \DateTime($date), 
+            'reservation_heure' => $heure, 
+            'direction' => $direction, 
+            'trajet_id' => empty($trajet_id) ? null : $trajet_id,
+            'status' => 'validée',
+            'navette_id' => null 
         ], 
         [ 
-          'distance' => $direction=='Entrée' ? 'DESC' : 'ASC'
+            'distance' => $direction == 'Entrée' ? 'DESC' : 'ASC'
         ]
-      );
-
+    );
+    
+    // Debugging: Check the query and results
+    
       /* echo 'reservation_date' . $date;
        echo 'reservation_heure' . $heure;
        echo 'direction' . $direction;
@@ -927,7 +930,7 @@ public function createNavettes(Request $request)
     $direction = $request->get('direction');
     $trajet_id = $request->get('trajet_id');
     $date = $request->get('date');
-
+    $heure = $request->get('heure');
     if ( in_array('ROLE_CHAUFFEUR', $user->getRoles(), true) ) {
       $params['employe'] = $user->getId();
       $query->andWhere('t.user_id = :employe');
@@ -954,7 +957,10 @@ public function createNavettes(Request $request)
      $params['direction'] = $direction;
       $query->andWhere('re.direction = :direction');
     }
-
+    if ( !empty($heure)) {
+     $params['heure'] = $heure;
+      $query->andWhere('re.reservation_heure = :heure');
+    }
     if ( !empty($status)) {
      $params['status'] = $status;
       $query->andWhere('re.status = :status');
@@ -992,6 +998,7 @@ public function createNavettes(Request $request)
 
   private function getSearchForm($request, $user)
   {
+
     return $this->createForm(ReservationEntriesSearchType::class, null, [
       'method' => 'GET',
       'csrf_protection' => false,
