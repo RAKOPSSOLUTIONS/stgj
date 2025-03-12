@@ -1443,7 +1443,7 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
       $date = $navette->getDateNavette()->format('d/m/Y');
       $heure = $navette->getHeureNavette();
       $matricule = $navette->getVehicule() ? $navette->getVehicule()->getImmatriculation() : '';
-      $chauffeur = $navette->getVehicule() ? $navette->getVehicule()->getChauffeur()->getPrenom() : '';
+      $chauffeur = $navette->getVehicule() ? $navette->getVehicule()->getUser()->getPrenom() : '';
 
 
       foreach ($entries as $entry) {

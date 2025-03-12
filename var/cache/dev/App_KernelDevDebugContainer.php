@@ -16,6 +16,6 @@ if (!\class_exists(App_KernelDevDebugContainer::class, false)) {
 
 return new \ContainerTRpcNve\App_KernelDevDebugContainer([
     'container.build_hash' => 'TRpcNve',
-    'container.build_id' => 'eb597954',
-    'container.build_time' => 1741316410,
+    'container.build_id' => '8d1a35ec',
+    'container.build_time' => 1741757965,
 ], __DIR__.\DIRECTORY_SEPARATOR.'ContainerTRpcNve');

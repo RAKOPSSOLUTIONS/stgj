@@ -36,7 +36,7 @@ class ReservationEntriesController extends BaseController
     $direction = $request->get('direction', '');
     $heure = $request->get('heure', '');
     $heure = !empty($heure) ? (int)$heure : null;
-    error_log( gettype($heure) ." aaa ".$heure);
+
    // echo $date.'::'.$heure.'::'.$trajet_id.r'::'.$direction.'::'.$create; exit;
 
     //date=2024-12-14&zone%5B__isInitialized__%5D=1&trajet_id=42&direction=Entrée&heure=8
@@ -415,8 +415,11 @@ public function createNavettes(Request $request)
     $em = $this->getDoctrine()->getManager();
     $entity = $form->getData();
     $isNew = !$entity->getId();
-    
-    
+
+
+    // Debugging: Check the values of Trajet and Pickup
+    error_log("as".$entity->getTrajet()); // Should return a Trajet object
+    error_log("sd".$entity->getPickup()); // Should return a Pickup object
 
     if ( $entity->getReservationHeure() < 8 or $entity->getReservationHeure() > 22 ){
       $entity->setTrajet(null);
@@ -448,11 +451,26 @@ public function createNavettes(Request $request)
     //setDropoffLatitude
     //setDropoffLongitude
 
+    $em = $this->getDoctrine()->getManager();
+    if (!$em->contains($entity)) {
+        $entity = $em->merge($entity); // Reattach the entity
+    }
+
+
     $em->persist($entity);
     
 
 
-    $em->flush();
+    try {
+      $em->flush();
+  } catch (\Exception $e) {
+      // Log the error
+      error_log('Error during flush: ' . $e->getMessage());
+      return $this->json([
+          'status' => 'error',
+          'message' => 'An error occurred while saving the reservation.'
+      ]);
+  }
 
     // log activity
     $em->getRepository(Log::class)->store(
@@ -614,17 +632,18 @@ public function createNavettes(Request $request)
 
     //$params = ['status' => 'validée'];
 
-    if ( !empty($direction)) {
-     $params['direction'] = $direction;
-    }
+
 
     if ( !empty($status)) {
      $params['status'] = $status;
-    }
-    else{
+    }    else{
       $params = ['status' => 'validée'];
     }
 
+    if ( !empty($direction)) {
+      $params['direction'] = $direction;
+     }
+     
     if ( !empty($heure)) {
      $params['reservation_heure'] = $heure;
     }
@@ -954,6 +973,7 @@ public function createNavettes(Request $request)
     }*/
 
     if ( !empty($direction)) {
+
      $params['direction'] = $direction;
       $query->andWhere('re.direction = :direction');
     }
@@ -979,6 +999,8 @@ public function createNavettes(Request $request)
     $query->setParameters($params);
 
     return $query;
+
+    
   }
 
   private function getForm($request, $user)
