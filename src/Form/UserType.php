@@ -76,7 +76,6 @@ class UserType extends AbstractType
     ]);
     $builder->add('adresse', TextType::class, [
       'label' => "Adresse",
-      'required' => false,
     ]);
 
    

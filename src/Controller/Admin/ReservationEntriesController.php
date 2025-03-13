@@ -35,7 +35,7 @@ class ReservationEntriesController extends BaseController
     $date = $request->get('date', date('Y-m-d'));
     $direction = $request->get('direction', '');
     $heure = $request->get('heure', '');
-    $heure = !empty($heure) ? (int)$heure : null;
+    
 
    // echo $date.'::'.$heure.'::'.$trajet_id.r'::'.$direction.'::'.$create; exit;
 
@@ -950,6 +950,8 @@ public function createNavettes(Request $request)
     $trajet_id = $request->get('trajet_id');
     $date = $request->get('date');
     $heure = $request->get('heure');
+    $pickup_id = $request->get('pickup_id');
+
     if ( in_array('ROLE_CHAUFFEUR', $user->getRoles(), true) ) {
       $params['employe'] = $user->getId();
       $query->andWhere('t.user_id = :employe');
@@ -995,7 +997,10 @@ public function createNavettes(Request $request)
      $params['date'] = $date;
       $query->andWhere('re.reservation_date = :date');
     }
-
+    if ( !empty($pickup_id)) {
+      $params['pickup_id'] = (int)$pickup_id;
+       $query->andWhere('re.pickup_id = :pickup_id');
+     }
     $query->setParameters($params);
 
     return $query;

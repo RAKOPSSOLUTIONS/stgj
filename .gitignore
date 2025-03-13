@@ -19,4 +19,7 @@ yarn-error.log
 *Zone.Identifier
 /public/uploads/
 /FILES_TO_REPLACE/
+.env
+.env.test
+.env.local
 ###< app ###

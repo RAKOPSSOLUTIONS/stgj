@@ -30,8 +30,9 @@ class UserRepository extends ServiceEntityRepository
     public function exists($entity)
     {
         $qb = $this->createQueryBuilder('u');
-        $qb->where('u.email = :email');
+        $qb->where('u.email = :email OR u.matricule = :matricule');
         $qb->setParameter('email', $entity->getEmail());
+        $qb->setParameter('matricule', $entity->getMatricule());
         if ($entity->getId()) {
             $qb->andWhere('u.id != :id');
             $qb->setParameter('id', $entity->getId());

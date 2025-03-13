@@ -375,7 +375,7 @@ class ReservationController extends BaseController
       $today = new \DateTime();
   
       // Check entree conditions (7 AM)
-      if ($entreeShift == 7 && !empty($entreeDates)) {
+      if (($entreeShift == 6 || $entreeShift == 7) && !empty($entreeDates)) {
           $entreeDate = new \DateTime(reset($entreeDates));
   
           // Check if the selected date is Tuesday to Friday
@@ -396,7 +396,7 @@ class ReservationController extends BaseController
       }
   
       // Check sortie conditions (21, 22, 23)
-      if (in_array($sortieShift, [21, 22, 23]) && !empty($sortieDates)) {
+      if (in_array($sortieShift, [21, 22]) && !empty($sortieDates)) {
           $sortieDate = new \DateTime(reset($sortieDates));
   
           // Check if the selected date is Tuesday to Friday
