@@ -758,7 +758,7 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
   {
     $table->addColumn('increment', '#', ['class' => 'text-danger']);
     $table->addColumn('id', 'Id', ['sortable' => true]);
-    $table->addColumn('zone', 'Zone', ['sortable' => true]);
+    $table->addColumn('trajet.zone', 'Société', ['sortable' => true]);
     $table->addColumn('nomTrajet', 'Trajet', ['sortable' => true]);
     $table->addColumn('dureeUp', 'Durée', [
       'sortable' => true,
@@ -1153,7 +1153,8 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
   {
     $params = [];
     $optionsRepo = $this->getDoctrine()->getRepository(Navette::class);
-    $query = $optionsRepo->createQueryBuilder('n');
+    $query = $optionsRepo->createQueryBuilder('n')
+    ->orderBy('n.date_navette', 'DESC');
 
     // search params
     $keywords = $request->get('q');
@@ -1182,7 +1183,7 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
     }
 
     if ( in_array('ROLE_MANAGER', $user->getRoles(), true) ) {
-      $authorized_status = ['pré commande', 'annulée', 'commandée', 'validée'];
+      $authorized_status = ['pré commande', 'annulee', 'commandée', 'validée'];
       if ( in_array($status, $authorized_status)){
         $params['status'] = $status;
         $query->andWhere('n.status = :status');

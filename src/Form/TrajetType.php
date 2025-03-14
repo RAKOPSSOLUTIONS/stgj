@@ -40,7 +40,6 @@ class TrajetType extends AbstractType
       'group_by' => 'societe',
       'class' => Site::class,
       'placeholder' => '',
-      'mapped' => false,
       'required' => false,
     ])
             ->add('name', TextType::class, ['label' => "Nom"])
@@ -70,7 +69,7 @@ class TrajetType extends AbstractType
             //getZonesForSelect
 
             ->add('zone', ChoiceType::class, [
-                  'label' => "Zone",
+                  'label' => "Société",
                   'placeholder' => '',
                   'choices' => array_flip($TarifRepo->getZonesForSelect())
             ])

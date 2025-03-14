@@ -262,7 +262,7 @@ class TrajetController extends BaseController
       }
     ]);
 
-    $table->addColumn('zone', 'Zone', ['sortable' => true]);
+    $table->addColumn('zone', 'Société', ['sortable' => true]);
     $table->addColumn('status', 'État', [
       'sortable' => true,
       'render' => function($entity) {

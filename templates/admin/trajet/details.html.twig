@@ -46,7 +46,7 @@
     <td>{{ trajet.status }}</td>
   </tr>
   <tr>
-    <td><b>{{ "Zone"|trans }}</b></td>
+    <td><b>{{ "Société"|trans }}</b></td>
     <td>{{ trajet.zone }}</td>
     <td><b>{{ "Site"|trans }}</b></td>
     <td>{{ trajet.site }}</td>
@@ -64,14 +64,14 @@
     <th>Longitude</th>
     <th>Statut</th>
   </tr>
-  {% for pickup in pickups %}
+{% for pickup in pickups|sort((a, b) => a.name|split(' ')[0] <=> b.name|split(' ')[0]) %}
     <tr>
-      <td>{{ pickup.name }}</td>
-      <td>{{ pickup.latitude }}</td>
-      <td>{{ pickup.longitude }}</td>
-      <td>{{ pickup.status }}</td>
+        <td>{{ pickup.name }}</td>
+        <td>{{ pickup.latitude }}</td>
+        <td>{{ pickup.longitude }}</td>
+        <td>{{ pickup.status }}</td>
     </tr>
-  {% endfor %}
+{% endfor %}
 
 </table>
 

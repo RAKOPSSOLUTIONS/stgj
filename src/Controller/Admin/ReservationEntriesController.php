@@ -133,7 +133,7 @@ class ReservationEntriesController extends BaseController
        $i = 0; 
        foreach ($entries as $entry) {
 
-          if ( $i < 23 ){
+          if ( $i < 20 ){
 
 
          $entry->setNavette($new_navette);
@@ -355,13 +355,13 @@ public function createNavettes(Request $request)
     $id = $request->get('id');
     $reservationEntriesRepo = $this->getDoctrine()->getRepository(ReservationEntries::class);
     $entry = $reservationEntriesRepo->find($id);
-
+    
     /*if (!$entry or $entry->getReservation()->getUser()->getId() != $user->getId() ) return $this->json([
       'content' => $this->renderView('layout/modal/index.html.twig', [
       'title' => $translator->trans("ReservationEntries not found")
       ])
     ]);*/
-
+    
     return $this->render('admin/reservation_entries/details.html.twig', [
       'reservation' => $entry,
       'user' => $user
@@ -459,8 +459,9 @@ public function createNavettes(Request $request)
 
     $em->persist($entity);
     
-
-
+    $em->getClassMetadata(get_class($entity))->reflFields['trajet']->setValue($entity, $entity->getTrajet());
+    $em->getClassMetadata(get_class($entity))->reflFields['pickup']->setValue($entity, $entity->getPickup());
+    $em->getClassMetadata(get_class($entity))->reflFields['pickupLocation']->setValue($entity, $entity->getPickup()->getName());
     try {
       $em->flush();
   } catch (\Exception $e) {

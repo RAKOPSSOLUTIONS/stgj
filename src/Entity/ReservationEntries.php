@@ -485,21 +485,21 @@ class ReservationEntries
         //sortie + shifre sortie
         if ( ($direction == 'Entrée' && $is_shifts_entree) OR ($direction == 'Sortie' && $is_shifts_sortie) ){
 
-            if ( $dayOfWeek == 'Monday' ){
-              $date_echeance = $date->modify('-3 day');
-            }
-            else if ( $dayOfWeek == 'Saturday' ){
-              $date_echeance = $date->modify('-1 day');
-            }
-            else if ( $dayOfWeek == 'Sunday' ){
-              $date_echeance = $date->modify('-2 day');
-            }
-            else{
-              $date_echeance = $date->modify('-1 day');
-            }
+        //     if ( $dayOfWeek == 'Monday' ){
+        //       $date_echeance = $date->modify('-3 day');
+        //     }
+        //     else if ( $dayOfWeek == 'Saturday' ){
+        //       $date_echeance = $date->modify('-1 day');
+        //     }
+        //     else if ( $dayOfWeek == 'Sunday' ){
+        //       $date_echeance = $date->modify('-2 day');
+        //     }
+        //     else{
+        //       $date_echeance = $date->modify('-1 day');
+        //     }
 
-          $date_echeance = $date_echeance->format('Y-m-d');
-          $date_echeance = new \DateTime($date_echeance.'13:00:00');
+        //   $date_echeance = $date_echeance->format('Y-m-d');
+        //   $date_echeance = new \DateTime($date_echeance.'13:00:00');
 
         }
         else{
