@@ -35,7 +35,7 @@
       {% for reservation in reservations %}
         <tr class="mb-0" data-pkv="10">
           <td>{{ loop.index }}</td>
-          <td>{{ reservation[0] }}</td>
+          <td>{{ reservation[0]|date('d/m/Y') }}</td>
           <td>{{ reservation[1] }}</td>
           <td>{{ reservation[3] }}</td>
           <td>{{ reservation[4] }}</td>
@@ -189,7 +189,7 @@ function splitIntoValidRoutes(points) {
         const estimatedNewTime = currentTime + stopTime;
 
         // Check if adding this point would exceed our limits
-        if (currentRoute.length >= 22 || estimatedNewTime > 57) {
+        if (currentRoute.length >= 20 || estimatedNewTime > 57) {
             if (currentRoute.length > 0) {
                 routes.push(currentRoute);
                 currentRoute = [];

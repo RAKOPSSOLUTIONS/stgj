@@ -965,8 +965,9 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
 
     $table->addColumn('date_navette', 'Date', [
       'sortable' => true,
-      'render' => function($entity) {
-        return $entity->getDateNavette()->format('Y-m-d');
+      'render' => function ($entity) {
+          // Format the reservation_date as dd/mm/aaaa
+          return $entity->getDateNavette()->format('d/m/Y');
       }
     ]);
      $table->addColumn('heure_navette', 'Heure', ['sortable' => true]);

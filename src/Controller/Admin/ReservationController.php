@@ -483,7 +483,13 @@ class ReservationController extends BaseController
   private function getTable($request, $user, $table, $asQuery = false)
   {
     $table->addColumn('increment', '#');
-    $table->addColumn('reservation_date', 'Date', ['sortable' => true]);
+    $table->addColumn('reservation_date', 'Date', [
+      'sortable' => true,
+      'render' => function ($entity) {
+          // Format the reservation_date as dd/mm/aaaa
+          return $entity->getReservationDate()->format('d/m/Y H:i');
+      }
+  ]);
     $table->addColumn('zone', 'Zone', ['sortable' => true]);
     
     $table->addColumn('user', 'Employé', ['sortable' => true]);

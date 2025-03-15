@@ -78,99 +78,153 @@ class ReservationEntriesController extends BaseController
         $em->persist($entry);  
      } 
      $em->flush();*/
-
-     if ( $create == 'yes' ){
-
-       $em = $this->getDoctrine()->getManager();
-
-       $sort = $direction == 'Entrée' ? 'DESC' : 'ASC';
-
-       $reservationEntriesRepo = $this->getDoctrine()->getRepository(ReservationEntries::class);
-       $entries = $reservationEntriesRepo->findBy(
-        [
-            'reservation_date' => new \DateTime($date), 
-            'reservation_heure' => $heure, 
-            'direction' => $direction, 
-            'trajet_id' => empty($trajet_id) ? null : $trajet_id,
-            'status' => 'validée',
-            'navette_id' => null 
-        ], 
-        [ 
-            'distance' => $direction == 'Entrée' ? 'DESC' : 'ASC'
-        ]
-    );
-    
-    // Debugging: Check the query and results
-    
-      /* echo 'reservation_date' . $date;
-       echo 'reservation_heure' . $heure;
-       echo 'direction' . $direction;
-       echo 'trajet_id' . $trajet_id;
-
-       echo count($entries);exit;*/
-
-       $trajet = $this->getDoctrine()->getRepository(Trajet::class)->find($trajet_id);
-       $new_navette = new Navette();
-       $new_navette->setStatus('en attente');
-       $new_navette->setDirection($direction);
-       $new_navette->setHeureNavette($heure);
-
-       
-       if ( $trajet  ){
-        $new_navette->setTrajet($trajet);
-        $new_navette->setNomTrajet($trajet->getName());
-       } 
-       else{
-        $new_navette->setNomTrajet('Home Pickup'.' '.$direction.' '.$heure);
-       }
-       $new_navette->setVehicule(null);
-       $new_navette->setDateNavette(new \DateTime($date));
-
-       $em->persist($new_navette);
-       $em->flush();
-
-       $distance = 0;
-       $i = 0; 
-       foreach ($entries as $entry) {
-
-          if ( $i < 20 ){
-
-
-         $entry->setNavette($new_navette);
-        
-         if ( $direction == 'Entrée' && empty($new_navette->getDropoffLatitude()) ){
-           //pick up du plus loin
-           $new_navette->setDropoffLatitude( $entry->getDropoffLatitude() );
-           $new_navette->setDropoffLongitude( $entry->getDropoffLongitude() );
-
-           $new_navette->setPickupLatitude( $entry->getPickupLatitude() );
-           $new_navette->setPickupLongitude( $entry->getPickupLongitude() );
-
-           $new_navette->setDropoffLocation( $entry->getDropoffLocation() );
-
-         }
-         
-         else{
-           //pickup du plus proche
-
-            $new_navette->setPickupLatitude( $entry->getPickupLatitude() );
-            $new_navette->setPickupLongitude( $entry->getPickupLongitude() );
-
-             $new_navette->setDropoffLatitude( $entry->getDropoffLatitude() );
-             $new_navette->setDropoffLongitude( $entry->getDropoffLongitude() );
-         }
-       }
-       $i++;
-       $em->persist($entry);
-       }
+     function calculateHaversineDistance($lat1, $lon1, $lat2, $lon2) {
+      $earthRadius = 6371; // Radius of the Earth in kilometers
       
-       $em->flush();
+      $dLat = deg2rad($lat2 - $lat1);
+      $dLon = deg2rad($lon2 - $lon1);
+      
+      $a = sin($dLat/2) * sin($dLat/2) + 
+           cos(deg2rad($lat1)) * cos(deg2rad($lat2)) * 
+           sin($dLon/2) * sin($dLon/2);
+      
+      $c = 2 * atan2(sqrt($a), sqrt(1-$a));
+      $distance = $earthRadius * $c;
+      
+      return $distance;
+  }
 
+     if ($create == 'yes') {
+      $em = $this->getDoctrine()->getManager();
+  
+      $reservationEntriesRepo = $this->getDoctrine()->getRepository(ReservationEntries::class);
+      $entries = $reservationEntriesRepo->findBy(
+          [
+              'reservation_date' => new \DateTime($date), 
+              'reservation_heure' => $heure, 
+              'direction' => $direction, 
+              'trajet_id' => empty($trajet_id) ? null : $trajet_id,
+              'status' => 'validée',
+              'navette_id' => null 
+          ]
+      );
+  
+      // If we have entries, we can set reference points and sort them
+      if (count($entries) > 0) {
+          // Get reference point (common location)
+          $referencePoint = [];
+          $firstEntry = $entries[0];
+          
+          if ($direction == 'Entrée') {
+              // For "Entrée", reference is the common dropoff
+              $referencePoint = [
+                  'lat' => $firstEntry->getDropoffLatitude(),
+                  'lng' => $firstEntry->getDropoffLongitude()
+              ];
+          } else {
+              // For "Sortie", reference is the common pickup
+              $referencePoint = [
+                  'lat' => $firstEntry->getPickupLatitude(),
+                  'lng' => $firstEntry->getPickupLongitude()
+              ];
+          }
+          
+          // Calculate distances for each entry
+          foreach ($entries as $entry) {
+              $pointToCompare = [];
+              if ($direction == 'Entrée') {
+                  // Compare pickup point to common dropoff
+                  $pointToCompare = [
+                      'lat' => $entry->getPickupLatitude(),
+                      'lng' => $entry->getPickupLongitude()
+                  ];
+              } else {
+                  // Compare dropoff point to common pickup
+                  $pointToCompare = [
+                      'lat' => $entry->getDropoffLatitude(),
+                      'lng' => $entry->getDropoffLongitude()
+                  ];
+              }
+              
+              // Calculate distance
+              $entry->calculatedDistance = calculateHaversineDistance(
+                  $referencePoint['lat'], 
+                  $referencePoint['lng'], 
+                  $pointToCompare['lat'], 
+                  $pointToCompare['lng']
+              );
+          }
+          
+          // Sort entries by calculated distance
+          usort($entries, function($a, $b) use ($direction) {
+              if ($direction == 'Entrée') {
+                  // Descending order for "Entrée" (farthest pickup first)
+                  return $b->calculatedDistance - $a->calculatedDistance;
+              } else {
+                  // Ascending order for "Sortie" (closest dropoff first)
+                  return $a->calculatedDistance - $b->calculatedDistance;
+              }
+          });
+      }
+  
+      // Create new shuttle
+      $trajet = $this->getDoctrine()->getRepository(Trajet::class)->find($trajet_id);
+      $new_navette = new Navette();
+      $new_navette->setStatus('en attente');
+      $new_navette->setDirection($direction);
+      $new_navette->setHeureNavette($heure);
+  
+      if ($trajet) {
+          $new_navette->setTrajet($trajet);
+          $new_navette->setNomTrajet($trajet->getName());
+      } else {
+          $new_navette->setNomTrajet('Home Pickup'.' '.$direction.' '.$heure);
+      }
+      
+      $new_navette->setVehicule(null);
+      $new_navette->setDateNavette(new \DateTime($date));
+  
+      $em->persist($new_navette);
+      $em->flush();
+  
+      // Function to calculate Haversine distance between two points
+
+      // Assign sorted entries to the shuttle (limited to 20)
+      $i = 0;
+      foreach ($entries as $entry) {
+          if ($i < 20) {
+              $entry->setNavette($new_navette);
+              
+              if ($direction == 'Entrée' && empty($new_navette->getDropoffLatitude())) {
+                  // For "Entrée", set pickup from the farthest entry (first in sorted list)
+                  // and set dropoff from the common dropoff location
+                  $new_navette->setDropoffLatitude($entry->getDropoffLatitude());
+                  $new_navette->setDropoffLongitude($entry->getDropoffLongitude());
+                  $new_navette->setDropoffLocation($entry->getDropoffLocation());
+                  
+                  $new_navette->setPickupLatitude($entry->getPickupLatitude());
+                  $new_navette->setPickupLongitude($entry->getPickupLongitude());
+              } 
+              else if ($direction == 'Sortie' && empty($new_navette->getPickupLatitude())) {
+                  // For "Sortie", set pickup from the common pickup location
+                  // and set dropoff from the closest entry (first in sorted list)
+                  $new_navette->setPickupLatitude($entry->getPickupLatitude());
+                  $new_navette->setPickupLongitude($entry->getPickupLongitude());
+                  $new_navette->setPickupLocation($entry->getPickupLocation());
+                  
+                  $new_navette->setDropoffLatitude($entry->getDropoffLatitude());
+                  $new_navette->setDropoffLongitude($entry->getDropoffLongitude());
+              }
+              
+              $em->persist($entry);
+          }
+          $i++;
+      }
+      
+      $em->flush();
+  
       return $this->redirectToRoute('navettes');
-
-
-       
-     } 
+  }
 
     return $this->render('admin/reservation_entries/index.html.twig', [
       'table' => $this->getTable($request, $user, $table),
@@ -279,7 +333,7 @@ public function createNavettes(Request $request)
             } else {
                 $new_navette->setPickupLatitude($firstEntry->getPickupLatitude());
                 $new_navette->setPickupLongitude($firstEntry->getPickupLongitude());
-                
+                $new_navette->setPickupLocation($firstEntry->getPickupLocation());
                 $lastPoint = end($route['route']);
                 $new_navette->setDropoffLatitude($lastPoint['optimizedLat']);
                 $new_navette->setDropoffLongitude($lastPoint['optimizedLon']);
@@ -686,7 +740,10 @@ public function createNavettes(Request $request)
             'id' => $entry->getId(), // Entry ID
             'pickupLatitude' => $entry->getPickupLatitude(), // Pickup latitude
             'pickupLongitude' => $entry->getPickupLongitude(), // Pickup longitude
-            'pickupLocation' => $entry->getPickupLocation() // Pickup location
+            'pickupLocation' => $entry->getPickupLocation(), // Pickup location
+            'dropoffLatitude' => $entry->getDropoffLatitude(), // Pickup latitude
+            'dropoffLongitude' => $entry->getDropoffLongitude(), // Pickup longitude
+            'dropoffLocation' => $entry->getDropoffLocation() // Pickup location
         ];
         }
         else{
@@ -877,7 +934,7 @@ public function createNavettes(Request $request)
       'icon'  => 'bi bi-pencil-square',
       'route' => '/admin/reservation_entries/[id]/update',
       'display' => function ($entity) use ($user) {
-        return $entity->canValidate($user);
+        return $entity->canModify($user);
       }
     ]);
 
@@ -903,7 +960,7 @@ public function createNavettes(Request $request)
       'route' => '/admin/reservation_entries/[id]/annuler',
       'label' => 'Annuler',
       'display' => function($entity) use ($user) {
-        return $entity->canValidate($user);
+        return $entity->canModify($user);
       }
     ]);
 

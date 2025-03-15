@@ -552,4 +552,36 @@ class ReservationEntries
 
         return $angle * $earthRadius;
     }
+
+    public function canModify($user)
+{
+    // If the user is an admin, they can always modify the reservation
+    if ($user->isAdmin()) {
+        return true;
+    }
+
+    // If the status is "annulée", no modifications are allowed
+    if ($this->getStatus() === 'annulée') {
+        return false;
+    }
+
+    // Get the current date and time
+    $now = new \DateTime("now");
+
+    // Get the reservation date
+    $reservationDate = $this->getReservationDate();
+
+    // If the current date is after the reservation date, no modifications are allowed
+    if ($now > $reservationDate) {
+        return false;
+    }
+
+    // If the user is the owner of the reservation and the status is either "en attente" or "validée", allow modifications
+    if ($this->getUser()->getId() === $user->getId() && in_array($this->getStatus(), ['en attente', 'validée'])) {
+        return true;
+    }
+
+    // Default to false if none of the above conditions are met
+    return false;
+}
 }

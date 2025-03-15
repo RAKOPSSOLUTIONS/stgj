@@ -68,15 +68,15 @@
   </tr>
   <tr>
     <td><b>{{ "Date"|trans }}</b></td>
-    <td>{% if navette.dateNavette %}{{ navette.dateNavette|date("d-m-Y") }} {% endif %}</td>
+    <td>{% if navette.dateNavette %}{{ navette.dateNavette|date("d/m/Y") }} {% endif %}</td>
     <td><b>{{ "Heure"|trans }}</b></td>
     <td>{{ navette.heureNavette }} </td>
   </tr>
   <tr>
     <td><b>{{ "Start at"|trans }}</b></td>
-    <td>{% if navette.startAt %}{{ navette.startAt|date("d-m-Y H:i:s") }} {% endif %}</td>
+    <td>{% if navette.startAt %}{{ navette.startAt|date("d/m/Y H:i:s") }} {% endif %}</td>
     <td><b>{{ "End at"|trans }}</b></td>
-    <td>{% if navette.endAt %}{{ navette.endAt|date("d-m-Y H:i:s") }} {% endif %} </td>
+    <td>{% if navette.endAt %}{{ navette.endAt|date("d/m/Y H:i:s") }} {% endif %} </td>
   </tr>
   <tr>
     <td><b>{{ "Société"|trans }}</b></td>

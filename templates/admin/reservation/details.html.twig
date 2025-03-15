@@ -44,7 +44,7 @@
     <td>{{ "Dates nécessitant le transport en entrée"|trans }}</td>
     <td><ul>
     {% for date in reservation.getDatesEntree() %}
-      <li>{{ date }}</li>
+      <li>{{ date|date('d/m/Y')}}</li>
     {% endfor %}</ul>
     </td>
   </tr>
@@ -91,7 +91,7 @@
     <td>{{ "Dates nécessitant le transport en sortie"|trans }}</td>
     <td><ul>
     {% for date in reservation.getDatesSortie() %}
-      <li>{{ date }}</li>
+      <li>{{ date|date('d/m/Y') }}</li>
     {% endfor %}</ul>
     </td>
   </tr>
