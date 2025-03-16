@@ -206,7 +206,7 @@ class UserController extends BaseController
         'template' => 'activate',
         'receiver' => $user->getEmail(),
         'subject' => 'Activation de votre compte',
-        'cc'       => ['abderrahmane@218labs.ma'],
+        'cc'       => [],
         'variables' => [
           'entity_id' => $user->getId(),
           'entity_name' => 'user'
@@ -252,7 +252,7 @@ class UserController extends BaseController
         'template' => 'desactivate',
         'receiver' => $user->getEmail(),
         'subject' => 'Désactivation de votre compte',
-        'cc'       => ['abderrahmane@218labs.ma'],
+        'cc'       => [],
         'variables' => [
           'entity_id' => $user->getId(),
           'entity_name' => 'user'

@@ -100,30 +100,7 @@ class ReservationEntriesType extends AbstractType
     ]);
 
 
-if ( $user->isAdmin() ){
-     $builder->add('dureeUp', TextType::class, ['label' => "Durée", 'required' => false,]);
-     $builder->add('heure_passage', TimeType::class, [
-              'label' => "Heure de passage",
-              'required' => false,
-              'widget' => 'single_text',  // Utilise un champ d'entrée unique
-              'input'  => 'datetime',     // Stocke comme objet DateTime
-              'with_seconds' => false,    // Désactive les secondes
-            ]);
-     $builder->add('start_at', TimeType::class, [
-              'label' => "Start at",
-              'required' => false,
-              'widget' => 'single_text',  // Utilise un champ d'entrée unique
-              'input'  => 'datetime',     // Stocke comme objet DateTime
-              'with_seconds' => false,    // Désactive les secondes
-            ]);
-     $builder->add('end_at', TimeType::class, [
-              'label' => "End at",
-              'required' => false,
-              'widget' => 'single_text',  // Utilise un champ d'entrée unique
-              'input'  => 'datetime',     // Stocke comme objet DateTime
-              'with_seconds' => false,    // Désactive les secondes
-            ]);
-}
+
      
 
             

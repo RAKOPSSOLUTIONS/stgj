@@ -1071,6 +1071,7 @@ public function createNavettes(Request $request)
     $id = $request->get('id', 0);
     if ($id > 0) {
       $entity = $this->getDoctrine()->getRepository(ReservationEntries::class)->find($id);
+      dump($entity);
     } else {
       $entity = new ReservationEntries();
     }
