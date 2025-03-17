@@ -17,7 +17,6 @@ yarn-error.log
 .idea
 .DS_Store
 *Zone.Identifier
-/public/uploads/
 /FILES_TO_REPLACE/
 .env
 .env.test
