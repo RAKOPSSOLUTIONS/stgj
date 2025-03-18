@@ -52,27 +52,28 @@
     <td>{{ trajet.site }}</td>
   </tr>
 </table>
-<table class="table table-hover table-basic mb-0">
-  <tr>
-    <td colspan="4" class="styled-title mb-2">
-      <h3>{{ "Points de ramassage"|trans }}</h3>
-    </td>
-  </tr>
-  <tr>
-    <th>Nom</th>
-    <th>Latitude</th>
-    <th>Longitude</th>
-    <th>Statut</th>
-  </tr>
-{% for pickup in pickups|sort((a, b) => a.name|split(' ')[0] <=> b.name|split(' ')[0]) %}
-    <tr>
-        <td>{{ pickup.name }}</td>
-        <td>{{ pickup.latitude }}</td>
-        <td>{{ pickup.longitude }}</td>
-        <td>{{ pickup.status }}</td>
-    </tr>
-{% endfor %}
+<div id="pickups-table-container">
+  {% include 'admin/trajet/_pickups_table.html.twig' with {'pickups': pickups} %}
+</div>
 
-</table>
+{% endblock %}
 
+{% block footer %}
+  {{ parent() }}
+  
+  <script>
+    document.addEventListener('DOMContentLoaded', function() {
+      // Listen for refresh events on the pickups table
+      document.getElementById('pickups-table')?.addEventListener('refresh', function() {
+        // Fetch the updated table
+        fetch('{{ path("trajets.pickups_table", {"id": trajet.id}) }}')
+          .then(response => response.json())
+          .then(data => {
+            if (data.status === 'success' && data.content) {
+              document.getElementById('pickups-table-container').innerHTML = data.content;
+            }
+          });
+      });
+    });
+  </script>
 {% endblock %}

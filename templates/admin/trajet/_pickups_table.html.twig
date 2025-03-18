@@ -1,0 +1,22 @@
+{# admin/trajet/_pickups_table.html.twig #}
+<table class="table table-hover table-basic mb-0" id="pickups-table">
+  <tr>
+    <td colspan="4" class="styled-title mb-2">
+      <h3>{{ "Points de ramassage"|trans }}</h3>
+    </td>
+  </tr>
+  <tr>
+    <th>Nom</th>
+    <th>Latitude</th>
+    <th>Longitude</th>
+    <th>Statut</th>
+  </tr>
+  {% for pickup in pickups|sort((a, b) => a.name|split(' ')[0] <=> b.name|split(' ')[0]) %}
+    <tr>
+      <td>{{ pickup.name }}</td>
+      <td>{{ pickup.latitude }}</td>
+      <td>{{ pickup.longitude }}</td>
+      <td>{{ pickup.status }}</td>
+    </tr>
+  {% endfor %}
+</table>

@@ -21,7 +21,7 @@ use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
 use App\Service\RouteOptimizationService;
-
+use Symfony\Component\HttpFoundation\JsonResponse;
 class TrajetController extends BaseController
 {
   /**
@@ -362,6 +362,33 @@ class TrajetController extends BaseController
     return $query;
   }
 
+
+
+/**
+ * @Route(methods={"GET"}, path="/admin/trajets/{id}/pickups-table", name="trajets.pickups_table")
+ */
+public function pickupsTable(Request $request, UserInterface $user, TranslatorInterface $translator)
+{
+    $id = $request->get('id');
+    $trajet = $this->getDoctrine()->getRepository(Trajet::class)->find($id);
+
+    if (!$trajet) {
+        return $this->json([
+            'status' => 'error', 
+            'message' => $translator->trans("Trajet introuvable")
+        ]);
+    }
+
+    return $this->json([
+        'status' => 'success',
+        'content' => $this->renderView('admin/trajet/_pickups_table.html.twig', [
+            'pickups' => $trajet->getPickups()
+        ])
+    ]);
+}
+
+
+
   /**
    * @Route(methods={"GET", "POST"}, path="/admin/trajets/{id}/pickup", name="trajets.pickup", defaults={"id"=0})
    */
@@ -396,9 +423,12 @@ class TrajetController extends BaseController
       $em->getRepository(Log::class)->store($user->getId(), $entity->getId(), 'pickup', 'add');
       
 
-       $this->addFlash( 'success', "Point de ramassage ajouté avec succès");
-           
-       return $this->redirectToRoute('trajets.details', ['id'=> $trajet->getId()]);
+
+      return $this->json([
+        'status' => 'success',
+        'message' => $translator->trans("Point de ramassage ajouté avec succès"),
+        'tableId' => 'pickups-table'
+    ]);
     }
 
     return $this->json([
