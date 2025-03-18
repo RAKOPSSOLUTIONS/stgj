@@ -12,6 +12,8 @@ use App\Form\UserType;
 use App\Service\Table;
 use App\Entity\MailHistory;
 use App\Controller\BaseController;
+use App\Entity\ReservationEntries;
+use App\Entity\Vehicule;
 use App\Form\Search\UserSearchType;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
@@ -434,33 +436,57 @@ class UserController extends BaseController
    */
   public function delete(Request $request, UserInterface $user, TranslatorInterface $translator)
   {
-    $em = $this->getDoctrine()->getManager();
-    $logRepo = $em->getRepository(Log::class);
-    $userRepo = $em->getRepository(User::class);
-    $items = $request->get('items', [$request->get('id', 0)]);
-
-    $users = $userRepo->createQueryBuilder('u')
-      ->where('u.id IN(:items)')
-      ->setParameter('items', $items)
-      ->getQuery()
-      ->getResult();
-
-    $user_id = $user->getId();
-    foreach ($users as $user) {
-      if ( count($user->getReservations()) == 0 ){
-        $em->remove($user);
-        $logRepo->store($user_id, $user->getId(), 'user', 'delete');
+      $em = $this->getDoctrine()->getManager();
+      $logRepo = $em->getRepository(Log::class);
+      $userRepo = $em->getRepository(User::class);
+      $vehiculeRepo = $em->getRepository(Vehicule::class);
+      $reservationRepo = $em->getRepository(ReservationEntries::class);
+  
+      // Get the items to delete (either from 'items' array or 'id' parameter)
+      $items = $request->get('items', [$request->get('id', 0)]);
+  
+      // Fetch the users to delete
+      $users = $userRepo->createQueryBuilder('u')
+          ->where('u.id IN(:items)')
+          ->setParameter('items', $items)
+          ->getQuery()
+          ->getResult();
+  
+      $user_id = $user->getId();
+      $deletedCount = 0;
+  
+      foreach ($users as $user) {
+          // Check if the user has no reservations
+          if (count($user->getReservations()) > 0) {
+              // Set related Vehicule entries to null
+              $vehicules = $vehiculeRepo->findBy(['user_id' => $user]);
+              foreach ($vehicules as $vehicule) {
+                  $vehicule->setUser(null);
+                  $em->persist($vehicule);
+              }
+  
+              // Set related ReservationEntries to null
+              $reservations = $reservationRepo->findBy(['user_id' => $user]);
+              foreach ($reservations as $reservation) {
+                  $reservation->setUser(null);
+                  $em->persist($reservation);
+              }
+          }
+          $em->remove($user);
+          $logRepo->store($user_id, $user->getId(), 'user', 'delete');
+          $deletedCount++;
       }
-    }
-    $em->flush();
-
-    return $this->json([
-      'tableId' => 'users',
-      'status'  => count($users) > 0 ? 'success' : 'info',
-      'message' => $translator->trans("%count% utilisateur(s) supprimé(s)", [
-        '%count%' => count($users)
-      ])
-    ]);
+  
+      // Flush all changes to the database
+      $em->flush();
+  
+      return $this->json([
+          'tableId' => 'users',
+          'status'  => $deletedCount > 0 ? 'success' : 'info',
+          'message' => $translator->trans("%count% utilisateur(s) supprimé(s)", [
+              '%count%' => $deletedCount
+          ])
+      ]);
   }
 
   private function getTable($request, $user, $table)
@@ -547,9 +573,6 @@ class UserController extends BaseController
         return "/admin/user/{$id}/delete";
       },
       'bulk_action' => true,
-      'display' => function($user) {
-        return $user->getEmail()=='contact@218labs.ma';
-      }
     ]);
     $query = $this->getTableQuery($request, $user);
     
@@ -765,7 +788,7 @@ class UserController extends BaseController
                           // Hash the password
                           $value = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[4]);
                           $password =  $value->format('Y-m-d');
-                          echo $password;exit;
+
                           $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
 
                           // Set the hashed password in the User entity

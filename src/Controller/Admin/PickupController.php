@@ -16,7 +16,8 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
-
+use App\Entity\ReservationEntries;
+use App\Entity\Reservation;
 class PickupController extends BaseController
 {
    /**
@@ -143,27 +144,71 @@ class PickupController extends BaseController
    */
   public function delete(Request $request, UserInterface $user, TranslatorInterface $translator)
   {
-    $items = $request->get('items', [$request->get('id', 0)]);
-
-    $this->getDoctrine()->getRepository(Pickup::class)
-      ->createQueryBuilder('c')
-      ->where('c.id IN(:items)')
-      ->setParameter('items', $items)
-      ->delete()
-      ->getQuery()
-      ->execute();
-
-    if (count($items) > 1) {
-      $message = $translator->trans("Les points de ramassage ont été supprimés");
-    } else {
-      $message = $translator->trans("le point de ramassage a bien été supprimé");
-    }
-
-    return $this->json([
-      'tableId' => 'options',
-      'status'  => 'success',
-      'message' => $message
-    ]);
+      $items = $request->get('items', [$request->get('id', 0)]);
+  
+      // Get the Doctrine entity manager
+      $entityManager = $this->getDoctrine()->getManager();
+  
+      // Delete the pickup points
+      $entityManager->getRepository(Pickup::class)
+          ->createQueryBuilder('c')
+          ->where('c.id IN(:items)')
+          ->setParameter('items', $items)
+          ->delete()
+          ->getQuery()
+          ->execute();
+  
+      // Update Reservation entities
+      $reservationRepository = $entityManager->getRepository(Reservation::class);
+      $reservations = $reservationRepository->createQueryBuilder('r')
+          ->where('r.pickup_entree_id IN(:items) OR r.pickup_sortie_id IN(:items)')
+          ->setParameter('items', $items)
+          ->getQuery()
+          ->getResult();
+  
+      foreach ($reservations as $reservation) {
+          if (in_array($reservation->getPickupEntreeId(), $items)) {
+              $reservation->setPickupEntree(null);
+              $reservation->setAdresseEntree(null);
+              $reservation->setPickupLatitude(null);
+              $reservation->setPickupLongitude(null);
+          }
+          if (in_array($reservation->getPickupSortieId(), $items)) {
+              $reservation->setPickupSortie(null);
+              $reservation->setAdresseSortie(null);
+              $reservation->setPickupLatitude(null);
+              $reservation->setPickupLongitude(null);
+          }
+      }
+  
+      // Update ReservationEntries entities
+      $reservationEntriesRepository = $entityManager->getRepository(ReservationEntries::class);
+      $reservationEntries = $reservationEntriesRepository->createQueryBuilder('re')
+          ->where('re.pickup_id IN(:items)')
+          ->setParameter('items', $items)
+          ->getQuery()
+          ->getResult();
+  
+      foreach ($reservationEntries as $reservationEntry) {
+          $reservationEntry->setPickup(null);
+          $reservationEntry->setPickupLatitude(null);
+          $reservationEntry->setPickupLongitude(null);
+      }
+  
+      // Flush all changes to the database
+      $entityManager->flush();
+  
+      if (count($items) > 1) {
+          $message = $translator->trans("Les points de ramassage ont été supprimés");
+      } else {
+          $message = $translator->trans("le point de ramassage a bien été supprimé");
+      }
+  
+      return $this->json([
+          'tableId' => 'pickups',
+          'status'  => 'success',
+          'message' => $message
+      ]);
   }
 
   private function getTable($request, $user, $table)
@@ -215,7 +260,7 @@ class PickupController extends BaseController
       'icon'  => 'bi bi-clock-history',
       'route' => '/admin/logs/pickup/[id]'
     ]);
-    /*$table->addDivider();
+    $table->addDivider();
     $table->addAction('delete', [
       'type'  => 'modal',
       'label' => 'Supprimer',
@@ -225,7 +270,7 @@ class PickupController extends BaseController
         return "/admin/pickups/{$id}/delete";
       },
       'bulk_action' => true
-    ]);*/
+    ]);
 
     $query = $this->getTableQuery($request, $user);
     

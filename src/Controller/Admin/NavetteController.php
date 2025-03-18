@@ -811,8 +811,8 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
           // Loop through sorted entries and display them
           foreach ($entries as $entry) {
               $heure_passage = $entry->getHeurePassage() ? $entry->getHeurePassage()->format('H:i') : '';
-              $name = $entry->getUser()->getNom() . ' ' . $entry->getUser()->getPrenom();
-              $matricule = $entry->getUser()->getMatricule();
+              $name = $entry->getUser() ? $entry->getUser()->getNom() . ' ' . $entry->getUser()->getPrenom() : null;
+              $matricule = $entry->getUser() ? $entry->getUser()->getMatricule(): null;
               $pickup = $entry->getPickupLocation();
               $dropoff = $entry->getDropoffLocation();
   

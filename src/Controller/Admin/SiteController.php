@@ -10,6 +10,8 @@ use App\Service\Table;
 use App\Form\SiteType;
 use App\Form\Search\SiteSearchType;
 use App\Controller\BaseController;
+use App\Entity\Reservation;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -143,27 +145,71 @@ class SiteController extends BaseController
    */
   public function delete(Request $request, UserInterface $user, TranslatorInterface $translator)
   {
-    $items = $request->get('items', [$request->get('id', 0)]);
-
-    $this->getDoctrine()->getRepository(Site::class)
-      ->createQueryBuilder('c')
-      ->where('c.id IN(:items)')
-      ->setParameter('items', $items)
-      ->delete()
-      ->getQuery()
-      ->execute();
-
-    if (count($items) > 1) {
-      $message = $translator->trans("Les sites ont été supprimés");
-    } else {
-      $message = $translator->trans("le site a bien été supprimé");
-    }
-
-    return $this->json([
-      'tableId' => 'options',
-      'status'  => 'success',
-      'message' => $message
-    ]);
+      $items = $request->get('items', [$request->get('id', 0)]);
+  
+      // Get the Doctrine entity manager
+      $entityManager = $this->getDoctrine()->getManager();
+  
+      // Update related entities to set site_id to NULL
+      $this->updateRelatedEntities($entityManager, $items);
+  
+      // Delete the sites
+      $this->getDoctrine()->getRepository(Site::class)
+          ->createQueryBuilder('c')
+          ->where('c.id IN(:items)')
+          ->setParameter('items', $items)
+          ->delete()
+          ->getQuery()
+          ->execute();
+  
+      // Set the success message based on the number of items deleted
+      if (count($items) > 1) {
+          $message = $translator->trans("Les sites ont été supprimés");
+      } else {
+          $message = $translator->trans("le site a bien été supprimé");
+      }
+  
+      return $this->json([
+          'tableId' => 'sites',
+          'status'  => 'success',
+          'message' => $message
+      ]);
+  }
+  
+  private function updateRelatedEntities($entityManager, $siteIds)
+  {
+      // Update Trajet entities
+      $entityManager->getRepository(Trajet::class)
+          ->createQueryBuilder('t')
+          ->update()
+          ->set('t.site_id', ':nullValue')
+          ->where('t.site_id IN(:siteIds)')
+          ->setParameter('nullValue', null)
+          ->setParameter('siteIds', $siteIds)
+          ->getQuery()
+          ->execute();
+  
+      // Update User entities
+      $entityManager->getRepository(User::class)
+          ->createQueryBuilder('u')
+          ->update()
+          ->set('u.site_id', ':nullValue')
+          ->where('u.site_id IN(:siteIds)')
+          ->setParameter('nullValue', null)
+          ->setParameter('siteIds', $siteIds)
+          ->getQuery()
+          ->execute();
+  
+      // Update Reservation entities
+      $entityManager->getRepository(Reservation::class)
+          ->createQueryBuilder('r')
+          ->update()
+          ->set('r.site_id', ':nullValue')
+          ->where('r.site_id IN(:siteIds)')
+          ->setParameter('nullValue', null)
+          ->setParameter('siteIds', $siteIds)
+          ->getQuery()
+          ->execute();
   }
 
   private function getTable($request, $user, $table)
@@ -207,7 +253,7 @@ class SiteController extends BaseController
       'icon'  => 'bi bi-clock-history',
       'route' => '/admin/logs/site/[id]'
     ]);
-    /*$table->addDivider();
+    $table->addDivider();
     $table->addAction('delete', [
       'type'  => 'modal',
       'label' => 'Supprimer',
@@ -217,7 +263,7 @@ class SiteController extends BaseController
         return "/admin/sites/{$id}/delete";
       },
       'bulk_action' => true
-    ]);*/
+    ]);
 
     $query = $this->getTableQuery($request, $user);
     

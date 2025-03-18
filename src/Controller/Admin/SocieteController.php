@@ -8,6 +8,8 @@ use App\Entity\Societe;
 use App\Service\Table;
 use App\Form\SocieteType;
 use App\Controller\BaseController;
+use App\Entity\Site;
+use App\Entity\User;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -138,27 +140,59 @@ class SocieteController extends BaseController
    */
   public function delete(Request $request, UserInterface $user, TranslatorInterface $translator)
   {
-    $items = $request->get('items', [$request->get('id', 0)]);
+      $items = $request->get('items', [$request->get('id', 0)]);
+  
+      // Get the Doctrine entity manager
+      $entityManager = $this->getDoctrine()->getManager();
+  
+      // Update related Site entities to set societe_id to NULL
+      $this->updateRelatedSites($entityManager, $items);
+  
+      // Delete the Societe entities
+      $this->getDoctrine()->getRepository(Societe::class)
+          ->createQueryBuilder('s')
+          ->where('s.id IN(:items)')
+          ->setParameter('items', $items)
+          ->delete()
+          ->getQuery()
+          ->execute();
+  
+      // Set the success message based on the number of items deleted
+      if (count($items) > 1) {
+          $message = $translator->trans("Les sociétés ont été supprimées");
+      } else {
+          $message = $translator->trans("La société a bien été supprimée");
+      }
+  
+      return $this->json([
+          'tableId' => 'societes',
+          'status'  => 'success',
+          'message' => $message
+      ]);
+  }
+  
+  private function updateRelatedSites($entityManager, $societeIds)
+  {
+      // Update Site entities to set societe_id to NULL
+      $entityManager->getRepository(Site::class)
+          ->createQueryBuilder('site')
+          ->update()
+          ->set('site.societe_id', ':nullValue')
+          ->where('site.societe_id IN(:societeIds)')
+          ->setParameter('nullValue', null)
+          ->setParameter('societeIds', $societeIds)
+          ->getQuery()
+          ->execute();
 
-    $this->getDoctrine()->getRepository(Societe::class)
-      ->createQueryBuilder('s')
-      ->where('s.id IN(:items)')
-      ->setParameter('items', $items)
-      ->delete()
-      ->getQuery()
-      ->execute();
-
-    if (count($items) > 1) {
-      $message = $translator->trans("Les sociétés ont été supprimées");
-    } else {
-      $message = $translator->trans("La sociétés a bien été supprimée");
-    }
-
-    return $this->json([
-      'tableId' => 'societes',
-      'status'  => 'success',
-      'message' => $message
-    ]);
+          $entityManager->getRepository(User::class)
+          ->createQueryBuilder('u')
+          ->update()
+          ->set('u.societe_id', ':nullValue')
+          ->where('u.societe_id IN(:societeIds)')
+          ->setParameter('nullValue', null)
+          ->setParameter('societeIds', $societeIds)
+          ->getQuery()
+          ->execute();
   }
 
   private function getTable($request, $user, $table)
@@ -206,7 +240,7 @@ class SocieteController extends BaseController
       'icon'  => 'bi bi-clock-history',
       'route' => '/admin/logs/societe/[id]'
     ]);
-    /*$table->addDivider();
+    $table->addDivider();
     $table->addAction('delete', [
       'type'  => 'modal',
       'label' => 'Supprimer',
@@ -216,7 +250,7 @@ class SocieteController extends BaseController
         return "/admin/societe/{$id}/delete";
       },
       'bulk_action' => true
-    ]);*/
+    ]);
 
     $query = $this->getTableQuery($request, $user, $table);
     

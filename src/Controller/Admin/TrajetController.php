@@ -6,6 +6,7 @@ use App\Entity\Log;
 use App\Helpers\Base;
 use App\Entity\Trajet;
 use App\Entity\ReservationEntries;
+use App\Entity\Reservation;
 use App\Entity\Tarif;
 use App\Entity\Pickup;
 use App\Service\Table;
@@ -445,35 +446,70 @@ class TrajetController extends BaseController
    */
   public function delete(Request $request, UserInterface $user, TranslatorInterface $translator)
   {
-    $em = $this->getDoctrine()->getManager();
-    $items = $request->get('items', [$request->get('id', 0)]);
-    $logRepo = $em->getRepository(Log::class);
-    $trajetRepo = $em->getRepository(Trajet::class);
-    $trajets = $trajetRepo->createQueryBuilder('t')
-      ->where('t.id IN(:items)')
-      ->setParameter('items', $items)
-      ->getQuery()
-      ->getResult();
+      $em = $this->getDoctrine()->getManager();
+      $items = $request->get('items', [$request->get('id', 0)]);
+      $logRepo = $em->getRepository(Log::class);
+      $trajetRepo = $em->getRepository(Trajet::class);
+  
+      // Fetch the Trajets to be deleted
+      $trajets = $trajetRepo->createQueryBuilder('t')
+          ->where('t.id IN(:items)')
+          ->setParameter('items', $items)
+          ->getQuery()
+          ->getResult();
+  
+      $count = 0;
+  
+      foreach ($trajets as $trajet) {
+          // Check if there are no associated ReservationEntries
+          $entries = $this->getDoctrine()->getRepository(ReservationEntries::class)->findBy(['trajet_id' => $trajet->getId()]);
+          if (count($entries) > 0) {
+              // Set trajet_id to null in related Reservation entities
+              $reservations = $this->getDoctrine()->getRepository(Reservation::class)->findBy(['trajet_entree_id' => $trajet->getId()]);
+              foreach ($reservations as $reservation) {
+                  $reservation->setTrajetEntree(null);
+                  $em->persist($reservation);
+              }
+  
+              $reservations = $this->getDoctrine()->getRepository(Reservation::class)->findBy(['trajet_sortie_id' => $trajet->getId()]);
+              foreach ($reservations as $reservation) {
+                  $reservation->setTrajetSortie(null);
+                  $em->persist($reservation);
+              }
+  
+              // Set trajet_id to null in related ReservationEntries entities
+              $reservationEntries = $this->getDoctrine()->getRepository(ReservationEntries::class)->findBy(['trajet_id' => $trajet->getId()]);
+              foreach ($reservationEntries as $entry) {
+                  $entry->setTrajet(null);
+                  $em->persist($entry);
+              }
+            }
 
-    $count = 0; 
+            $pickups = $this->getDoctrine()->getRepository(Pickup::class)->findBy(['trajet_id' => $trajet->getId()]);
+            if (count($pickups) > 0) {
+              // Set trajet_id to null in related Pickup entities
+              foreach ($pickups as $pickup) {
+                  $pickup->setTrajet(null);
+                  $em->persist($pickup);
+              }
+  
 
-    foreach ($trajets as $trajet) {
-      $entries = $this->getDoctrine()->getRepository(ReservationEntries::class)->findBy(['trajet_id' => $trajet->getId()]);
-      if ( count($entries) == 0 ){
-        $em->remove($trajet);
-        $logRepo->store($user->getId(), $trajet->getId(), 'trajet', 'delete');
-        $count += 1; 
+          }
+
+          $em->remove($trajet);
+          $logRepo->store($user->getId(), $trajet->getId(), 'trajet', 'delete');
+          $count += 1;
       }
-    }
-    $em->flush();
-
-    return $this->json([
-      'tableId' => 'trajets',
-      'status'  => $count > 0 ? 'success' : 'info',
-      'message' => $translator->trans("%count% trajets(s) supprimé(s)", [
-        '%count%' => $count
-      ])
-    ]);
+  
+      $em->flush();
+  
+      return $this->json([
+          'tableId' => 'trajets',
+          'status'  => $count > 0 ? 'success' : 'info',
+          'message' => $translator->trans("%count% trajets(s) supprimé(s)", [
+              '%count%' => $count
+          ])
+      ]);
   }
 
 }
