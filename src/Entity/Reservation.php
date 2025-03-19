@@ -403,7 +403,7 @@ class Reservation
     }
 
     /**
-     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reservations")
+     * @ORM\ManyToOne(targetEntity=User::class, inversedBy="reservations" , cascade={"persist"})
      * @ORM\JoinColumn(nullable=false)
      */
     private $user;

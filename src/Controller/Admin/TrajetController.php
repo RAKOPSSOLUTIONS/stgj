@@ -14,6 +14,7 @@ use App\Form\TrajetType;
 use App\Form\PickupType;
 use App\Form\Search\TrajetSearchType;
 use App\Controller\BaseController;
+use App\Entity\Navette;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Annotation\Route;
@@ -523,7 +524,14 @@ public function pickupsTable(Request $request, UserInterface $user, TranslatorIn
                   $em->persist($pickup);
               }
   
-
+              $Navettes = $this->getDoctrine()->getRepository(Navette::class)->findBy(['trajet_id' => $trajet->getId()]);
+              if (count($Navettes) > 0) {
+                // Set trajet_id to null in related Pickup entities
+                foreach ($Navettes as $Navette) {
+                    $Navette->setTrajet(null);
+                    $em->persist($Navette);
+                }
+              }
           }
 
           $em->remove($trajet);
