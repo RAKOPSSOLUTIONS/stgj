@@ -459,12 +459,6 @@ class UserController extends BaseController
           // Check if the user has no reservations
           if (count($user->getReservations()) > 0) {
               // Set related Vehicule entries to null
-              $vehicules = $vehiculeRepo->findBy(['user_id' => $user]);
-              foreach ($vehicules as $vehicule) {
-                  $vehicule->setUser(null);
-                  $em->persist($vehicule);
-              }
-  
               // Set related ReservationEntries to null
               $reservations = $reservationRepo->findBy(['user_id' => $user]);
               foreach ($reservations as $reservation) {
@@ -472,6 +466,17 @@ class UserController extends BaseController
                   $em->persist($reservation);
               }
           }
+
+
+
+          $vehicules = $vehiculeRepo->findBy(['user_id' => $user]);
+          if(count($vehicules) > 0){
+            foreach ($vehicules as $vehicule) {
+              $vehicule->setUser(null);
+              $em->persist($vehicule);
+          }
+          }
+
           $em->remove($user);
           $logRepo->store($user_id, $user->getId(), 'user', 'delete');
           $deletedCount++;
