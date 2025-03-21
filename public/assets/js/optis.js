@@ -35,23 +35,25 @@ document.addEventListener('DOMContentLoaded', function() {
     }).addTo(map);
     
     // Add legend
-// Update the legend to show the new traffic classifications
-const legend = L.control({ position: 'bottomright' });
-legend.onAdd = function(map) {
-    const div = L.DomUtil.create('div', 'legend');
-    div.innerHTML = `
-        <div class="legend-item">
-            <span class="legend-color" style="background: #ffff00"></span>Normal Traffic (+5 min)
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background: #ff0000"></span>Rush Hour Traffic (+10 min)
-        </div>
-        <div class="legend-item">
-            <span class="legend-color" style="background: purple"></span>Stop Point
-        </div>
-    `;
-    return div;
-};
+    const legend = L.control({ position: 'bottomright' });
+    legend.onAdd = function(map) {
+        const div = L.DomUtil.create('div', 'legend');
+        div.innerHTML = `
+            <div class="legend-item">
+                <span class="legend-color" style="background: #00ff00"></span>Light Traffic
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #ffff00"></span>Moderate Traffic
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: #ff0000"></span>Heavy Traffic
+            </div>
+            <div class="legend-item">
+                <span class="legend-color" style="background: purple"></span>Stop Point
+            </div>
+        `;
+        return div;
+    };
     legend.addTo(map);
 
     // Initialize variables
@@ -191,18 +193,17 @@ function calculerDateNavette(date_navette1, heure_navette1, navette_direction1) 
 
 
 async function calculateTimeWithTraffic(currentPoint, nextPoint, date) {
-    const { routeData, shapeData } = await calculateRouteSegment(
-        currentPoint.lat,
-        currentPoint.lon,
-        nextPoint.lat,
-        nextPoint.lon,
-        date
-    );
+    console.log(currentPoint , nextPoint)
+const { routeData, shapeData } = await calculateRouteSegment(
+    currentPoint.lat,
+    currentPoint.lon,
+    nextPoint.lat,
+    nextPoint.lon,
+    date
+);
 
-    // Get base time in minutes
-    const baseTime = routeData.route.time / 60; 
-    
-    return baseTime; // Return just the base time, we'll add traffic time separately
+const baseTime = routeData.route.time / 60; // Base time in minutes
+return baseTime;
 }
 
 async function findTimeConstrainedRoute(startPoint, endPoint, stops, timeLimit, startTime) {
@@ -425,14 +426,7 @@ async function calculateRoute() {
 
 
         let date_navette = await calculerDateNavette(selectedRoute.date_navette, selectedRoute.heure_navette, selectedRoute.navette_direction);
-        
-        const dateObj = new Date(date_navette);
-        const hour = dateObj.getHours();
-        
-        // Fixed traffic delay in minutes
-        const trafficDelay = (hour === 8 || hour === 17 || hour === 18) ? 10 : 5;
-        const trafficStatus = (hour === 8 || hour === 17 || hour === 18) ? 'Rush Hour Traffic (+10 min)' : 'Normal Traffic (+5 min)';
-        const trafficColor = (hour === 8 || hour === 17 || hour === 18) ? '#ff0000' : '#ffff00';
+
 
         let endPoint = {
             lat:  selectedRoute.navette_direction === "Sortie" ? selectedRoute.pickup_latitude : selectedRoute.dropoff_latitude,
@@ -497,13 +491,14 @@ async function calculateRoute() {
 
         // Show the Google Maps button
         openGoogleMapsBtn.style.display = 'inline-block';
-
-
+        const dateObj = new Date(date_navette);
+        const hour = dateObj.getHours();
+        const trafficDelay = (hour === 8 || hour === 17 || hour === 18) ? 10 : 5;
         let totalDistance = 0;
         let baseTime = 0;
         let totalTrafficTime = 0;
         let accumulatedTime = 0;
-        let accumulatedTrafficTime = trafficDelay; 
+        let accumulatedTrafficTime = trafficDelay;
         let accumulatedDistance = 0;
         let allRouteCoords = [];
         let routeResults = {
@@ -538,7 +533,6 @@ async function calculateRoute() {
             const segmentBaseTime = segmentRoute.route.time / 60;
             baseTime += segmentBaseTime;
             accumulatedTime += segmentBaseTime;
-            accumulatedTrafficTime += segmentBaseTime; // Add base time to traffic time (which already includes the delay)
             accumulatedDistance += segmentRoute.route.distance * 1.60934;
 
             start.accumulatedTrafficTime = accumulatedTrafficTime;
@@ -586,26 +580,37 @@ async function calculateRoute() {
                 }
             }
 
-            
-
             // Calculate traffic impact
             for (let j = 0; j < routeCoords.length - 1; j++) {
+                const trafficLevel = Math.random();
+                let color, status, trafficMultiplier;
+
+                
+                    color = '#00ff00';
+                    status = 'Light traffic';
+                    trafficMultiplier = 1;
+                
+
+                const segmentTime = segmentBaseTime / (routeCoords.length - 1);
+                const trafficTime = segmentTime * trafficMultiplier;
+                accumulatedTrafficTime += trafficTime;
+                totalTrafficTime += trafficTime;
+
                 const segment = L.polyline([routeCoords[j], routeCoords[j + 1]], {
-                    color: accumulatedTime > timeLimit ? '#ff0000' : trafficColor,
+                    color: accumulatedTime > timeLimit ? '#ff0000' : color,
                     weight: 4,
                     opacity: 0.7
                 })
-                .bindPopup(`
-                    ${trafficStatus}<br>
-                    Time from start (No Traffic): ${Math.round(accumulatedTime)} min<br>
-                    Time from start (With Traffic): ${Math.round(accumulatedTrafficTime)} min<br>
-                    Distance: ${accumulatedDistance.toFixed(2)} km
-                `)
-                .addTo(map);
+                    .bindPopup(`
+                        ${status}<br>
+                        Time from start (No Traffic): ${Math.round(accumulatedTime)} min<br>
+                        Time from start (With Traffic): ${Math.round(accumulatedTrafficTime)} min<br>
+                        Distance: ${accumulatedDistance.toFixed(2)} km
+                    `)
+                    .addTo(map);
 
                 routeSegments.push(segment);
             }
-        
 
             totalDistance += segmentRoute.route.distance * 1.60934;
         }
@@ -689,7 +694,6 @@ async function calculateRoute() {
                 Time Limit: ${timeLimit} minutes<br>
                 Total Time (No Traffic): ${Math.round(accumulatedTime)} minutes<br>
                 Total Time (With Traffic): ${Math.round(accumulatedTrafficTime)} minutes<br>
-                Fixed Traffic Delay: ${trafficDelay} minutes (${trafficStatus})<br>
                 Time Limit Status: ${accumulatedTrafficTime <= timeLimit ? 
                     '<span style="color: green">✓ Within time limit</span>' : 
                     `<span style="color: red">⚠️ Exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes</span>`}<br>
@@ -700,7 +704,7 @@ async function calculateRoute() {
             <div class="time-comparison">
                 <strong>Time Analysis:</strong><br>
                 Base Route Time: ${Math.round(accumulatedTime)} minutes<br>
-                Traffic Delay: ${trafficDelay} minutes<br>
+                Additional Traffic Time: ${Math.round(accumulatedTrafficTime - accumulatedTime)} minutes<br>
                 ${accumulatedTrafficTime > timeLimit ? 
                     `<span style="color: red">⚠️ Route exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes with traffic</span>` :
                     `<span style="color: green">✓ Route is feasible even with traffic (${Math.round(timeLimit - accumulatedTrafficTime)} minutes under limit)</span>`}
