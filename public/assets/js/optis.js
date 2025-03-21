@@ -425,7 +425,14 @@ async function calculateRoute() {
 
 
         let date_navette = await calculerDateNavette(selectedRoute.date_navette, selectedRoute.heure_navette, selectedRoute.navette_direction);
-
+        
+        const dateObj = new Date(date_navette);
+        const hour = dateObj.getHours();
+        
+        // Fixed traffic delay in minutes
+        const trafficDelay = (hour === 8 || hour === 17 || hour === 18) ? 10 : 5;
+        const trafficStatus = (hour === 8 || hour === 17 || hour === 18) ? 'Rush Hour Traffic (+10 min)' : 'Normal Traffic (+5 min)';
+        const trafficColor = (hour === 8 || hour === 17 || hour === 18) ? '#ff0000' : '#ffff00';
 
         let endPoint = {
             lat:  selectedRoute.navette_direction === "Sortie" ? selectedRoute.pickup_latitude : selectedRoute.dropoff_latitude,
@@ -490,11 +497,7 @@ async function calculateRoute() {
 
         // Show the Google Maps button
         openGoogleMapsBtn.style.display = 'inline-block';
-        const dateObj = new Date(date_navette);
-        const hour = dateObj.getHours();
-        
-        // Fixed traffic delay in minutes
-        const trafficDelay = (hour === 8 || hour === 17 || hour === 18) ? 10 : 5;
+
 
         let totalDistance = 0;
         let baseTime = 0;
@@ -535,9 +538,10 @@ async function calculateRoute() {
             const segmentBaseTime = segmentRoute.route.time / 60;
             baseTime += segmentBaseTime;
             accumulatedTime += segmentBaseTime;
+            accumulatedTrafficTime += segmentBaseTime; // Add base time to traffic time (which already includes the delay)
             accumulatedDistance += segmentRoute.route.distance * 1.60934;
 
-            accumulatedTrafficTime += segmentBaseTime;
+            start.accumulatedTrafficTime = accumulatedTrafficTime;
             start.accumulatedDistance = accumulatedDistance;
 
             if (start.isStart || start.isStop) {
@@ -582,24 +586,23 @@ async function calculateRoute() {
                 }
             }
 
-            const color = (hour === 8 || hour === 17 || hour === 18) ? '#ff0000' : '#ffff00';
-            const status = (hour === 8 || hour === 17 || hour === 18) ? 'Rush Hour Traffic (+10 min)' : 'Normal Traffic (+5 min)';
+            
 
             // Calculate traffic impact
             for (let j = 0; j < routeCoords.length - 1; j++) {
                 const segment = L.polyline([routeCoords[j], routeCoords[j + 1]], {
-                    color: accumulatedTime > timeLimit ? '#ff0000' : color,
+                    color: accumulatedTime > timeLimit ? '#ff0000' : trafficColor,
                     weight: 4,
                     opacity: 0.7
                 })
-                    .bindPopup(`
-                        ${status}<br>
-                        Time from start (No Traffic): ${Math.round(accumulatedTime)} min<br>
-                        Time from start (With Traffic): ${Math.round(accumulatedTrafficTime)} min<br>
-                        Distance: ${accumulatedDistance.toFixed(2)} km
-                    `)
-                    .addTo(map);
-    
+                .bindPopup(`
+                    ${trafficStatus}<br>
+                    Time from start (No Traffic): ${Math.round(accumulatedTime)} min<br>
+                    Time from start (With Traffic): ${Math.round(accumulatedTrafficTime)} min<br>
+                    Distance: ${accumulatedDistance.toFixed(2)} km
+                `)
+                .addTo(map);
+
                 routeSegments.push(segment);
             }
         
@@ -679,30 +682,30 @@ async function calculateRoute() {
 
         // Update results display
         document.getElementById('result').innerHTML = `
-        <div class="route-info">
-            <strong>Route Details:</strong><br>
-            Route: ${selectedRoute.nom_trajet}<br>
-            Date: ${date_navette}<br>
-            Time Limit: ${timeLimit} minutes<br>
-            Total Time (No Traffic): ${Math.round(accumulatedTime)} minutes<br>
-            Total Time (With Traffic): ${Math.round(accumulatedTrafficTime)} minutes<br>
-            Fixed Added Delay: ${trafficDelay} minutes (${hour === 8 || hour === 17 || hour === 18 ? 'Rush Hour' : 'Normal'})<br>
-            Time Limit Status: ${accumulatedTrafficTime <= timeLimit ? 
-                '<span style="color: green">✓ Within time limit</span>' : 
-                `<span style="color: red">⚠️ Exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes</span>`}<br>
-            Total Distance: ${totalDistance.toFixed(2)} km<br>
-            Stops Reached: ${routeResults.stopsReached - 1} of ${stops.length}<br>
-            Completion Rate: ${(((routeResults.stopsReached - 1) / stops.length) * 100).toFixed(1)}%
-        </div>
-        <div class="time-comparison">
-            <strong>Time Analysis:</strong><br>
-            Base Route Time: ${Math.round(accumulatedTime)} minutes<br>
-            Traffic Delay: ${trafficDelay} minutes<br>
-            ${accumulatedTrafficTime > timeLimit ? 
-                `<span style="color: red">⚠️ Route exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes with traffic</span>` :
-                `<span style="color: green">✓ Route is feasible even with traffic (${Math.round(timeLimit - accumulatedTrafficTime)} minutes under limit)</span>`}
-        </div>
-    `;
+            <div class="route-info">
+                <strong>Route Details:</strong><br>
+                Route: ${selectedRoute.nom_trajet}<br>
+                Date: ${date_navette}<br>
+                Time Limit: ${timeLimit} minutes<br>
+                Total Time (No Traffic): ${Math.round(accumulatedTime)} minutes<br>
+                Total Time (With Traffic): ${Math.round(accumulatedTrafficTime)} minutes<br>
+                Fixed Traffic Delay: ${trafficDelay} minutes (${trafficStatus})<br>
+                Time Limit Status: ${accumulatedTrafficTime <= timeLimit ? 
+                    '<span style="color: green">✓ Within time limit</span>' : 
+                    `<span style="color: red">⚠️ Exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes</span>`}<br>
+                Total Distance: ${totalDistance.toFixed(2)} km<br>
+                Stops Reached: ${routeResults.stopsReached - 1} of ${stops.length}<br>
+                Completion Rate: ${(((routeResults.stopsReached - 1) / stops.length) * 100).toFixed(1)}%
+            </div>
+            <div class="time-comparison">
+                <strong>Time Analysis:</strong><br>
+                Base Route Time: ${Math.round(accumulatedTime)} minutes<br>
+                Traffic Delay: ${trafficDelay} minutes<br>
+                ${accumulatedTrafficTime > timeLimit ? 
+                    `<span style="color: red">⚠️ Route exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes with traffic</span>` :
+                    `<span style="color: green">✓ Route is feasible even with traffic (${Math.round(timeLimit - accumulatedTrafficTime)} minutes under limit)</span>`}
+            </div>
+        `;
 
         await submitRouteData(
             routeResults,
