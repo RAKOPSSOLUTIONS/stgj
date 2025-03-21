@@ -129,6 +129,8 @@ document.addEventListener('DOMContentLoaded', function() {
         return processedEntries;
     }
 
+
+    
     function calculerDateNavette(date_navette1, heure_navette1, navette_direction1) {
         const timeParts = heure_navette1.toString().split(':');
         let heures = parseInt(timeParts[0], 10);
@@ -260,6 +262,16 @@ document.addEventListener('DOMContentLoaded', function() {
             return 5; // 5 minutes buffer
         }
     }
+
+    
+    function updateLastUpdateTime() {
+        lastUpdateTime = new Date();
+        document.getElementById('lastUpdate').innerHTML = `
+            <strong>Traffic Data</strong><br>
+            <span class="update-time">Last updated: ${formatDateTime(lastUpdateTime)}</span>
+        `;
+    }
+
 
     async function calculateRouteSegment(startLat, startLon, endLat, endLon, date_navette) {
         const start = `${startLat},${startLon}`;
