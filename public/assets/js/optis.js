@@ -492,7 +492,7 @@ async function calculateRoute() {
         // Show the Google Maps button
         openGoogleMapsBtn.style.display = 'inline-block';
         const dateObj = new Date(date_navette);
-        const hour = dateObj.getHours();
+        const hour = selectedRoute.navette_direction === "Sortie" ? dateObj.getHours() :dateObj.getHours() + 1 ;
         const trafficDelay = (hour === 8 || hour === 17 || hour === 18) ? 10 : 5;
         let totalDistance = 0;
         let baseTime = 0;
