@@ -5,7 +5,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const entries = JSON.parse(appElement.dataset.entries);
     const calculateRouteBtn = document.getElementById('calculateRouteBtn');
     const updateTrafficBtn = document.getElementById('updateTraffic');
-    const openGoogleMapsBtn = document.getElementById('openGoogleMapsBtn'); 
+    const openGoogleMapsBtn = document.getElementById('openGoogleMapsBtn');
 
     console.log('Entries:', entries);
     console.log('Navette:', navette);
@@ -52,7 +52,9 @@ document.addEventListener('DOMContentLoaded', function() {
     let markers = [];
     let routeSegments = [];
     let lastUpdateTime = null;
+    let googleMapsUrl = null;
 
+    // Helper function to generate Google Maps URL
     function generateGoogleMapsUrl(optimizedPoints) {
         const baseUrl = 'https://www.google.com/maps/dir/';
         const coordinates = optimizedPoints.map(point => `${point.lat},${point.lon}`).join('/');
@@ -60,6 +62,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return fullUrl;
     }
 
+    // Function to handle opening Google Maps
     function openGoogleMaps() {
         if (googleMapsUrl) {
             window.open(googleMapsUrl, '_blank');
@@ -68,6 +71,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Add event listener for the Google Maps button
     openGoogleMapsBtn.addEventListener('click', openGoogleMaps);
 
     // Transform the data format
@@ -100,6 +104,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
     console.log('Transformed Route Data:', routeData);
 
+    // Function to process entries with unique stop time
     function processEntriesWithUniqueStopTime(entries) {
         const processedEntries = [];
         const locationTracker = new Set();
@@ -129,8 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
         return processedEntries;
     }
 
-
-    
+    // Function to calculate the adjusted date and time for the navette
     function calculerDateNavette(date_navette1, heure_navette1, navette_direction1) {
         const timeParts = heure_navette1.toString().split(':');
         let heures = parseInt(timeParts[0], 10);
@@ -154,125 +158,17 @@ document.addEventListener('DOMContentLoaded', function() {
         return `${date_navette1} ${heureFormattee}`;
     }
 
-
-    async function findTimeConstrainedRoute(startPoint, endPoint, stops, timeLimit, startTime) {
-        let optimizedRoute = [startPoint]; // Start with the starting point
-        let currentPoint = startPoint;
-        let currentTime = 0; // Track the total time taken so far
-        let remainingStops = [...stops]; // Copy of stops to avoid mutating the original array
-    
-        // Helper function to calculate time buffer based on the time of day
-        function calculateTimeBuffer(time) {
-            const hour = new Date(time).getHours();
-            if (hour === 8 || hour === 17 || hour === 18) {
-                return 10; // 10 minutes buffer for 8:00, 17:00, or 18:00
-            } else {
-                return 5; // 5 minutes buffer for all other times
-            }
-        }
-    
-        while (remainingStops.length > 0) {
-            let bestNextStop = null;
-            let bestStopTime = Infinity;
-    
-            // Check if we can reach the end point within the time limit
-            const timeToEnd = await calculateRouteSegment(
-                currentPoint.lat,
-                currentPoint.lon,
-                endPoint.lat,
-                endPoint.lon,
-                startTime
-            ).then(({ routeData }) => routeData.route.time / 60); // Convert to minutes
-    
-            // Add time buffer based on the time of day
-            const timeBuffer = calculateTimeBuffer(startTime);
-            const totalTimeToEnd = timeToEnd + timeBuffer;
-    
-            // If we can't reach the end point within the time limit, break the loop
-            if (currentTime + totalTimeToEnd > timeLimit) {
-                break;
-            }
-    
-            // Find the best next stop that can be reached within the time limit
-            for (let i = 0; i < remainingStops.length; i++) {
-                const potentialStop = remainingStops[i];
-    
-                // Calculate time to this stop
-                const timeToStop = await calculateRouteSegment(
-                    currentPoint.lat,
-                    currentPoint.lon,
-                    potentialStop.lat,
-                    potentialStop.lon,
-                    startTime
-                ).then(({ routeData }) => routeData.route.time / 60); // Convert to minutes
-    
-                // Add time buffer based on the time of day
-                const totalTimeToStop = timeToStop + timeBuffer;
-    
-                // Calculate time from this stop to the end point
-                const timeFromStopToEnd = await calculateRouteSegment(
-                    potentialStop.lat,
-                    potentialStop.lon,
-                    endPoint.lat,
-                    endPoint.lon,
-                    startTime
-                ).then(({ routeData }) => routeData.route.time / 60); // Convert to minutes
-    
-                // Add time buffer based on the time of day
-                const totalTimeFromStopToEnd = timeFromStopToEnd + timeBuffer;
-    
-                // Calculate total time if we go to this stop
-                const totalTime = currentTime + totalTimeToStop + (potentialStop.stopTime || 0) + totalTimeFromStopToEnd;
-    
-                // Check if this stop is feasible within the time limit
-                if (totalTime <= timeLimit && totalTimeToStop < bestStopTime) {
-                    bestNextStop = potentialStop;
-                    bestStopTime = totalTimeToStop;
-                }
-            }
-    
-            // If no feasible next stop is found, break the loop
-            if (!bestNextStop) {
-                break;
-            }
-    
-            // Add the best stop to the route
-            currentTime += bestStopTime + (bestNextStop.stopTime || 0);
-            currentPoint = bestNextStop;
-            optimizedRoute.push(bestNextStop);
-    
-            // Remove the selected stop from the remaining stops
-            remainingStops = remainingStops.filter(stop => stop !== bestNextStop);
-        }
-    
-        // Add the end point to the route
-        optimizedRoute.push(endPoint);
-    
-        return optimizedRoute;
-    }
-
-
-    function calculateTimeBuffer(heure_navette) {
-        const time = heure_navette.split(':');
-        const hour = parseInt(time[0], 10);
-
+    // Function to calculate time buffer based on the time of day
+    function calculateTimeBuffer(time) {
+        const hour = new Date(time).getHours();
         if (hour === 8 || hour === 17 || hour === 18) {
-            return 10; // 10 minutes buffer
+            return 10; // 10 minutes buffer for 8:00, 17:00, or 18:00
         } else {
-            return 5; // 5 minutes buffer
+            return 5; // 5 minutes buffer for all other times
         }
     }
 
-    
-    function updateLastUpdateTime() {
-        lastUpdateTime = new Date();
-        document.getElementById('lastUpdate').innerHTML = `
-            <strong>Traffic Data</strong><br>
-            <span class="update-time">Last updated: ${formatDateTime(lastUpdateTime)}</span>
-        `;
-    }
-
-
+    // Function to calculate route segment
     async function calculateRouteSegment(startLat, startLon, endLat, endLon, date_navette) {
         const start = `${startLat},${startLon}`;
         const end = `${endLat},${endLon}`;
@@ -297,6 +193,7 @@ document.addEventListener('DOMContentLoaded', function() {
         };
     }
 
+    // Function to calculate distance between two points
     function calculateDistance(point1, point2) {
         const R = 6371; // Earth's radius in kilometers
         const lat1 = point1.lat * Math.PI / 180;
@@ -311,7 +208,139 @@ document.addEventListener('DOMContentLoaded', function() {
         return R * c;
     }
 
+    // Function to find the farthest point from the end point
+    function findFarthestPoint(endPoint, stops) {
+        let farthestPoint = null;
+        let maxDistance = -1;
+
+        for (const stop of stops) {
+            const distance = calculateDistance(endPoint, stop);
+            if (distance > maxDistance) {
+                maxDistance = distance;
+                farthestPoint = stop;
+            }
+        }
+
+        if (farthestPoint) {
+            farthestPoint.isStop = true;
+            farthestPoint.isEnd = false;
+        }
+
+        return farthestPoint;
+    }
+
+    // Function to format date and time
+    function formatDateTime(date) {
+        return new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        }).format(date);
+    }
+
+    // Function to update the last update time
+    function updateLastUpdateTime() {
+        lastUpdateTime = new Date();
+        document.getElementById('lastUpdate').innerHTML = `
+            <strong>Traffic Data</strong><br>
+            <span class="update-time">Last updated: ${formatDateTime(lastUpdateTime)}</span>
+        `;
+    }
+
+    // Function to calculate the optimal route
+    async function findTimeConstrainedRoute(startPoint, endPoint, stops, timeLimit, startTime) {
+        let optimizedRoute = [startPoint];
+        let currentPoint = startPoint;
+        let currentTime = 0;
+        let remainingStops = [...stops];
+
+        while (remainingStops.length > 0) {
+            let bestNextStop = null;
+            let bestStopTime = Infinity;
+
+            // Calculate time to end point
+            const timeToEnd = await calculateRouteSegment(
+                currentPoint.lat,
+                currentPoint.lon,
+                endPoint.lat,
+                endPoint.lon,
+                startTime
+            ).then(({ routeData }) => routeData.route.time / 60);
+
+            // Add time buffer
+            const timeBuffer = calculateTimeBuffer(startTime);
+            const totalTimeToEnd = timeToEnd + timeBuffer;
+
+            // If time to end exceeds limit, break
+            if (currentTime + totalTimeToEnd > timeLimit) {
+                break;
+            }
+
+            // Find the best next stop
+            for (let i = 0; i < remainingStops.length; i++) {
+                const potentialStop = remainingStops[i];
+
+                // Calculate time to this stop
+                const timeToStop = await calculateRouteSegment(
+                    currentPoint.lat,
+                    currentPoint.lon,
+                    potentialStop.lat,
+                    potentialStop.lon,
+                    startTime
+                ).then(({ routeData }) => routeData.route.time / 60);
+
+                // Add time buffer
+                const totalTimeToStop = timeToStop + timeBuffer;
+
+                // Calculate time from this stop to end
+                const timeFromStopToEnd = await calculateRouteSegment(
+                    potentialStop.lat,
+                    potentialStop.lon,
+                    endPoint.lat,
+                    endPoint.lon,
+                    startTime
+                ).then(({ routeData }) => routeData.route.time / 60);
+
+                // Add time buffer
+                const totalTimeFromStopToEnd = timeFromStopToEnd + timeBuffer;
+
+                // Calculate total time
+                const totalTime = currentTime + totalTimeToStop + (potentialStop.stopTime || 0) + totalTimeFromStopToEnd;
+
+                // Check if this stop is feasible
+                if (totalTime <= timeLimit && totalTimeToStop < bestStopTime) {
+                    bestNextStop = potentialStop;
+                    bestStopTime = totalTimeToStop;
+                }
+            }
+
+            // If no feasible stop found, break
+            if (!bestNextStop) {
+                break;
+            }
+
+            // Add the best stop to the route
+            currentTime += bestStopTime + (bestNextStop.stopTime || 0);
+            currentPoint = bestNextStop;
+            optimizedRoute.push(bestNextStop);
+
+            // Remove the selected stop from remaining stops
+            remainingStops = remainingStops.filter(stop => stop !== bestNextStop);
+        }
+
+        // Add the end point to the route
+        optimizedRoute.push(endPoint);
+
+        return optimizedRoute;
+    }
+
+    // Function to calculate the route
     async function calculateRoute() {
+        // Clear previous markers and route segments
         markers.forEach(marker => map.removeLayer(marker));
         markers = [];
         routeSegments.forEach(segment => map.removeLayer(segment));
@@ -323,7 +352,7 @@ document.addEventListener('DOMContentLoaded', function() {
             let timeLimit = selectedRoute.time_limit;
 
             if (selectedRoute.navette_direction === "Sortie") {
-                timeLimit -= 10;
+                timeLimit -= 10; // Reduce time limit by 10 minutes for "Sortie"
             }
 
             let date_navette = await calculerDateNavette(selectedRoute.date_navette, selectedRoute.heure_navette, selectedRoute.navette_direction);
@@ -348,26 +377,6 @@ document.addEventListener('DOMContentLoaded', function() {
                 isStop: true
             }));
 
-            function findFarthestPoint(endPoint, stops) {
-                let farthestPoint = null;
-                let maxDistance = -1;
-
-                for (const stop of stops) {
-                    const distance = calculateDistance(endPoint, stop);
-                    if (distance > maxDistance) {
-                        maxDistance = distance;
-                        farthestPoint = stop;
-                    }
-                }
-
-                if (farthestPoint) {
-                    farthestPoint.isStop = true;
-                    farthestPoint.isEnd = false;
-                }
-
-                return farthestPoint;
-            }
-
             let startPoint;
             if (selectedRoute.navette_direction === "Sortie") {
                 startPoint = {
@@ -381,6 +390,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 startPoint = findFarthestPoint(endPoint, stops);
             }
 
+            // Call the findTimeConstrainedRoute function
             const optimizedPoints = await findTimeConstrainedRoute(
                 startPoint,
                 endPoint,
@@ -570,6 +580,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Function to submit route data
     async function submitRouteData(routeResults, optimizedPoints, navetteId) {
         const entriesData = optimizedPoints
             .filter(point => point.isStop)
@@ -614,6 +625,7 @@ document.addEventListener('DOMContentLoaded', function() {
         }
     }
 
+    // Add event listeners
     calculateRouteBtn.addEventListener('click', function() {
         updateTrafficBtn.style.display = 'inline-block';
         calculateRouteBtn.disabled = true;
