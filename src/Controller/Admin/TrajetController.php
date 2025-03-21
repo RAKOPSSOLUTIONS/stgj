@@ -523,15 +523,15 @@ public function pickupsTable(Request $request, UserInterface $user, TranslatorIn
                   $pickup->setTrajet(null);
                   $em->persist($pickup);
               }
-  
-              $Navettes = $this->getDoctrine()->getRepository(Navette::class)->findBy(['trajet_id' => $trajet->getId()]);
-              if (count($Navettes) > 0) {
-                // Set trajet_id to null in related Pickup entities
-                foreach ($Navettes as $Navette) {
-                    $Navette->setTrajet(null);
-                    $em->persist($Navette);
-                }
-              }
+          }
+
+          $Navettes = $this->getDoctrine()->getRepository(Navette::class)->findBy(['trajet_id' => $trajet->getId()]);
+          if (count($Navettes) > 0) {
+            // Set trajet_id to null in related Pickup entities
+            foreach ($Navettes as $Navette) {
+                $Navette->setTrajet(null);
+                $em->persist($Navette);
+            }
           }
 
           $em->remove($trajet);
