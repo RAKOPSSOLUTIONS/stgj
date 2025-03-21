@@ -704,7 +704,7 @@ async function calculateRoute() {
                 Additional Time: ${Math.round(accumulatedTrafficTime - accumulatedTime)} minutes<br>
                 ${accumulatedTrafficTime > timeLimit ? 
                     `<span style="color: red">⚠️ Route exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes with traffic</span>` :
-                    `<span style="color: green">✓ Route is feasible even with traffic (${Math.round(timeLimit - accumulatedTrafficTime)} minutes under limit)</span>`}
+                    `<span style="color: green">✓ Route is feasible even with Additional (${Math.round(timeLimit - accumulatedTrafficTime)} minutes under limit)</span>`}
             </div>
         `;
 
