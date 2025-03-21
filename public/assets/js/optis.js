@@ -563,8 +563,7 @@ async function calculateRoute() {
                 const marker = L.marker([start.lat, start.lon], { icon: markerIcon })
                     .bindPopup(`
                         ${start.isStart ? 'Start' : 'Stop'}: ${start.location}<br>
-                        Time from start (No Traffic): ${Math.round(accumulatedTime)} minutes<br>
-                        Time from start (With Traffic): ${Math.round(accumulatedTrafficTime)} minutes<br>
+                        Time from start: ${Math.round(accumulatedTrafficTime)} minutes<br>
                         Distance: ${accumulatedDistance.toFixed(2)} km<br>
                         ${start.isStop ? `Stop Duration: ${start.stopTime} minutes<br>` : ''}
                         Remaining time: ${Math.round(timeLimit - accumulatedTime)} minutes
@@ -603,8 +602,7 @@ async function calculateRoute() {
                 })
                     .bindPopup(`
                         ${status}<br>
-                        Time from start (No Traffic): ${Math.round(accumulatedTime)} min<br>
-                        Time from start (With Traffic): ${Math.round(accumulatedTrafficTime)} min<br>
+                        Time from start : ${Math.round(accumulatedTrafficTime)} min<br>
                         Distance: ${accumulatedDistance.toFixed(2)} km
                     `)
                     .addTo(map);
@@ -618,8 +616,7 @@ async function calculateRoute() {
         const endMarker = L.marker([endPoint.lat, endPoint.lon], { icon: startIcon })
             .bindPopup(`
                 End: ${endPoint.location}<br>
-                Total time (No Traffic): ${Math.round(accumulatedTime)} minutes<br>
-                Total time (With Traffic): ${Math.round(accumulatedTrafficTime)} minutes<br>
+                Total time : ${Math.round(accumulatedTrafficTime)} minutes<br>
                 Total distance: ${totalDistance.toFixed(2)} km<br>
                 ${accumulatedTime <= timeLimit ? '✓ Within time limit' : '⚠️ Exceeds time limit'}
             `)
@@ -692,8 +689,8 @@ async function calculateRoute() {
                 Route: ${selectedRoute.nom_trajet}<br>
                 Date: ${date_navette}<br>
                 Time Limit: ${timeLimit} minutes<br>
-                Total Time (No Traffic): ${Math.round(accumulatedTime)} minutes<br>
-                Total Time (With Traffic): ${Math.round(accumulatedTrafficTime)} minutes<br>
+                Total Time (No Additional): ${Math.round(accumulatedTime)} minutes<br>
+                Total Time (With Additional): ${Math.round(accumulatedTrafficTime)} minutes<br>
                 Time Limit Status: ${accumulatedTrafficTime <= timeLimit ? 
                     '<span style="color: green">✓ Within time limit</span>' : 
                     `<span style="color: red">⚠️ Exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes</span>`}<br>
@@ -704,7 +701,7 @@ async function calculateRoute() {
             <div class="time-comparison">
                 <strong>Time Analysis:</strong><br>
                 Base Route Time: ${Math.round(accumulatedTime)} minutes<br>
-                Additional Traffic Time: ${Math.round(accumulatedTrafficTime - accumulatedTime)} minutes<br>
+                Additional Time: ${Math.round(accumulatedTrafficTime - accumulatedTime)} minutes<br>
                 ${accumulatedTrafficTime > timeLimit ? 
                     `<span style="color: red">⚠️ Route exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes with traffic</span>` :
                     `<span style="color: green">✓ Route is feasible even with traffic (${Math.round(timeLimit - accumulatedTrafficTime)} minutes under limit)</span>`}
