@@ -1,3 +1,7 @@
+
+
+
+
 document.addEventListener('DOMContentLoaded', function() {
     const appElement = document.getElementById('app');
 
@@ -5,13 +9,15 @@ document.addEventListener('DOMContentLoaded', function() {
     const entries = JSON.parse(appElement.dataset.entries);
     const calculateRouteBtn = document.getElementById('calculateRouteBtn');
     const updateTrafficBtn = document.getElementById('updateTraffic');
-    const openGoogleMapsBtn = document.getElementById('openGoogleMapsBtn');
+    const openGoogleMapsBtn = document.getElementById('openGoogleMapsBtn'); 
 
-    console.log('Entries:', entries);
+    console.log('Entriesaaa:', entries);
     console.log('Navette:', navette);
 
-    // Initialize map
-    const startIcon = L.icon({
+
+
+// Initialize map
+      const startIcon = L.icon({
         iconUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon.png',
         iconRetinaUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-icon-2x.png',
         shadowUrl: 'https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.7.1/images/marker-shadow.png',
@@ -21,40 +27,41 @@ document.addEventListener('DOMContentLoaded', function() {
         shadowSize: [41, 41]
     });
 
+ 
+
     const map = L.map('map').setView([34.020882, -6.84165], 7);
     L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
         attribution: '© OpenStreetMap contributors'
     }).addTo(map);
-
+    
     // Add legend
-    const legend = L.control({ position: 'bottomright' });
-    legend.onAdd = function(map) {
-        const div = L.DomUtil.create('div', 'legend');
-        div.innerHTML = `
-            <div class="legend-item">
-                <span class="legend-color" style="background: #00ff00"></span>Light Traffic
-            </div>
-            <div class="legend-item">
-                <span class="legend-color" style="background: #ffff00"></span>Moderate Traffic
-            </div>
-            <div class="legend-item">
-                <span class="legend-color" style="background: #ff0000"></span>Heavy Traffic
-            </div>
-            <div class="legend-item">
-                <span class="legend-color" style="background: purple"></span>Stop Point
-            </div>
-        `;
-        return div;
-    };
+// Update the legend to show the new traffic classifications
+const legend = L.control({ position: 'bottomright' });
+legend.onAdd = function(map) {
+    const div = L.DomUtil.create('div', 'legend');
+    div.innerHTML = `
+        <div class="legend-item">
+            <span class="legend-color" style="background: #ffff00"></span>Normal Traffic (+5 min)
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background: #ff0000"></span>Rush Hour Traffic (+10 min)
+        </div>
+        <div class="legend-item">
+            <span class="legend-color" style="background: purple"></span>Stop Point
+        </div>
+    `;
+    return div;
+};
     legend.addTo(map);
 
     // Initialize variables
     let markers = [];
     let routeSegments = [];
     let lastUpdateTime = null;
-    let googleMapsUrl = null;
 
-    // Helper function to generate Google Maps URL
+
+
+    
     function generateGoogleMapsUrl(optimizedPoints) {
         const baseUrl = 'https://www.google.com/maps/dir/';
         const coordinates = optimizedPoints.map(point => `${point.lat},${point.lon}`).join('/');
@@ -73,102 +80,246 @@ document.addEventListener('DOMContentLoaded', function() {
 
     // Add event listener for the Google Maps button
     openGoogleMapsBtn.addEventListener('click', openGoogleMaps);
+    
+
 
     // Transform the data format
-    let routeData = {
-        navette: [{
-            id: navette.id,
-            pickup_latitude: navette.pickupLatitude,
-            pickup_longitude: navette.pickupLongitude,
-            dropoff_latitude: navette.dropoffLatitude,
-            dropoff_longitude: navette.dropoffLongitude,
-            pickup_location: navette.pickupLocation,
-            dropoff_location: navette.dropoffLocation,
-            nom_trajet: navette.nomTrajet,
-            date_navette: navette.dateNavette,
-            heure_navette: navette.heureNavette,
-            navette_direction: navette.direction,
-            time_limit: 57
-        }],
-        reservation_entries: entries.map(entry => ({
-            id: entry.id,
-            pickup_latitude: entry.pickupLatitude,
-            pickup_longitude: entry.pickupLongitude,
-            pickup_location: entry.pickupLocation,
-            dropoffLatitude: entry.dropoffLatitude,
-            dropoffLongitude: entry.dropoffLongitude,
-            navette_id: entry.navetteId,
-            stop_time: parseInt(entry.dureeUp) || 1
-        }))
-    };
+let routeData = {
+    navette: [{
+        id: navette.id,
+        pickup_latitude: navette.pickupLatitude,
+        pickup_longitude: navette.pickupLongitude,
+        dropoff_latitude: navette.dropoffLatitude,
+        dropoff_longitude: navette.dropoffLongitude,
+        pickup_location: navette.pickupLocation,
+        dropoff_location: navette.dropoffLocation,
+        nom_trajet: navette.nomTrajet,
+        date_navette: navette.dateNavette,
+        heure_navette: navette.heureNavette,
+        navette_direction: navette.direction,
+        // Calculate time limit in minutes
 
-    console.log('Transformed Route Data:', routeData);
 
-    // Function to process entries with unique stop time
-    function processEntriesWithUniqueStopTime(entries) {
-        const processedEntries = [];
-        const locationTracker = new Set();
+        
+        time_limit: 57
+    }],
+    
+    reservation_entries: entries.map(entry => ({
+        id : entry.id,
+        pickup_latitude: entry.pickupLatitude,
+        pickup_longitude: entry.pickupLongitude,
+        pickup_location: entry.pickupLocation,
+        dropoffLatitude : entry.dropoffLatitude ,
+        dropoffLongitude : entry.dropoffLongitude,
+        navette_id: entry.navetteId,
+        // Ensure stop_time is a number, default to 1 if not provided
+        stop_time: parseInt(entry.dureeUp) || 1
+    }))
+};
 
-        entries.forEach(entry => {
-            let locationKey;
-            if (routeData.navette[0].navette_direction === 'Sortie') {
-                locationKey = `${entry.pickup_latitude},${entry.pickup_longitude}`;
-            } else {
-                locationKey = `${entry.pickup_latitude},${entry.pickup_longitude}`;
-            }
+// Log the transformed data to verify
+console.log('Transformed Route Data:', routeData);
 
-            if (!locationTracker.has(locationKey)) {
-                processedEntries.push({
-                    ...entry,
-                    stop_time: entry.stop_time || 1
-                });
-                locationTracker.add(locationKey);
-            } else {
-                processedEntries.push({
-                    ...entry,
-                    stop_time: 0
-                });
-            }
-        });
-        console.log(processedEntries);
-        return processedEntries;
-    }
 
-    // Function to calculate the adjusted date and time for the navette
-    function calculerDateNavette(date_navette1, heure_navette1, navette_direction1) {
-        const timeParts = heure_navette1.toString().split(':');
-        let heures = parseInt(timeParts[0], 10);
-        let minutes = parseInt(timeParts[1], 10) || 0;
+function processEntriesWithUniqueStopTime(entries) {
+    const processedEntries = [];
+    const locationTracker = new Set(); // Track locations that have already been processed
 
-        if (navette_direction1 === "Entrée") {
-            heures -= 1;
-            if (heures < 0) {
-                heures += 24;
-            }
-        } else if (navette_direction1 === "Sortie") {
-            minutes += 10;
-            if (minutes >= 60) {
-                heures += Math.floor(minutes / 60);
-                minutes = minutes % 60;
-            }
-            heures = heures % 24;
+    entries.forEach(entry => {
+        let locationKey ;
+        if(routeData.navette[0].navette_direction === 'Sortie'){
+            locationKey = `${entry.pickup_latitude},${entry.pickup_longitude}`;
+        }else{
+            locationKey = `${entry.pickup_latitude},${entry.pickup_longitude}`;
         }
+        
 
-        const heureFormattee = `${heures.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
-        return `${date_navette1} ${heureFormattee}`;
-    }
-
-    // Function to calculate time buffer based on the time of day
-    function calculateTimeBuffer(time) {
-        const hour = new Date(time).getHours();
-        if (hour === 8 || hour === 17 || hour === 18) {
-            return 10; // 10 minutes buffer for 8:00, 17:00, or 18:00
+        if (!locationTracker.has(locationKey)) {
+            // First occurrence of this location, keep the stop_time as is
+            processedEntries.push({
+                ...entry,
+                stop_time: entry.stop_time || 1 // Ensure stop_time is set
+            });
+            locationTracker.add(locationKey); // Mark this location as processed
         } else {
-            return 5; // 5 minutes buffer for all other times
+            // Subsequent occurrences of this location, set stop_time to 0
+            processedEntries.push({
+                ...entry,
+                stop_time: 0 // Set stop_time to 0 for duplicates
+            });
         }
+    });
+    console.log(processedEntries)
+    return processedEntries;
+}
+
+
+function calculerDateNavette(date_navette1, heure_navette1, navette_direction1) {
+    // Split the time into hours and minutes
+    const timeParts = heure_navette1.toString().split(':');
+    let heures = parseInt(timeParts[0], 10);
+    let minutes = parseInt(timeParts[1], 10) || 0;
+
+    if (navette_direction1 === "Entrée") {
+        // Subtract 1 hour
+        heures -= 1;
+        if (heures < 0) {
+            heures += 24; // Handle underflow (e.g., if heures was 0, it becomes 23)
+        }
+    
+        // Add 10 minutes
+        heures = heures % 24; // Ensure heures stays within 0-23 range
+    }else if (navette_direction1 === "Sortie") {
+        // Add 10 minutes to the start time
+        minutes += 10;
+        if (minutes >= 60) {
+            heures += Math.floor(minutes / 60);
+            minutes = minutes % 60;
+        }
+        heures = heures % 24;
     }
 
-    // Function to calculate route segment
+    const heureFormattee = `${heures.toString().padStart(2, '0')}:${minutes.toString().padStart(2, '0')}`;
+    return `${date_navette1} ${heureFormattee}`;
+}
+
+
+
+
+
+
+
+
+async function calculateTimeWithTraffic(currentPoint, nextPoint, date) {
+    const { routeData, shapeData } = await calculateRouteSegment(
+        currentPoint.lat,
+        currentPoint.lon,
+        nextPoint.lat,
+        nextPoint.lon,
+        date
+    );
+
+    // Get base time in minutes
+    const baseTime = routeData.route.time / 60; 
+    
+    // Extract the hour from the date string to apply the appropriate traffic multiplier
+    const dateObj = new Date(date);
+    const hour = dateObj.getHours();
+    
+    // Apply fixed traffic adjustment based on hour
+    let trafficMultiplier;
+    if (hour === 8 || hour === 17 || hour === 18) {
+        trafficMultiplier = 1.0 + (10 / baseTime); // Add 10 minutes
+    } else {
+        trafficMultiplier = 1.0 + (5 / baseTime); // Add 5 minutes
+    }
+    
+    return baseTime * trafficMultiplier;
+}
+
+async function findTimeConstrainedRoute(startPoint, endPoint, stops, timeLimit, startTime) {
+let optimizedRoute = [startPoint];
+let currentPoint = startPoint;
+let currentTime = 0;
+let remainingStops = [...stops];
+
+while (remainingStops.length > 0) {
+    let bestNextStop = null;
+    let bestStopTime = Infinity;
+    let shouldGoToEnd = false;
+    
+    // First, check time to end point with traffic
+    const timeToEndWithTraffic = await calculateTimeWithTraffic(currentPoint, endPoint, startTime);
+    
+    // If time to end would exceed limit, go directly to end
+    if (currentTime + timeToEndWithTraffic > timeLimit) {
+        shouldGoToEnd = true;
+        break;
+    }
+    
+    // Try each remaining stop
+    for (let i = 0; i < remainingStops.length; i++) {
+        const potentialStop = remainingStops[i];
+        
+        // Calculate time to this stop with traffic
+        const timeToStopWithTraffic = await calculateTimeWithTraffic(
+            currentPoint,
+            potentialStop,
+            startTime
+        );
+        
+        // Calculate time from this stop to end with traffic
+        const timeFromStopToEndWithTraffic = await calculateTimeWithTraffic(
+            potentialStop,
+            endPoint,
+            startTime
+        );
+        
+        const stopDuration = potentialStop.stopTime || 0;
+        const totalTimeWithTraffic = currentTime + timeToStopWithTraffic + stopDuration + timeFromStopToEndWithTraffic;
+        
+        // Check if this stop is feasible within time limit
+        if (totalTimeWithTraffic <= timeLimit && timeToStopWithTraffic < bestStopTime) {
+            bestNextStop = potentialStop;
+            bestStopTime = timeToStopWithTraffic;
+        }
+    }
+    
+    // If no feasible next stop found, go to end
+    if (!bestNextStop) {
+        shouldGoToEnd = true;
+        break;
+    }
+    
+    // Add best stop to route
+    currentTime += bestStopTime + (bestNextStop.stopTime || 0);
+    currentPoint = bestNextStop;
+    optimizedRoute.push(bestNextStop);
+    remainingStops = remainingStops.filter(stop => stop !== bestNextStop);
+}
+
+// Add end point
+optimizedRoute.push(endPoint);
+return optimizedRoute;
+}
+
+
+
+    function formatDateTime(date) {
+        return new Intl.DateTimeFormat('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            second: '2-digit',
+            hour12: true
+        }).format(date);
+    }
+
+    function formatTime(minutes) {
+        const hours = Math.floor(minutes / 60);
+        const mins = Math.round(minutes % 60);
+        return `${hours}:${mins.toString().padStart(2, '0')}`;
+    }
+
+    function calculateArrivalTime(startTime, travelMinutes) {
+        const arrivalTime = new Date(startTime);
+        arrivalTime.setMinutes(arrivalTime.getMinutes() + travelMinutes);
+        return arrivalTime.toLocaleTimeString('en-US', { 
+            hour: '2-digit', 
+            minute: '2-digit'
+        });
+    }
+
+    function updateLastUpdateTime() {
+        lastUpdateTime = new Date();
+        document.getElementById('lastUpdate').innerHTML = `
+            <strong>Traffic Data</strong><br>
+            <span class="update-time">Last updated: ${formatDateTime(lastUpdateTime)}</span>
+        `;
+    }
+
     async function calculateRouteSegment(startLat, startLon, endLat, endLon, date_navette) {
         const start = `${startLat},${startLon}`;
         const end = `${endLat},${endLon}`;
@@ -192,414 +343,432 @@ document.addEventListener('DOMContentLoaded', function() {
             shapeData
         };
     }
-
-    // Function to calculate distance between two points
     function calculateDistance(point1, point2) {
-        const R = 6371; // Earth's radius in kilometers
-        const lat1 = point1.lat * Math.PI / 180;
-        const lat2 = point2.lat * Math.PI / 180;
-        const deltaLat = (point2.lat - point1.lat) * Math.PI / 180;
-        const deltaLon = (point2.lon - point1.lon) * Math.PI / 180;
+const R = 6371; // Earth's radius in kilometers
+const lat1 = point1.lat * Math.PI / 180;
+const lat2 = point2.lat * Math.PI / 180;
+const deltaLat = (point2.lat - point1.lat) * Math.PI / 180;
+const deltaLon = (point2.lon - point1.lon) * Math.PI / 180;
 
-        const a = Math.sin(deltaLat / 2) * Math.sin(deltaLat / 2) +
-            Math.cos(lat1) * Math.cos(lat2) *
-            Math.sin(deltaLon / 2) * Math.sin(deltaLon / 2);
-        const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
-        return R * c;
-    }
+const a = Math.sin(deltaLat/2) * Math.sin(deltaLat/2) +
+    Math.cos(lat1) * Math.cos(lat2) *
+    Math.sin(deltaLon/2) * Math.sin(deltaLon/2);
+const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
+return R * c;
+}
 
-    // Function to find the farthest point from the end point
-    function findFarthestPoint(endPoint, stops) {
-        let farthestPoint = null;
-        let maxDistance = -1;
+function findOptimalRoute(startPoint, endPoint, stops, timeLimit) {
+const allPoints = [startPoint, ...stops];
+let bestRoute = [];
+let shortestDistance = Infinity;
+let bestTotalTime = Infinity;
 
-        for (const stop of stops) {
-            const distance = calculateDistance(endPoint, stop);
-            if (distance > maxDistance) {
-                maxDistance = distance;
-                farthestPoint = stop;
-            }
-        }
+function estimateTime(point1, point2) {
+    const distance = calculateDistance(point1, point2);
+    // Estimate time in minutes (assuming average speed of 40 km/h)
+    return (distance / 40) * 60;
+}
 
-        if (farthestPoint) {
-            farthestPoint.isStop = true;
-            farthestPoint.isEnd = false;
-        }
-
-        return farthestPoint;
-    }
-
-    // Function to format date and time
-    function formatDateTime(date) {
-        return new Intl.DateTimeFormat('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        }).format(date);
-    }
-
-    // Function to update the last update time
-    function updateLastUpdateTime() {
-        lastUpdateTime = new Date();
-        document.getElementById('lastUpdate').innerHTML = `
-            <strong>Traffic Data</strong><br>
-            <span class="update-time">Last updated: ${formatDateTime(lastUpdateTime)}</span>
-        `;
-    }
-
-    // Function to calculate the optimal route
-    async function findTimeConstrainedRoute(startPoint, endPoint, stops, timeLimit, startTime) {
-        let optimizedRoute = [startPoint];
+function permute(arr, start, end, currentTime) {
+    if (start === end) {
+        let totalTime = 0;
         let currentPoint = startPoint;
-        let currentTime = 0;
-        let remainingStops = [...stops];
+        let isValidRoute = true;
+        let routePoints = [startPoint, ...arr];
 
-        while (remainingStops.length > 0) {
-            let bestNextStop = null;
-            let bestStopTime = Infinity;
+        // Calculate cumulative time including stops and travel
+        for (let i = 0; i < routePoints.length; i++) {
+            // Add travel time to next point
+            if (i > 0) {
+                totalTime += estimateTime(currentPoint, routePoints[i]);
+            }
 
-            // Calculate time to end point
-            const timeToEnd = await calculateRouteSegment(
-                currentPoint.lat,
-                currentPoint.lon,
-                endPoint.lat,
-                endPoint.lon,
-                startTime
-            ).then(({ routeData }) => routeData.route.time / 60);
+            // Add stop time if it's a stop point
+            if (routePoints[i].isStop) {
+                totalTime += routePoints[i].stopTime;
+            }
 
-            // Add time buffer
-            const timeBuffer = calculateTimeBuffer(startTime);
-            const totalTimeToEnd = timeToEnd + timeBuffer;
-
-            // If time to end exceeds limit, break
-            if (currentTime + totalTimeToEnd > timeLimit) {
+            // Check if we exceed time limit
+            if (totalTime > timeLimit) {
+                isValidRoute = false;
                 break;
             }
 
-            // Find the best next stop
-            for (let i = 0; i < remainingStops.length; i++) {
-                const potentialStop = remainingStops[i];
+            currentPoint = routePoints[i];
+        }
 
-                // Calculate time to this stop
-                const timeToStop = await calculateRouteSegment(
-                    currentPoint.lat,
-                    currentPoint.lon,
-                    potentialStop.lat,
-                    potentialStop.lon,
-                    startTime
-                ).then(({ routeData }) => routeData.route.time / 60);
+        // Add time to reach end point
+        totalTime += estimateTime(currentPoint, endPoint);
 
-                // Add time buffer
-                const totalTimeToStop = timeToStop + timeBuffer;
+        if (isValidRoute && totalTime <= timeLimit && totalTime < bestTotalTime) {
+            bestTotalTime = totalTime;
+            bestRoute = [...arr];
+        }
+    } else {
+        for (let i = start; i < end; i++) {
+            [arr[start], arr[i]] = [arr[i], arr[start]];
+            permute([...arr], start + 1, end, currentTime);
+        }
+    }
+}
 
-                // Calculate time from this stop to end
-                const timeFromStopToEnd = await calculateRouteSegment(
-                    potentialStop.lat,
-                    potentialStop.lon,
-                    endPoint.lat,
-                    endPoint.lon,
-                    startTime
-                ).then(({ routeData }) => routeData.route.time / 60);
+if (stops.length > 0) {
+    permute(stops, 0, stops.length, 0);
+}
 
-                // Add time buffer
-                const totalTimeFromStopToEnd = timeFromStopToEnd + timeBuffer;
+return bestRoute.length > 0 ? [startPoint, ...bestRoute, endPoint] : [startPoint, endPoint];
+}
 
-                // Calculate total time
-                const totalTime = currentTime + totalTimeToStop + (potentialStop.stopTime || 0) + totalTimeFromStopToEnd;
+async function calculateRoute() {
+    // Clear previous markers and route segments
+    markers.forEach(marker => map.removeLayer(marker));
+    markers = [];
+    routeSegments.forEach(segment => map.removeLayer(segment));
+    routeSegments = [];
 
-                // Check if this stop is feasible
-                if (totalTime <= timeLimit && totalTimeToStop < bestStopTime) {
-                    bestNextStop = potentialStop;
-                    bestStopTime = totalTimeToStop;
+    try {
+        const selectedRouteId = routeData.navette[0].id;
+        const selectedRoute = routeData.navette[0];
+        let timeLimit = selectedRoute.time_limit;
+
+ if (selectedRoute.navette_direction === "Sortie") {
+            timeLimit -= 10; // Reduce time limit by 10 minutes for "Entrée"
+        }
+
+
+        let date_navette = await calculerDateNavette(selectedRoute.date_navette, selectedRoute.heure_navette, selectedRoute.navette_direction);
+
+
+        let endPoint = {
+            lat:  selectedRoute.navette_direction === "Sortie" ? selectedRoute.pickup_latitude : selectedRoute.dropoff_latitude,
+            lon:  selectedRoute.navette_direction === "Sortie" ?  selectedRoute.pickup_longitude : selectedRoute.dropoff_longitude,
+            location: selectedRoute.navette_direction === "Sortie"  ? selectedRoute.pickup_location :selectedRoute.dropoff_location,
+            isEnd: selectedRoute.navette_direction === "Sortie"  ? false : true,
+        };
+        console.log("endpoint",endPoint)
+        const processedStops = processEntriesWithUniqueStopTime(
+            routeData.reservation_entries.filter(entry => entry.navette_id === selectedRouteId)
+        );
+        
+        const stops = processedStops.map(stop => ({
+            id: stop.id,
+            lat: selectedRoute.navette_direction !== "Sortie" ? stop.pickup_latitude : stop.dropoffLatitude,
+            lon: selectedRoute.navette_direction !== "Sortie" ? stop.pickup_longitude : stop.dropoffLongitude,
+            location: selectedRoute.navette_direction !== "Sortie" ? stop.pickup_location : 'drop off loc',
+            stopTime: stop.stop_time, // Use the processed stop_time
+            isStop: true
+        }));
+
+        function findFarthestPoint(endPoint, stops) {
+            let farthestPoint = null;
+            let maxDistance = -1;
+
+            for (const stop of stops) {
+                const distance = calculateDistance(endPoint, stop);
+                if (distance > maxDistance) {
+                    maxDistance = distance;
+                    farthestPoint = stop;
                 }
             }
 
-            // If no feasible stop found, break
-            if (!bestNextStop) {
-                break;
+            // Mark the farthest point with isStart = true
+            if (farthestPoint) {
+                farthestPoint.isStop =  true;
+                farthestPoint.isEnd =  false;
             }
 
-            // Add the best stop to the route
-            currentTime += bestStopTime + (bestNextStop.stopTime || 0);
-            currentPoint = bestNextStop;
-            optimizedRoute.push(bestNextStop);
-
-            // Remove the selected stop from remaining stops
-            remainingStops = remainingStops.filter(stop => stop !== bestNextStop);
+            return farthestPoint;
         }
-
-        // Add the end point to the route
-        optimizedRoute.push(endPoint);
-
-        return optimizedRoute;
-    }
-
-    // Function to calculate the route
-    async function calculateRoute() {
-        // Clear previous markers and route segments
-        markers.forEach(marker => map.removeLayer(marker));
-        markers = [];
-        routeSegments.forEach(segment => map.removeLayer(segment));
-        routeSegments = [];
-
-        try {
-            const selectedRouteId = routeData.navette[0].id;
-            const selectedRoute = routeData.navette[0];
-            let timeLimit = selectedRoute.time_limit;
-
-            if (selectedRoute.navette_direction === "Sortie") {
-                timeLimit -= 10; // Reduce time limit by 10 minutes for "Sortie"
+        let startPoint;
+        if( selectedRoute.navette_direction === "Sortie"){
+             startPoint = {
+                lat:  selectedRoute.pickup_latitude,
+                lon:  selectedRoute.pickup_longitude,
+                location: selectedRoute.pickup_location,
+                isStart: true,
             }
+            endPoint = findFarthestPoint(startPoint, stops)
+        }else{
+         startPoint =  findFarthestPoint(endPoint, stops);
+        }
+        const optimizedPoints = await findTimeConstrainedRoute(
+            startPoint,
+            endPoint,
+            stops,
+            timeLimit,
+            date_navette
+        );
+        googleMapsUrl = generateGoogleMapsUrl(optimizedPoints);
 
-            let date_navette = await calculerDateNavette(selectedRoute.date_navette, selectedRoute.heure_navette, selectedRoute.navette_direction);
+        // Show the Google Maps button
+        openGoogleMapsBtn.style.display = 'inline-block';
 
-            let endPoint = {
-                lat: selectedRoute.navette_direction === "Sortie" ? selectedRoute.pickup_latitude : selectedRoute.dropoff_latitude,
-                lon: selectedRoute.navette_direction === "Sortie" ? selectedRoute.pickup_longitude : selectedRoute.dropoff_longitude,
-                location: selectedRoute.navette_direction === "Sortie" ? selectedRoute.pickup_location : selectedRoute.dropoff_location,
-                isEnd: selectedRoute.navette_direction === "Sortie" ? false : true,
-            };
+        let totalDistance = 0;
+        let baseTime = 0;
+        let totalTrafficTime = 0;
+        let accumulatedTime = 0;
+        let accumulatedTrafficTime = 0;
+        let accumulatedDistance = 0;
+        let allRouteCoords = [];
+        let routeResults = {
+            routeName: selectedRoute.nom_trajet,
+            date: date_navette,
+            timeLimit: timeLimit,
+            stopsPlanned: stops.length,
+            stopsReached: 0,
+            points: []
+        };
 
-            const processedStops = processEntriesWithUniqueStopTime(
-                routeData.reservation_entries.filter(entry => entry.navette_id === selectedRouteId)
-            );
-
-            const stops = processedStops.map(stop => ({
-                id: stop.id,
-                lat: selectedRoute.navette_direction !== "Sortie" ? stop.pickup_latitude : stop.dropoffLatitude,
-                lon: selectedRoute.navette_direction !== "Sortie" ? stop.pickup_longitude : stop.dropoffLongitude,
-                location: selectedRoute.navette_direction !== "Sortie" ? stop.pickup_location : 'drop off loc',
-                stopTime: stop.stop_time,
-                isStop: true
-            }));
-
-            let startPoint;
-            if (selectedRoute.navette_direction === "Sortie") {
-                startPoint = {
-                    lat: selectedRoute.pickup_latitude,
-                    lon: selectedRoute.pickup_longitude,
-                    location: selectedRoute.pickup_location,
-                    isStart: true,
-                };
-                endPoint = findFarthestPoint(startPoint, stops);
-            } else {
-                startPoint = findFarthestPoint(endPoint, stops);
-            }
-
-            // Call the findTimeConstrainedRoute function
-            const optimizedPoints = await findTimeConstrainedRoute(
-                startPoint,
-                endPoint,
-                stops,
-                timeLimit,
+        // Process each segment of the route
+        for (let i = 0; i < optimizedPoints.length - 1; i++) {
+            const start = optimizedPoints[i];
+            const end = optimizedPoints[i + 1];
+            console.log(start , end)
+            const { routeData: segmentRoute, shapeData } = await calculateRouteSegment(
+                start.lat,
+                start.lon,
+                end.lat,
+                end.lon,
                 date_navette
             );
 
-            googleMapsUrl = generateGoogleMapsUrl(optimizedPoints);
-            openGoogleMapsBtn.style.display = 'inline-block';
-
-            let totalDistance = 0;
-            let baseTime = 0;
-            let accumulatedTime = 0;
-            let accumulatedDistance = 0;
-            let allRouteCoords = [];
-            let routeResults = {
-                routeName: selectedRoute.nom_trajet,
-                date: date_navette,
-                timeLimit: timeLimit,
-                stopsPlanned: stops.length,
-                stopsReached: 0,
-                points: []
-            };
-
-            for (let i = 0; i < optimizedPoints.length - 1; i++) {
-                const start = optimizedPoints[i];
-                const end = optimizedPoints[i + 1];
-                const { routeData: segmentRoute, shapeData } = await calculateRouteSegment(
-                    start.lat,
-                    start.lon,
-                    end.lat,
-                    end.lon,
-                    date_navette
-                );
-
-                const routeCoords = [];
-                const shapePoints = shapeData.route.shape.shapePoints;
-                for (let j = 0; j < shapePoints.length; j += 2) {
-                    routeCoords.push([shapePoints[j], shapePoints[j + 1]]);
-                }
-                allRouteCoords = [...allRouteCoords, ...routeCoords];
-
-                const segmentBaseTime = segmentRoute.route.time / 60;
-                baseTime += segmentBaseTime;
-                accumulatedTime += segmentBaseTime;
-                accumulatedDistance += segmentRoute.route.distance * 1.60934;
-
-                start.accumulatedDistance = accumulatedDistance;
-
-                if (start.isStart || start.isStop) {
-                    const counter = start.isStop ? routeResults.stopsReached + 1 : 0;
-
-                    const markerIcon = start.isStop
-                        ? L.divIcon({
-                            className: 'number-icon',
-                            html: `<div style="background-color: rgba(255, 255, 255, 0.8); 
-                                                border-radius: 50%; 
-                                                width: 30px; 
-                                                height: 30px; 
-                                                display: flex; 
-                                                align-items: center; 
-                                                justify-content: center; 
-                                                font-size: 14px; 
-                                                font-weight: bold; 
-                                                text-align: center; 
-                                                color: black;" class="marker-number">${counter - 1}</div>`,
-                            iconSize: [30, 30],
-                            iconAnchor: [15, 15]
-                        })
-                        : startIcon;
-
-                    const marker = L.marker([start.lat, start.lon], { icon: markerIcon })
-                        .bindPopup(`
-                            ${start.isStart ? 'Start' : 'Stop'}: ${start.location}<br>
-                            Time from start: ${Math.round(accumulatedTime)} minutes<br>
-                            Distance: ${accumulatedDistance.toFixed(2)} km<br>
-                            ${start.isStop ? `Stop Duration: ${start.stopTime} minutes<br>` : ''}
-                            Remaining time: ${Math.round(timeLimit - accumulatedTime)} minutes
-                        `)
-                        .addTo(map);
-
-                    markers.push(marker);
-
-                    if (start.isStop) {
-                        routeResults.stopsReached++;
-                        accumulatedTime += start.stopTime;
-                    }
-                }
-
-                totalDistance += segmentRoute.route.distance * 1.60934;
+            const routeCoords = [];
+            const shapePoints = shapeData.route.shape.shapePoints;
+            for (let j = 0; j < shapePoints.length; j += 2) {
+                routeCoords.push([shapePoints[j], shapePoints[j + 1]]);
             }
+            allRouteCoords = [...allRouteCoords, ...routeCoords];
 
-            if (selectedRoute.navette_direction !== "Sortie") {
-                const endMarker = L.marker([endPoint.lat, endPoint.lon], { icon: startIcon })
+            const segmentBaseTime = segmentRoute.route.time / 60;
+            baseTime += segmentBaseTime;
+            accumulatedTime += segmentBaseTime;
+            accumulatedDistance += segmentRoute.route.distance * 1.60934;
+
+            start.accumulatedTrafficTime = accumulatedTrafficTime;
+            start.accumulatedDistance = accumulatedDistance;
+
+            if (start.isStart || start.isStop) {
+                const counter = start.isStop ? routeResults.stopsReached + 1 : 0;
+
+                const markerIcon = start.isStop
+                    ? L.divIcon({
+                        className: 'number-icon',
+                        html: `<div style="background-color: rgba(255, 255, 255, 0.8); 
+                                            border-radius: 50%; 
+                                            width: 30px; 
+                                            height: 30px; 
+                                            display: flex; 
+                                            align-items: center; 
+                                            justify-content: center; 
+                                            font-size: 14px; 
+                                            font-weight: bold; 
+                                            text-align: center; 
+                                            color: black;" class="marker-number">${counter - 1}</div>`,
+                        iconSize: [30, 30],
+                        iconAnchor: [15, 15]
+                    })
+                    : startIcon;
+
+                const marker = L.marker([start.lat, start.lon], { icon: markerIcon })
                     .bindPopup(`
-                        End: ${endPoint.location}<br>
-                        Total time: ${Math.round(accumulatedTime)} minutes<br>
-                        Total distance: ${totalDistance.toFixed(2)} km<br>
-                        ${accumulatedTime <= timeLimit ? '✓ Within time limit' : '⚠️ Exceeds time limit'}
+                        ${start.isStart ? 'Start' : 'Stop'}: ${start.location}<br>
+                        Time from start (No Traffic): ${Math.round(accumulatedTime)} minutes<br>
+                        Time from start (With Traffic): ${Math.round(accumulatedTrafficTime)} minutes<br>
+                        Distance: ${accumulatedDistance.toFixed(2)} km<br>
+                        ${start.isStop ? `Stop Duration: ${start.stopTime} minutes<br>` : ''}
+                        Remaining time: ${Math.round(timeLimit - accumulatedTime)} minutes
                     `)
                     .addTo(map);
-                markers.push(endMarker);
+
+                markers.push(marker);
+
+                if (start.isStop) {
+                    routeResults.stopsReached++;
+                    accumulatedTime += start.stopTime;
+                    accumulatedTrafficTime += start.stopTime;
+                }
             }
 
-            const bounds = L.latLngBounds(allRouteCoords);
-            map.fitBounds(bounds, { padding: [50, 50] });
+            // Calculate traffic impact
+            for (let j = 0; j < routeCoords.length - 1; j++) {
+    // Get the hour from the date string
+                    const dateObj = new Date(date_navette);
+                    const hour = dateObj.getHours();
+                    
+                    let status, trafficMultiplier, color;
+                    
+                    // Determine traffic status and color based on hour
+                    if (hour === 8 || hour === 17 || hour === 18) {
+                        status = 'Heavy traffic (rush hour)';
+                        trafficMultiplier = 1.0 + (10 / segmentBaseTime);
+                        color = '#ff0000'; // Red for heavy traffic
+                    } else {
+                        status = 'Normal traffic';
+                        trafficMultiplier = 1.0 + (5 / segmentBaseTime);
+                        color = '#ffff00'; // Yellow for moderate traffic
+                    }
+                    
+                    const segmentTime = segmentBaseTime / (routeCoords.length - 1);
+                    const trafficTime = segmentTime * trafficMultiplier;
+                    accumulatedTrafficTime += trafficTime;
+                    totalTrafficTime += trafficTime;
 
-            updateLastUpdateTime();
+                const segment = L.polyline([routeCoords[j], routeCoords[j + 1]], {
+                    color: accumulatedTime > timeLimit ? '#ff0000' : color,
+                    weight: 4,
+                    opacity: 0.7
+                })
+                    .bindPopup(`
+                        ${status}<br>
+                        Time from start (No Traffic): ${Math.round(accumulatedTime)} min<br>
+                        Time from start (With Traffic): ${Math.round(accumulatedTrafficTime)} min<br>
+                        Distance: ${accumulatedDistance.toFixed(2)} km
+                    `)
+                    .addTo(map);
 
-            routeResults.totalDistance = totalDistance.toFixed(2);
-            routeResults.totalTime = Math.round(accumulatedTime);
-            routeResults.withinTimeLimit = accumulatedTime <= timeLimit;
-            routeResults.timeExceededBy = Math.max(0, Math.round(accumulatedTime - timeLimit));
-
-            if (selectedRoute.navette_direction === "Entrée") {
-                const startTime = new Date(date_navette);
-                const timeBuffer = calculateTimeBuffer(selectedRoute.heure_navette);
-
-                if (accumulatedTime < 43) {
-                    const difference = 43 - accumulatedTime;
-                    startTime.setMinutes(startTime.getMinutes() + difference);
-                } else if (accumulatedTime > 43) {
-                    const difference = accumulatedTime - 43;
-                    startTime.setMinutes(startTime.getMinutes() - difference);
-                }
-
-                const adjustedDate = startTime.toLocaleDateString('en-CA');
-                const adjustedTime = startTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false });
-                date_navette = `${adjustedDate} ${adjustedTime}`;
-                routeResults.date = date_navette;
+                routeSegments.push(segment);
             }
 
-            console.log('Route Analysis Results:', {
-                ...routeResults,
-                timeAnalysis: {
-                    timeLimit: `${timeLimit} minutes`,
-                    baseTime: `${Math.round(accumulatedTime)} minutes`,
-                    exceedsLimit: accumulatedTime > timeLimit,
-                    exceededBy: `${Math.max(0, Math.round(accumulatedTime - timeLimit))} minutes`
-                },
-                efficiency: {
-                    stopsPlanned: stops.length,
-                    stopsReached: routeResults.stopsReached,
-                    stopsSkipped: stops.length - routeResults.stopsReached,
-                    completionRate: `${((routeResults.stopsReached / stops.length) * 100).toFixed(1)}%`
-                }
-            });
-
-            document.getElementById('result').innerHTML = `
-                <div class="route-info">
-                    <strong>Route Details:</strong><br>
-                    Route: ${selectedRoute.nom_trajet}<br>
-                    Date: ${date_navette}<br>
-                    Time Limit: ${timeLimit} minutes<br>
-                    Total Time: ${Math.round(accumulatedTime)} minutes<br>
-                    Time Limit Status: ${accumulatedTime <= timeLimit ? 
-                        '<span style="color: green">✓ Within time limit</span>' : 
-                        `<span style="color: red">⚠️ Exceeds time limit by ${Math.round(accumulatedTime - timeLimit)} minutes</span>`}<br>
-                    Total Distance: ${totalDistance.toFixed(2)} km<br>
-                    Stops Reached: ${routeResults.stopsReached - 1} of ${stops.length}<br>
-                    Completion Rate: ${(((routeResults.stopsReached - 1) / stops.length) * 100).toFixed(1)}%
-                </div>
-                <div class="time-comparison">
-                    <strong>Time Analysis:</strong><br>
-                    Base Route Time: ${Math.round(accumulatedTime)} minutes<br>
-                    ${accumulatedTime > timeLimit ? 
-                        `<span style="color: red">⚠️ Route exceeds time limit by ${Math.round(accumulatedTime - timeLimit)} minutes</span>` :
-                        `<span style="color: green">✓ Route is feasible (${Math.round(timeLimit - accumulatedTime)} minutes under limit)</span>`}
-                </div>
-            `;
-
-            await submitRouteData(
-                routeResults,
-                optimizedPoints,
-                routeData.navette[0].id
-            );
-
-        } catch (error) {
-            console.error('Error calculating route:', error);
-            document.getElementById('result').innerHTML = `
-                <div class="route-info" style="color: red;">
-                    An error occurred while calculating the route: ${error.message}<br>
-                    Please try again or contact support if the problem persists.
-                </div>
-            `;
+            totalDistance += segmentRoute.route.distance * 1.60934;
         }
+        if(selectedRoute.navette_direction !== "Sortie"){
+        const endMarker = L.marker([endPoint.lat, endPoint.lon], { icon: startIcon })
+            .bindPopup(`
+                End: ${endPoint.location}<br>
+                Total time (No Traffic): ${Math.round(accumulatedTime)} minutes<br>
+                Total time (With Traffic): ${Math.round(accumulatedTrafficTime)} minutes<br>
+                Total distance: ${totalDistance.toFixed(2)} km<br>
+                ${accumulatedTime <= timeLimit ? '✓ Within time limit' : '⚠️ Exceeds time limit'}
+            `)
+            .addTo(map);
+        markers.push(endMarker);
+        }
+        // Add end marker
+
+
+        // Update map bounds
+        const bounds = L.latLngBounds(allRouteCoords);
+        map.fitBounds(bounds, { padding: [50, 50] });
+
+        // Update last update time
+        updateLastUpdateTime();
+
+        // Final route results
+        routeResults.totalDistance = totalDistance.toFixed(2);
+        routeResults.totalTimeNoTraffic = Math.round(accumulatedTime);
+        routeResults.totalTimeWithTraffic = Math.round(accumulatedTrafficTime);
+        routeResults.withinTimeLimit = accumulatedTime <= timeLimit;
+        routeResults.withinTimeLimitWithTraffic = accumulatedTrafficTime <= timeLimit;
+        routeResults.timeExceededBy = Math.max(0, Math.round(accumulatedTrafficTime - timeLimit));
+
+        // Adjust start time if direction is "Entrée" and duration is less than 43 minutes
+        if (selectedRoute.navette_direction === "Entrée") {
+            const startTime = new Date(date_navette); // Parse the original date_navette
+        
+            if (accumulatedTrafficTime < 43) {
+                const difference = 43 - accumulatedTrafficTime; // Calculate the difference
+                startTime.setMinutes(startTime.getMinutes() + difference); // Move start time forward
+                console.log(`Adjusted start time forward by ${difference} minutes.`);
+            } else if (accumulatedTrafficTime > 43) {
+                const difference = accumulatedTrafficTime - 43; // Calculate the excess time
+                startTime.setMinutes(startTime.getMinutes() - difference); // Move start time backward
+                console.log(`Adjusted start time backward by ${difference} minutes.`);
+            }
+        
+            // Format the adjusted time back to the original format (e.g., "YYYY-MM-DD HH:mm")
+            const adjustedDate = startTime.toLocaleDateString('en-CA'); // YYYY-MM-DD
+            const adjustedTime = startTime.toLocaleTimeString('en-GB', { hour: '2-digit', minute: '2-digit', hour12: false }); // HH:mm
+            date_navette = `${adjustedDate} ${adjustedTime}`; // Combine date and time
+            routeResults.date = date_navette
+            console.log(`Final adjusted start time: ${date_navette}`);
+        }
+        
+
+        // Console log detailed results
+        console.log('Route Analysis Resultsaa:', {
+            ...routeResults,
+            timeAnalysis: {
+                timeLimit: `${timeLimit} minutes`,
+                baseTime: `${Math.round(accumulatedTime)} minutes`,
+                trafficTime: `${Math.round(accumulatedTrafficTime)} minutes`,
+                exceedsLimit: accumulatedTrafficTime > timeLimit,
+                exceededBy: `${Math.max(0, Math.round(accumulatedTrafficTime - timeLimit))} minutes`
+            },
+            efficiency: {
+                stopsPlanned: stops.length,
+                stopsReached: routeResults.stopsReached,
+                stopsSkipped: stops.length - routeResults.stopsReached,
+                completionRate: `${((routeResults.stopsReached / stops.length) * 100).toFixed(1)}%`
+            }
+        });
+
+        // Update results display
+        document.getElementById('result').innerHTML = `
+            <div class="route-info">
+                <strong>Route Details:</strong><br>
+                Route: ${selectedRoute.nom_trajet}<br>
+                Date: ${date_navette}<br>
+                Time Limit: ${timeLimit} minutes<br>
+                Total Time (No Traffic): ${Math.round(accumulatedTime)} minutes<br>
+                Total Time (With Traffic): ${Math.round(accumulatedTrafficTime)} minutes<br>
+                Time Limit Status: ${accumulatedTrafficTime <= timeLimit ? 
+                    '<span style="color: green">✓ Within time limit</span>' : 
+                    `<span style="color: red">⚠️ Exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes</span>`}<br>
+                Total Distance: ${totalDistance.toFixed(2)} km<br>
+                Stops Reached: ${routeResults.stopsReached - 1} of ${stops.length}<br>
+                Completion Rate: ${(((routeResults.stopsReached - 1) / stops.length) * 100).toFixed(1)}%
+            </div>
+            <div class="time-comparison">
+                <strong>Time Analysis:</strong><br>
+                Base Route Time: ${Math.round(accumulatedTime)} minutes<br>
+                Additional Traffic Time: ${Math.round(accumulatedTrafficTime - accumulatedTime)} minutes<br>
+                ${accumulatedTrafficTime > timeLimit ? 
+                    `<span style="color: red">⚠️ Route exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes with traffic</span>` :
+                    `<span style="color: green">✓ Route is feasible even with traffic (${Math.round(timeLimit - accumulatedTrafficTime)} minutes under limit)</span>`}
+            </div>
+        `;
+
+        await submitRouteData(
+            routeResults,
+            optimizedPoints,
+            routeData.navette[0].id
+        );
+
+    } catch (error) {
+        console.error('Error calculating route:', error);
+        document.getElementById('result').innerHTML = `
+            <div class="route-info" style="color: red;">
+                An error occurred while calculating the route: ${error.message}<br>
+                Please try again or contact support if the problem persists.
+            </div>
+        `;
     }
-
-    // Function to submit route data
+}
+    // Add event listeners
     async function submitRouteData(routeResults, optimizedPoints, navetteId) {
+        // Prepare entries data
         const entriesData = optimizedPoints
-            .filter(point => point.isStop)
-            .map((point, index) => ({
-                id: point.id,
-                duree: Math.round(point.accumulatedTime),
-                distance: parseFloat(point.accumulatedDistance.toFixed(2)),
-                counter: index + 1
-            }));
 
+        .filter(point => point.isStop)
+        .map((point, index) => ({
+            id: point.id,
+            duree: Math.round(point.accumulatedTrafficTime),
+            distance: parseFloat(point.accumulatedDistance.toFixed(2)),
+            counter: index + 1  // Add the counter (index + 1 for 1-based count)
+        }));
+    
+    console.log(entriesData);
+    
+        // Prepare the submission data
         const submissionData = {
             entries: entriesData,
             navette: {
-                totalTime: Math.round(routeResults.totalTime),
+                totalTime: Math.round(routeResults.totalTimeWithTraffic),
                 totalDistance: parseFloat(routeResults.totalDistance),
-                starttime: routeResults.date.split(" ")[1]
+                starttime : routeResults.date.split(" ")[1]
             }
         };
-
+        console.log(submissionData)
         try {
             const response = await fetch(`/admin/navettes/${navetteId}/reserver`, {
                 method: 'POST',
@@ -609,13 +778,13 @@ document.addEventListener('DOMContentLoaded', function() {
                 },
                 body: JSON.stringify(submissionData)
             });
-
+        
             if (!response.ok) {
                 const errorBody = await response.text();
                 console.log('Response body:', errorBody);
                 throw new Error(`HTTP error! status: ${response.status}`);
             }
-
+        
             const result = await response.json();
             if (result.status === 'success') {
                 console.log('Route data successfully saved');
@@ -623,14 +792,18 @@ document.addEventListener('DOMContentLoaded', function() {
         } catch (error) {
             console.error('Error submitting route data:', error);
         }
+        
     }
-
-    // Add event listeners
+    
     calculateRouteBtn.addEventListener('click', function() {
+        // Show the update traffic button
         updateTrafficBtn.style.display = 'inline-block';
+        // Disable the calculate route button
         calculateRouteBtn.disabled = true;
+        // Initialize the route calculation
         calculateRoute();
     });
 
+    // Modify the update traffic button click handler
     updateTrafficBtn.addEventListener('click', calculateRoute);
 });
