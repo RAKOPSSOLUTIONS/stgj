@@ -392,6 +392,7 @@ class NavetteController extends BaseController
           'pickupLongitude' => $entry->getPickupLongitude(),
           'dropoffLatitude' => $entry->getDropoffLatitude(),
           'dropoffLongitude' => $entry->getDropoffLongitude(),
+          'dropoffLocation' => $entry->getDropoffLocation(),
           'pickupLocation' => $entry->getPickupLocation(),
           'heurePassage' => $entry->getHeurePassage() ? $entry->getHeurePassage()->format('Y-m-d H:i:s') : null,
       ];

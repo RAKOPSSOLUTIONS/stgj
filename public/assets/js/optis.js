@@ -11,7 +11,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const updateTrafficBtn = document.getElementById('updateTraffic');
     const openGoogleMapsBtn = document.getElementById('openGoogleMapsBtn'); 
 
-    console.log('Entriesaaa:', entries);
+    console.log('Entries:', entries);
     console.log('Navette:', navette);
 
 
@@ -113,9 +113,10 @@ let routeData = {
         pickup_location: entry.pickupLocation,
         dropoffLatitude : entry.dropoffLatitude ,
         dropoffLongitude : entry.dropoffLongitude,
+        dropoffLocation : entry.dropoffLocation,
         navette_id: entry.navetteId,
         // Ensure stop_time is a number, default to 1 if not provided
-        stop_time: parseInt(entry.dureeUp) || 1
+        stop_time:  1
     }))
 };
 
@@ -126,30 +127,39 @@ console.log('Transformed Route Data:', routeData);
 function processEntriesWithUniqueStopTime(entries) {
     const processedEntries = [];
     const locationTracker = new Set(); // Track locations that have already been processed
-
+    let i = 0
     entries.forEach(entry => {
         let locationKey ;
         if(routeData.navette[0].navette_direction === 'Sortie'){
-            locationKey = `${entry.pickup_latitude},${entry.pickup_longitude}`;
+            locationKey = `${entry.dropoff_latitude},${entry.dropoff_longitude}`;
         }else{
             locationKey = `${entry.pickup_latitude},${entry.pickup_longitude}`;
         }
-        
-
-        if (!locationTracker.has(locationKey)) {
-            // First occurrence of this location, keep the stop_time as is
+        if(i === 0){
             processedEntries.push({
                 ...entry,
-                stop_time: entry.stop_time || 1 // Ensure stop_time is set
+                stop_time:  0 // Ensure stop_time is set
             });
-            locationTracker.add(locationKey); // Mark this location as processed
-        } else {
-            // Subsequent occurrences of this location, set stop_time to 0
-            processedEntries.push({
-                ...entry,
-                stop_time: 0 // Set stop_time to 0 for duplicates
-            });
+            locationTracker.add(locationKey);
+        }else{
+            if (!locationTracker.has(locationKey)) {
+                // First occurrence of this location, keep the stop_time as is
+                processedEntries.push({
+                    ...entry,
+                    stop_time: entry.stop_time || 1 // Ensure stop_time is set
+                });
+                locationTracker.add(locationKey); // Mark this location as processed
+            } else {
+                // Subsequent occurrences of this location, set stop_time to 0
+                processedEntries.push({
+                    ...entry,
+                    stop_time: 0 // Set stop_time to 0 for duplicates
+                });
+            }
         }
+
+
+        i++
     });
     console.log(processedEntries)
     return processedEntries;
@@ -206,7 +216,7 @@ const baseTime = routeData.route.time / 60; // Base time in minutes
 return baseTime;
 }
 
-async function findTimeConstrainedRoute(startPoint, endPoint, stops, timeLimit, startTime) {
+async function findTimeConstrainedRoute(startPoint, endPoint, stops, timeLimit, startTime , buffer)  {
 let optimizedRoute = [startPoint];
 let currentPoint = startPoint;
 let currentTime = 0;
@@ -218,10 +228,10 @@ while (remainingStops.length > 0) {
     let shouldGoToEnd = false;
     
     // First, check time to end point with traffic
-    const timeToEndWithTraffic = await calculateTimeWithTraffic(currentPoint, endPoint, startTime);
+    const timeToEndWithTraffic = await calculateTimeWithTraffic(currentPoint, endPoint, startTime );
     
     // If time to end would exceed limit, go directly to end
-    if (currentTime + timeToEndWithTraffic > timeLimit) {
+    if (currentTime + timeToEndWithTraffic > ( timeLimit - buffer )) {
         shouldGoToEnd = true;
         break;
     }
@@ -286,27 +296,9 @@ return optimizedRoute;
         }).format(date);
     }
 
-    function formatTime(minutes) {
-        const hours = Math.floor(minutes / 60);
-        const mins = Math.round(minutes % 60);
-        return `${hours}:${mins.toString().padStart(2, '0')}`;
-    }
-
-    function calculateArrivalTime(startTime, travelMinutes) {
-        const arrivalTime = new Date(startTime);
-        arrivalTime.setMinutes(arrivalTime.getMinutes() + travelMinutes);
-        return arrivalTime.toLocaleTimeString('en-US', { 
-            hour: '2-digit', 
-            minute: '2-digit'
-        });
-    }
 
     function updateLastUpdateTime() {
         lastUpdateTime = new Date();
-        document.getElementById('lastUpdate').innerHTML = `
-            <strong>Traffic Data</strong><br>
-            <span class="update-time">Last updated: ${formatDateTime(lastUpdateTime)}</span>
-        `;
     }
 
     async function calculateRouteSegment(startLat, startLon, endLat, endLon, date_navette) {
@@ -346,67 +338,7 @@ const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1-a));
 return R * c;
 }
 
-function findOptimalRoute(startPoint, endPoint, stops, timeLimit) {
-const allPoints = [startPoint, ...stops];
-let bestRoute = [];
-let shortestDistance = Infinity;
-let bestTotalTime = Infinity;
 
-function estimateTime(point1, point2) {
-    const distance = calculateDistance(point1, point2);
-    // Estimate time in minutes (assuming average speed of 40 km/h)
-    return (distance / 40) * 60;
-}
-
-function permute(arr, start, end, currentTime) {
-    if (start === end) {
-        let totalTime = 0;
-        let currentPoint = startPoint;
-        let isValidRoute = true;
-        let routePoints = [startPoint, ...arr];
-
-        // Calculate cumulative time including stops and travel
-        for (let i = 0; i < routePoints.length; i++) {
-            // Add travel time to next point
-            if (i > 0) {
-                totalTime += estimateTime(currentPoint, routePoints[i]);
-            }
-
-            // Add stop time if it's a stop point
-            if (routePoints[i].isStop) {
-                totalTime += routePoints[i].stopTime;
-            }
-
-            // Check if we exceed time limit
-            if (totalTime > timeLimit) {
-                isValidRoute = false;
-                break;
-            }
-
-            currentPoint = routePoints[i];
-        }
-
-        // Add time to reach end point
-        totalTime += estimateTime(currentPoint, endPoint);
-
-        if (isValidRoute && totalTime <= timeLimit && totalTime < bestTotalTime) {
-            bestTotalTime = totalTime;
-            bestRoute = [...arr];
-        }
-    } else {
-        for (let i = start; i < end; i++) {
-            [arr[start], arr[i]] = [arr[i], arr[start]];
-            permute([...arr], start + 1, end, currentTime);
-        }
-    }
-}
-
-if (stops.length > 0) {
-    permute(stops, 0, stops.length, 0);
-}
-
-return bestRoute.length > 0 ? [startPoint, ...bestRoute, endPoint] : [startPoint, endPoint];
-}
 
 async function calculateRoute() {
     // Clear previous markers and route segments
@@ -426,7 +358,9 @@ async function calculateRoute() {
 
 
         let date_navette = await calculerDateNavette(selectedRoute.date_navette, selectedRoute.heure_navette, selectedRoute.navette_direction);
-
+        const dateObj = new Date(date_navette);
+        const hour = selectedRoute.navette_direction === "Sortie" ? dateObj.getHours() :dateObj.getHours() + 1 ;
+        const trafficDelay = (hour === 8 || hour === 17 || hour === 18) ? 10 : 5;
 
         let endPoint = {
             lat:  selectedRoute.navette_direction === "Sortie" ? selectedRoute.pickup_latitude : selectedRoute.dropoff_latitude,
@@ -443,7 +377,7 @@ async function calculateRoute() {
             id: stop.id,
             lat: selectedRoute.navette_direction !== "Sortie" ? stop.pickup_latitude : stop.dropoffLatitude,
             lon: selectedRoute.navette_direction !== "Sortie" ? stop.pickup_longitude : stop.dropoffLongitude,
-            location: selectedRoute.navette_direction !== "Sortie" ? stop.pickup_location : 'drop off loc',
+            location: selectedRoute.navette_direction !== "Sortie" ? stop.pickup_location : stop.dropoffLocation,
             stopTime: stop.stop_time, // Use the processed stop_time
             isStop: true
         }));
@@ -485,20 +419,19 @@ async function calculateRoute() {
             endPoint,
             stops,
             timeLimit,
-            date_navette
+            date_navette ,
+            trafficDelay
         );
         googleMapsUrl = generateGoogleMapsUrl(optimizedPoints);
 
         // Show the Google Maps button
         openGoogleMapsBtn.style.display = 'inline-block';
-        const dateObj = new Date(date_navette);
-        const hour = selectedRoute.navette_direction === "Sortie" ? dateObj.getHours() :dateObj.getHours() + 1 ;
-        const trafficDelay = (hour === 8 || hour === 17 || hour === 18) ? 10 : 5;
+
         let totalDistance = 0;
         let baseTime = 0;
         let totalTrafficTime = 0;
         let accumulatedTime = 0;
-        let accumulatedTrafficTime = trafficDelay;
+        let accumulatedTrafficTime = 0;
         let accumulatedDistance = 0;
         let allRouteCoords = [];
         let routeResults = {
@@ -647,11 +580,11 @@ async function calculateRoute() {
         
             if (accumulatedTrafficTime < 43) {
                 const difference = 43 - accumulatedTrafficTime; // Calculate the difference
-                startTime.setMinutes(startTime.getMinutes() + difference); // Move start time forward
+                startTime.setMinutes((startTime.getMinutes() + difference )- trafficDelay); // Move start time forward
                 console.log(`Adjusted start time forward by ${difference} minutes.`);
             } else if (accumulatedTrafficTime > 43) {
                 const difference = accumulatedTrafficTime - 43; // Calculate the excess time
-                startTime.setMinutes(startTime.getMinutes() - difference); // Move start time backward
+                startTime.setMinutes(( startTime.getMinutes() - difference) - trafficDelay); // Move start time backward
                 console.log(`Adjusted start time backward by ${difference} minutes.`);
             }
         
@@ -684,34 +617,86 @@ async function calculateRoute() {
 
         // Update results display
         document.getElementById('result').innerHTML = `
-            <div class="route-info">
-                <strong>Route Details:</strong><br>
-                Route: ${selectedRoute.nom_trajet}<br>
-                Date: ${date_navette}<br>
-                Time Limit: ${timeLimit} minutes<br>
-                Total Time (No Additional): ${Math.round(accumulatedTime)} minutes<br>
-                Total Time (With Additional): ${Math.round(accumulatedTrafficTime)} minutes<br>
-                Time Limit Status: ${accumulatedTrafficTime <= timeLimit ? 
-                    '<span style="color: green">✓ Within time limit</span>' : 
-                    `<span style="color: red">⚠️ Exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes</span>`}<br>
-                Total Distance: ${totalDistance.toFixed(2)} km<br>
-                Stops Reached: ${routeResults.stopsReached - 1} of ${stops.length}<br>
-                Completion Rate: ${(((routeResults.stopsReached - 1) / stops.length) * 100).toFixed(1)}%
-            </div>
-            <div class="time-comparison">
-                <strong>Time Analysis:</strong><br>
-                Base Route Time: ${Math.round(accumulatedTime)} minutes<br>
-                Additional Time: ${Math.round(accumulatedTrafficTime - accumulatedTime)} minutes<br>
-                ${accumulatedTrafficTime > timeLimit ? 
-                    `<span style="color: red">⚠️ Route exceeds time limit by ${Math.round(accumulatedTrafficTime - timeLimit)} minutes with traffic</span>` :
-                    `<span style="color: green">✓ Route is feasible even with Additional (${Math.round(timeLimit - accumulatedTrafficTime)} minutes under limit)</span>`}
-            </div>
+<table class="table table-hover table-basic mb-0" >
+  <tr>
+    <td colspan="7" class="styled-title mb-2">
+      <h3>Résultat :</h3>
+    </td>
+  </tr>
+  <tr>
+    <td colspan="7">
+      <div class="route-info">
+        <strong>Détails de l'itinéraire :</strong><br>
+        <table class="table table-bordered" style="margin-top: 20px;">
+          <tr>
+            <th style="width : 510px">Itinéraire</th>
+            <td>${selectedRoute.nom_trajet}</td>
+          </tr>
+          <tr>
+            <th style="width : 510px">Date</th>
+            <td>${date_navette}</td>
+          </tr>
+          <tr>
+            <th style="width : 510px">Limite de temps</th>
+            <td>${timeLimit} minutes</td>
+          </tr>
+          <tr>
+            <th style="width : 510px">Temps total (sans temps supplémentaire)</th>
+            <td>${Math.round(accumulatedTime)} minutes</td>
+          </tr>
+          <tr>
+            <th style="width : 510px">Temps total (avec temps supplémentaire)</th>
+            <td>${Math.round(accumulatedTime + trafficDelay)} minutes</td>
+          </tr>
+          <tr>
+            <th>Statut de la limite de temps</th>
+            <td>${accumulatedTrafficTime <= timeLimit ? 
+              '<span style="color: green">✓ Dans la limite de temps</span>' : 
+              `<span style="color: red">⚠️ Dépassement de la limite de temps de ${Math.round(accumulatedTrafficTime - timeLimit)} minutes</span>`}</td>
+          </tr>
+          <tr>
+            <th style="width : 510px">Distance totale</th>
+            <td>${totalDistance.toFixed(2)} km</td>
+          </tr>
+          <tr>
+            <th style="width : 510px">Arrêts atteints</th>
+            <td>${routeResults.stopsReached - 1} sur ${stops.length}</td>
+          </tr>
+          <tr>
+            <th style="width : 510px">Taux de complétion</th>
+            <td>${(((routeResults.stopsReached - 1) / stops.length) * 100).toFixed(1)}%</td>
+          </tr>
+        </table>
+      </div>
+      <div class="time-comparison">
+        <strong>Analyse du temps :</strong><br>
+        <table class="table table-bordered" style="margin-top: 20px; ">
+          <tr>
+            <th style="width : 510px">Temps de base de l'itinéraire</th>
+            <td>${Math.round(accumulatedTime)} minutes</td>
+          </tr>
+          <tr>
+            <th style="width : 510px">Temps supplémentaire</th>
+            <td>${Math.round(trafficDelay)} minutes</td>
+          </tr>
+          <tr>
+            <th>Statut</th>
+            <td>${accumulatedTrafficTime > timeLimit ? 
+              `<span style="color: red">⚠️ L'itinéraire dépasse la limite de temps de ${Math.round(accumulatedTrafficTime - timeLimit)} minutes avec le trafic</span>` :
+              `<span style="color: green">✓ L'itinéraire est réalisable même avec le temps supplémentaire (${Math.round(timeLimit - accumulatedTrafficTime)} minutes sous la limite)</span>`}</td>
+          </tr>
+        </table>
+      </div>
+    </td>
+  </tr>
+</table>
         `;
 
         await submitRouteData(
             routeResults,
             optimizedPoints,
-            routeData.navette[0].id
+            routeData.navette[0].id,
+            trafficDelay
         );
 
     } catch (error) {
@@ -725,7 +710,7 @@ async function calculateRoute() {
     }
 }
     // Add event listeners
-    async function submitRouteData(routeResults, optimizedPoints, navetteId) {
+    async function submitRouteData(routeResults, optimizedPoints, navetteId , trafficDelay) {
         // Prepare entries data
         const entriesData = optimizedPoints
 
@@ -743,9 +728,9 @@ async function calculateRoute() {
         const submissionData = {
             entries: entriesData,
             navette: {
-                totalTime: Math.round(routeResults.totalTimeWithTraffic),
+                totalTime: Math.round(routeResults.totalTimeWithTraffic ) + trafficDelay,
                 totalDistance: parseFloat(routeResults.totalDistance),
-                starttime : routeResults.date.split(" ")[1]
+                starttime : routeResults.date.split(" ")[1] 
             }
         };
         console.log(submissionData)

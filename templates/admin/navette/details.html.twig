@@ -333,7 +333,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
 
     <div id="lastUpdate"></div>
-    <div id="result"></div>
+    <div id="result" style="margin-top : 30px"></div>
     <div id="map"></div>
 
   <!-- Include Leaflet CSS -->
@@ -353,6 +353,7 @@ document.addEventListener('DOMContentLoaded', function() {
     'pickupLocation': entry.pickupLocation,
     'dropoffLatitude': entry.dropoffLatitude,
     'dropoffLongitude': entry.dropoffLongitude,
+    'dropoffLocation' : entry.dropoffLocation,
     'navetteId': entry.navetteId,
     'dureeUp': entry.dureeUp
 })|json_encode|e('html_attr') }}"
