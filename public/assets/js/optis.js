@@ -637,7 +637,7 @@ async function calculateRoute() {
             <td>${date_navette}</td>
           </tr>
           <tr>
-            <th style="width : 510px">Limite de temps</th>
+            <th style="width : 510px">temps limite</th>
             <td>${timeLimit} minutes</td>
           </tr>
           <tr>
