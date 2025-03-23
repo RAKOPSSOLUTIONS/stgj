@@ -1378,25 +1378,35 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
    */
   public function delete(Request $request, UserInterface $user, TranslatorInterface $translator)
   {
-    $id = $request->get('id');
-    $navette = $this->getDoctrine()->getRepository(Navette::class)->find($id);
-
-    //check if navette hase entries 
-    $entries = $this->getDoctrine()->getRepository(ReservationEntries::class)->findBy(['navette_id' => $id]);
-
-    if ( count($entries) > 0 ){
-
-      return $this->json([
-      'tableId' => 'navettes',
-      'status'  => 'success',
-      'message' => $translator->trans("Vous ne pouvez pas supprimer cette navette")
-      ]);
-
-    }
-
-
     $em = $this->getDoctrine()->getManager();
-    $em->remove($navette);
+    $navetteRepo = $em->getRepository(Navette::class);
+    $items = $request->get('items', [$request->get('id', 0)]);
+
+    $navettes = $navetteRepo->createQueryBuilder('n')
+          ->where('n.id IN(:items)')
+          ->setParameter('items', $items)
+          ->getQuery()
+          ->getResult();
+          foreach ($navettes as $navette) {
+
+            $entries = $this->getDoctrine()->getRepository(ReservationEntries::class)->findBy(['navette_id' => $navette]);
+
+            if ( count($entries) > 0 ){
+        
+              return $this->json([
+              'tableId' => 'navettes',
+              'status'  => 'success',
+              'message' => $translator->trans("Vous ne pouvez pas supprimer cette navette")
+              ]);
+        
+            }
+        
+        
+            
+            $em->remove($navette);
+          }
+    //check if navette hase entries 
+
     $em->flush();    
 
     return $this->json([
