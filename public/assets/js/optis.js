@@ -203,7 +203,7 @@ function calculerDateNavette(date_navette1, heure_navette1, navette_direction1) 
 
 
 async function calculateTimeWithTraffic(currentPoint, nextPoint, date) {
-    console.log(currentPoint , nextPoint)
+
 const { routeData, shapeData } = await calculateRouteSegment(
     currentPoint.lat,
     currentPoint.lon,
@@ -258,7 +258,7 @@ while (remainingStops.length > 0) {
         const totalTimeWithTraffic = currentTime + timeToStopWithTraffic + stopDuration + timeFromStopToEndWithTraffic;
         
         // Check if this stop is feasible within time limit
-        if (totalTimeWithTraffic <= timeLimit && timeToStopWithTraffic < bestStopTime) {
+        if (totalTimeWithTraffic <= ( timeLimit - buffer )&& timeToStopWithTraffic < bestStopTime) {
             bestNextStop = potentialStop;
             bestStopTime = timeToStopWithTraffic;
         }
@@ -276,25 +276,13 @@ while (remainingStops.length > 0) {
     optimizedRoute.push(bestNextStop);
     remainingStops = remainingStops.filter(stop => stop !== bestNextStop);
 }
-
+    console.log(optimizedRoute)
 // Add end point
 optimizedRoute.push(endPoint);
 return optimizedRoute;
 }
 
 
-
-    function formatDateTime(date) {
-        return new Intl.DateTimeFormat('en-US', {
-            year: 'numeric',
-            month: 'short',
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit',
-            second: '2-digit',
-            hour12: true
-        }).format(date);
-    }
 
 
     function updateLastUpdateTime() {
@@ -372,7 +360,7 @@ async function calculateRoute() {
         const processedStops = processEntriesWithUniqueStopTime(
             routeData.reservation_entries.filter(entry => entry.navette_id === selectedRouteId)
         );
-        
+
         const stops = processedStops.map(stop => ({
             id: stop.id,
             lat: selectedRoute.navette_direction !== "Sortie" ? stop.pickup_latitude : stop.dropoffLatitude,
@@ -487,7 +475,7 @@ async function calculateRoute() {
                                             font-size: 14px; 
                                             font-weight: bold; 
                                             text-align: center; 
-                                            color: black;" class="marker-number">${counter - 1}</div>`,
+                                            color: black;" class="marker-number">${selectedRoute.navette_direction === "Sortie" ? counter : counter - 1}</div>`,
                         iconSize: [30, 30],
                         iconAnchor: [15, 15]
                     })
@@ -660,11 +648,11 @@ async function calculateRoute() {
           </tr>
           <tr>
             <th style="width : 510px">Arrêts atteints</th>
-            <td>${routeResults.stopsReached - 1} sur ${stops.length}</td>
+            <td>${selectedRoute.navette_direction === "Sortie" ? routeResults.stopsReached : routeResults.stopsReached - 1} sur ${stops.length}</td>
           </tr>
           <tr>
             <th style="width : 510px">Taux de complétion</th>
-            <td>${(((routeResults.stopsReached - 1) / stops.length) * 100).toFixed(1)}%</td>
+            <td>${(((selectedRoute.navette_direction === "Sortie" ? routeResults.stopsReached : routeResults.stopsReached - 1) / stops.length) * 100).toFixed(1)}%</td>
           </tr>
         </table>
       </div>
