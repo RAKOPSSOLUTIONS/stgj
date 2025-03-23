@@ -750,7 +750,7 @@ async function calculateRoute() {
     
     calculateRouteBtn.addEventListener('click', function() {
         // Show the update traffic button
-        updateTrafficBtn.style.display = 'inline-block';
+        
         // Disable the calculate route button
         calculateRouteBtn.disabled = true;
         // Initialize the route calculation
