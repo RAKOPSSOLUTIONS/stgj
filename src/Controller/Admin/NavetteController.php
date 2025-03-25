@@ -757,6 +757,7 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
 
   private function getTable($request, $user, $table)
   {
+    $table->setPerPage(100);
     $table->addColumn('increment', '#', ['class' => 'text-danger']);
     $table->addColumn('id', 'Id', ['sortable' => true]);
     $table->addColumn('trajet.zone', 'Société', ['sortable' => true]);
@@ -1040,6 +1041,12 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
 
     $table->setPrimaryKey('id');
     //$table->setOrder('DATE(n.date_navette)', 'DESC'); //, n.direction, n.heure_navette
+
+    $table->setOrder('n.direction', 'ASC');
+    $table->setOrder('n.heure_navette', 'ASC');
+
+
+
     $table->addAction('details', [
       'label' => 'Détail',
       'icon'  => 'bi bi-list-stars',
@@ -1060,7 +1067,10 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
     ]);
     $table->addAction('enable', [
       'icon'  => 'bi bi-toggle-on',
-      'route' => '/admin/navettes/[id]/enable',
+      'route' => function($entity) {
+        $id = $entity ? $entity->getId() : 0;
+        return "/admin/navettes/{$id}/enable";
+      },
       'label' => 'Valider',
       'display' => function($entity) {
         return $this->isGranted('ROLE_ADMIN') && $entity->getStatus() == 'commandée';
@@ -1072,16 +1082,23 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
       'type'  => 'modal',
       'label' => 'Pré commande',
       'icon'  => 'bi bi-check-lg',
-      'route' => '/admin/navettes/[id]/precommande',
+      'route' => function($entity) {
+        $id = $entity ? $entity->getId() : 0;
+        return "/admin/navettes/{$id}/precommande";
+      },
       'display' => function ($entity) {
         return $this->isGranted('ROLE_ADMIN') && $entity->getStatus() == 'en attente';
       },
+      'bulk_action' => true,
       'confirm' => true
     ]);
 
     $table->addAction('order', [
       'icon'  => 'bi bi-cart',
-      'route' => '/admin/navettes/[id]/order',
+      'route' => function($entity) {
+        $id = $entity ? $entity->getId() : 0;
+        return "/admin/navettes/{$id}/order";
+      },
       'label' => 'Commander',
       'display' => function($entity) {
         return $this->isGranted('ROLE_MANAGER') && in_array($entity->getStatus(), ['annulée', 'pré commande']);
@@ -1112,10 +1129,14 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
       'type'  => 'modal',
       'label' => 'Annuler',
       'icon'  => 'bi bi-bi-arrow-counterclockwise',
-      'route' => '/admin/navettes/[id]/cancel',
       'display' => function ($entity) {
         return $this->isGranted('ROLE_MANAGER') && !in_array($entity->getStatus(), ['annulée', 'commencée', 'terminée']);
       },
+      'route' => function($entity) {
+        $id = $entity ? $entity->getId() : 0;
+        return "/admin/navettes/{$id}/cancel";
+      },
+      'bulk_action' => true,
       'confirm' => true
     ]);
 
@@ -1155,9 +1176,11 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
   {
     $params = [];
     $optionsRepo = $this->getDoctrine()->getRepository(Navette::class);
-    $query = $optionsRepo->createQueryBuilder('n')
-    ->orderBy('n.date_navette', 'DESC');
-
+    $query = $optionsRepo->createQueryBuilder('n');
+    $query->addSelect("CASE WHEN n.direction = 'entree' THEN 0 ELSE 1 END AS HIDDEN dir_order");
+    $query->orderBy('dir_order', 'ASC');
+    $query->addOrderBy('n.heure_navette', 'ASC');
+    $query->addOrderBy('n.date_navette', 'DESC');
     // search params
     $keywords = $request->get('q');
     $trajet_id = $request->get('navette_id');
@@ -1260,74 +1283,74 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
     ])->handleRequest($request);
   }
 
-  /**
-   * @Route(methods={"GET"}, path="/admin/navettes/{id}/precommande", name="navettes.precommande")
-   * @IsGranted("ROLE_ADMIN")
-   */
-  public function precommande(Navette $navette, TranslatorInterface $translator, EntityManagerInterface $em)
+/**
+ * @Route(methods={"GET", "POST"}, path="/admin/navettes/{id}/precommande", name="navettes.precommande", defaults={"id"=0})
+ * @IsGranted("ROLE_ADMIN")
+ */
+  public function precommande(Request $request, UserInterface $user, TranslatorInterface $translator, EntityManagerInterface $em)
   {
-    if (in_array($navette->getStatus(), ['annulée', 'commencée', 'terminée'])) {
+      $items = $request->get('items', [$request->get('id', 0)]);
+      $navettes = $this->getDoctrine()->getRepository(Navette::class)->findBy(['id' => $items]);
+      
+      foreach ($navettes as $navette) {
+          if (in_array($navette->getStatus(), ['annulée', 'commencée', 'terminée'])) {
+              continue;
+          }
+  
+          $navette->setStatus('pré commande');
+          $em->persist($navette);
+          
+          // Log activity
+          $em->getRepository(Log::class)->store(
+              $user->getId(),
+              $navette->getId(),
+              'navette',
+              'precommande'
+          );
+      }
+      
+      $em->flush();
+  
       return $this->json([
-        'status'  => 'error',
-        'message' => $translator->trans("Vous ne pouvez pas modifier cette navette")
+          'tableId' => 'navettes',
+          'status'  => 'success',
+          'message' => $translator->trans("Les navettes ont bien été passées en pré commande")
       ]);
-    }
-
-    $navette->setStatus('pré commande');
-    $em->persist($navette);
-    $em->flush();
-
-    return $this->json([
-      'tableId' => 'navettes',
-      'status'  => 'success',
-      'message' => $translator->trans("La navette a bien été passée en pré commande")
-    ]);
   }
 
-  /**
-   * @Route(methods={"GET"}, path="/admin/navettes/{id}/cancel", name="navettes.cancel")
-   * @IsGranted("ROLE_MANAGER")
-   */
-  public function cancel(Navette $navette, TranslatorInterface $translator, EntityManagerInterface $em)
+/**
+ * @Route(methods={"GET", "POST"}, path="/admin/navettes/{id}/cancel", name="navettes.cancel", defaults={"id"=0})
+ * @IsGranted("ROLE_MANAGER")
+ */
+  public function cancel(Request $request, UserInterface $user, TranslatorInterface $translator, EntityManagerInterface $em)
   {
-    if (in_array($navette->getStatus(), ['annulée', 'commencée', 'terminée'])) {
-      return $this->json([
-        'status'  => 'error',
-        'message' => $translator->trans("Vous ne pouvez pas annuler cette navette")
-      ]);
-    }
-
-    $navette->setStatus('annulée');
-    $em->persist($navette);
-    $em->flush();
-
-    $users = $em->getRepository(User::class)
-      ->createQueryBuilder('u')
-      ->join(ReservationEntries::class, 'e', 'WITH', 'e.user = u')
-      ->where('e.navette = :navette')
-      ->setParameter('navette', $navette)
-      ->getQuery()
-      ->getResult();
-
-    /*if (!empty($users)) {
-      $trajet = $navette->getTrajet()->getName();
-      $date = $navette->getDateNavette()->format('d/m/Y');
-      $heure = $navette->getHeureNavette();
-      foreach ($users as $user) {
-        $em->getRepository(MailHistory::class)->log([
-          'template' => 'navette-annulee',
-          'receiver' => $user->getEmail(),
-          'subject' => 'STJG - Annulation de la navette du {date}',
-          'variables' => ['trajet' => $trajet, 'date' => $date, 'heure' => $heure]
-        ]);
+      $items = $request->get('items', [$request->get('id', 0)]);
+      $navettes = $this->getDoctrine()->getRepository(Navette::class)->findBy(['id' => $items]);
+      
+      foreach ($navettes as $navette) {
+          if (in_array($navette->getStatus(), ['annulée', 'commencée', 'terminée'])) {
+              continue;
+          }
+  
+          $navette->setStatus('annulée');
+          $em->persist($navette);
+          
+          // Log activity
+          $em->getRepository(Log::class)->store(
+              $user->getId(),
+              $navette->getId(),
+              'navette',
+              'cancel'
+          );
       }
-    }*/
-
-    return $this->json([
-      'tableId' => 'navettes',
-      'status'  => 'success',
-      'message' => $translator->trans("La navette a bien été annulée")
-    ]);
+      
+      $em->flush();
+  
+      return $this->json([
+          'tableId' => 'navettes',
+          'status'  => 'success',
+          'message' => $translator->trans("Les navettes ont bien été annulées")
+      ]);
   }
 
   /**
@@ -1491,47 +1514,39 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
     return $this->redirectToRoute('navettes');
   }
 
-  /**
-   * @Route(methods={"GET", "POST"}, path="/admin/navettes/{id}/order", name="navettes.order")
-   * @IsGranted("ROLE_MANAGER")
-   */
-  public function order(Request $request, UserInterface $user, TranslatorInterface $translator)
+/**
+ * @Route(methods={"GET", "POST"}, path="/admin/navettes/{id}/order", name="navettes.order", defaults={"id"=0})
+ * @IsGranted("ROLE_MANAGER")
+ */
+  public function order(Request $request, UserInterface $user, TranslatorInterface $translator, EntityManagerInterface $em)
   {
-    $items = $request->get('items', [$request->get('id', 0)]);
-    $current_user = $user;
-    $navettes = $this->getDoctrine()->getRepository(Navette::class)->findBy(['id' => $items]);
-    $em = $this->getDoctrine()->getManager();
-     
-
-    foreach ($navettes as $navette) {
-         
+      $items = $request->get('items', [$request->get('id', 0)]);
+      $navettes = $this->getDoctrine()->getRepository(Navette::class)->findBy(['id' => $items]);
       
-      $navette_id = $navette->getId();
-      $entries = $this->getDoctrine()->getRepository(ReservationEntries::class)->findBy(['navette_id'=>$navette_id]); 
-
-      if ( $navette->getStatus() == 'pré commande' ){
-        
-         
-        $navette->setStatus('commandée');
-        $em->persist($navette);
-        $em->flush();
-
-
-        $em->getRepository(Log::class)->store(
-        $current_user->getId(),
-        $navette->getId(),
-        'navette',
-        'commandée'
-        );
-
-        }
-
-      $this->addFlash( 'success', "La navette a été commandée avec succès");
-
-    }
-
-    return $this->redirectToRoute('navettes');
+      foreach ($navettes as $navette) {
+          if ($navette->getStatus() == 'pré commande') {
+              $navette->setStatus('commandée');
+              $em->persist($navette);
+              
+              // Log activity
+              $em->getRepository(Log::class)->store(
+                  $user->getId(),
+                  $navette->getId(),
+                  'navette',
+                  'commandée'
+              );
+          }
+      }
+      
+      $em->flush();
+  
+      return $this->json([
+          'tableId' => 'navettes',
+          'status'  => 'success',
+          'message' => $translator->trans("Les navettes ont bien été commandées")
+      ]);
   }
+  
 
   /**
    * @Route(methods={"GET", "POST"}, path="/admin/navettes/{id}/comment")

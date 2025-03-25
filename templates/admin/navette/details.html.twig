@@ -146,7 +146,7 @@
     <input type="hidden" name="duration" id="duration" value="" />
 
     <tr>
-      <td>{{ entry.user.matricule }}</td>
+  <td>{{ entry.user.matricule|default('') }}</td>
       <td>{{ entry.user }}</td>
       <td>{{ entry.pickupLocation }}</td>
       <td>{{ entry.DropoffLocation }}</td>
@@ -188,7 +188,7 @@
       <td>
         <input type="checkbox" class="entry-select form-check-input" data-entry-id="{{ entry.id }}" style="width: 16px; height: 16px;">
       </td>
-      <td>{{ entry.user.matricule }}</td>
+       <td>{{ entry.user.matricule|default('') }}</td>
       <td>{{ entry.user }}</td>
       <td>{{ entry.pickupLocation }}</td>
       <td>{{ entry.DropoffLocation }}</td>

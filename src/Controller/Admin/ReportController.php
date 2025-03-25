@@ -16,9 +16,11 @@ use App\Entity\Reservation;
 use App\Entity\ReservationEntries;
 use App\Entity\Trajet;
 use App\Entity\Pickup;
+use App\Entity\Site;
 use App\Entity\Vehicule;
 use Psr\Log\LoggerInterface;
-
+use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ReportController extends AbstractController
 {
@@ -43,128 +45,107 @@ class ReportController extends AbstractController
      /**
    * @Route(path="/generate-report/{reportType}", name="generate_report", methods={"GET"})
    */
-    public function generateReport(Request $request, string $reportType, ExcelReportService $excelReportService , LoggerInterface $logger): Response
-    {
-        try {
-        // Get `startAt` and `endAt` from the request
-        $startAt = $request->query->get('startAt');
-        $endAt = $request->query->get('endAt');
-
-        // Parse the dates if provided
-        $startDate = $startAt ? new \DateTime($startAt) : null;
-        $endDate = $endAt ? new \DateTime($endAt) : null;
-
-
-
-        // Configuration of reports
-        $reportConfigs = [
-            'report1' => [
-                'headers' => ['Site', 'Matricule', 'Nom', 'Prénom','Adresse','GPS(latitude, longitude)','tel','email','Adhésion'],['Site', 'Matricule', 'Nom', 'Prénom','Adresse','GPS(latitude, longitude)','tel','email','Adhésion'],
-                'data' => $this->getBaseEffectif($startDate, $endDate),
-                'filename' => 'Base effectif.xlsx',
-            ],
-            'report2' => [
-                'headers' => ['Site', 'Matricule', 'Nom', 'Prenom','Adresse','GPS(latitude, longitude)','tel','email','Adhésion'],
-               'data' => $this->getBaseAdherents($startDate, $endDate), 
-                'filename' => 'Base des adhérents.xlsx',
-            ],
-            'report3' => [
-
-                'headers' => ['Site', 'Matricule', 'Nom', 'Prenom','Adresse','GPS(latitude, longitude)', 'Tel', 'Email','Date'],
-                'data' => $this->getReportHistoriqueInscrits($startDate, $endDate),
-                'filename' => 'Historique des inscrits.xlsx',
-            ],
-            'report4' => [
-
-                'headers' => ['Site', 'Matricule', 'Nom', 'Prenom','Adresse','GPS(latitude, longitude)', 'Tel', 'Email','Date'],
-                'data' => $this->getReportHistoriqueDeinscrits($startDate, $endDate),
-                'filename' => 'Historique des deinscrits.xlsx',
-            ],
-
-            'report5' => [
-
-                'headers' => ['Site', 'Matricule', 'Nom et prenom', 'Trajet','Point (Pickup)','Date','Entee/sortie','Heure'],
+  public function generateReport(Request $request, string $reportType, ExcelReportService $excelReportService, LoggerInterface $logger): Response
+  {
+      try {
+          // Get the current user
+          $user = $this->getUser();
+          $isAdmin = $this->isGranted('ROLE_ADMIN');
+          $managerSite = $isAdmin && $user instanceof User ? null : $user->getSite()  ;
+  
+          // Get `startAt` and `endAt` from the request
+          $startAt = $request->query->get('startAt');
+          $endAt = $request->query->get('endAt');
+  
+          // Parse the dates if provided
+          $startDate = $startAt ? new \DateTime($startAt) : null;
+          $endDate = $endAt ? new \DateTime($endAt) : null;
+  
+          // Configuration of reports
+          $reportConfigs = [
+              'report1' => [
+                  'headers' => ['Site', 'Matricule', 'Nom', 'Prénom','Adresse','GPS(latitude, longitude)','tel','email','Adhésion'],
+                  'data' => $this->getBaseEffectif($startDate, $endDate, $managerSite),
+                  'filename' => 'Base effectif.xlsx',
+              ],
+              'report2' => [
+                  'headers' => ['Site', 'Matricule', 'Nom', 'Prenom','Adresse','GPS(latitude, longitude)','tel','email','Adhésion'],
+                  'data' => $this->getBaseAdherents($startDate, $endDate, $managerSite), 
+                  'filename' => 'Base des adhérents.xlsx',
+              ],
+              'report3' => [
+                  'headers' => ['Site', 'Matricule', 'Nom', 'Prenom','Adresse','GPS(latitude, longitude)', 'Tel', 'Email','Date'],
+                  'data' => $this->getReportHistoriqueInscrits($startDate, $endDate, $managerSite),
+                  'filename' => 'Historique des inscrits.xlsx',
+              ],
+              'report4' => [
+                  'headers' => ['Site', 'Matricule', 'Nom', 'Prenom','Adresse','GPS(latitude, longitude)', 'Tel', 'Email','Date'],
+                  'data' => $this->getReportHistoriqueDeinscrits($startDate, $endDate, $managerSite),
+                  'filename' => 'Historique des deinscrits.xlsx',
+              ],
+              'report5' => [
+                  'headers' => ['Site', 'Matricule', 'Nom et prenom', 'Trajet','Point (Pickup)','Date','Entee/sortie','Heure'],
                   'data' => $this->getReportPlanningJournalier($startDate, $endDate),
-                'filename' => 'planning_journalier.xlsx',
-            ],
-
-            'report6' => [
-
-                									                                            					 
-
-
-                'headers' => ['Date', 'ID Circuit', 'Site', 'Matricule','Nom ','Prenom ','Zone ', 'Point d\'arrêt', 'Type (Entrée/Sortie) ', 'Horaire','Horaire de passage','Véhicule','Chauffeur','Tél','Type navette (ETAT)'],
-                'data' => $this->getReportPlanningJournalierReel($startDate, $endDate),
-                'filename' => 'planning_journalier_reel.xlsx',
-            ],
-
-            'report7' => [
-
-                'headers' => ['Date Navette', 'Heure Navette', '2', '7','14','17','24', '27', 'Type Navette'],
-                'data' => $this->getPointageNavettesValidées($startDate, $endDate),
-                'filename' => 'Pointage des navettes validées.xlsx',
-            ],
-
-            'report8' => [
-
-                'headers' => ['Date Navette', 'Heure Navette', '2', '7','14','17','24', '27', 'Type Navette'],
-                'data' => $this->getPointageNavettesAnnulées($startDate, $endDate),
-                'filename' => 'Pointage des navettes annulées.xlsx',
-            ],
-
-            'report9' => [
-
-                'headers' => ['Site', 'Entrée', 'Sortie'],
-                'data' => $this->getTranchesHorairesActives($startDate, $endDate),
-                'filename' => 'Tranches horaires actives.xlsx',
-            ],
-
-            'report10' => [
-
-                'headers' => ['ID', 'Trajet', 'Point d\'arrêt', 'GPS'],
-                'data' => $this->getZonesEtPointsAarrêtActives($startDate, $endDate),
-                'filename' => 'Zones et points d\'arréts actives .xlsx',
-            ],
-
-            'report11' => [ 
-                'headers' => ['Date', 'Type (Entrée/Sortie)', 'Horaire', 'Circuit ID','Zones (Trajet)','Durée','KM','Passagers','Véhicule', 'Cap Net Réelle', 'Taux d\'occupation réel %', 'Coût','Type navette (ETAT)'],
-                'data' => $this->getPlaningCircuitsJournalier($startDate, $endDate),
-                'filename' => 'Planning des circuits journaliers .xlsx',
-            ],
-     
-            
-        ];
-
-        if (!isset($reportConfigs[$reportType])) {
-            throw $this->createNotFoundException('Type de rapport introuvable.');
-        }
-
-        $config = $reportConfigs[$reportType];
-
-
-            // Check if it's a preview request
-            if ($request->query->get('preview')) {
-                return $this->json([
-                    'headers' => $config['headers'],
-                    'rows' => $config['data'],
-                ], 200, [], [
-                    'groups' => ['report'], // Apply the serialization group
-                ]);
-            }
-
-        return $excelReportService->createExcel($config['headers'], $config['data'], $config['filename']);
-    } catch (\Exception $e) {
-        // Log the error using the injected logger
-        $logger->error('Error generating report: ' . $e->getMessage());
-
-        // Return a detailed error response
-        return $this->json([
-            'error' => 'An error occurred while generating the report.',
-            'message' => $e->getMessage(),
-            'trace' => $e->getTraceAsString(),
-        ], 500);
-    }
-    }
+                  'filename' => 'planning_journalier.xlsx',
+              ],
+              'report6' => [
+                  'headers' => ['Date', 'ID Circuit', 'Site', 'Matricule','Nom ','Prenom ','Zone ', 'Point d\'arrêt', 'Type (Entrée/Sortie) ', 'Horaire','Horaire de passage','Véhicule','Chauffeur','Tél','Type navette (ETAT)'],
+                  'data' => $this->getReportPlanningJournalierReel($startDate, $endDate),
+                  'filename' => 'planning_journalier_reel.xlsx',
+              ],
+              'report7' => [
+                  'headers' => ['Date Navette', 'Heure Navette', '2', '7','14','17','24', '27', 'Type Navette'],
+                  'data' => $this->getPointageNavettesValidées($startDate, $endDate),
+                  'filename' => 'Pointage des navettes validées.xlsx',
+              ],
+              'report8' => [
+                  'headers' => ['Date Navette', 'Heure Navette', '2', '7','14','17','24', '27', 'Type Navette'],
+                  'data' => $this->getPointageNavettesAnnulées($startDate, $endDate),
+                  'filename' => 'Pointage des navettes annulées.xlsx',
+              ],
+              'report9' => [
+                  'headers' => ['Site', 'Entrée', 'Sortie'],
+                  'data' => $this->getTranchesHorairesActives($startDate, $endDate, $managerSite),
+                  'filename' => 'Tranches horaires actives.xlsx',
+              ],
+              'report10' => [
+                  'headers' => ['ID', 'Trajet', 'Point d\'arrêt', 'GPS'],
+                  'data' => $this->getZonesEtPointsAarrêtActives($startDate, $endDate),
+                  'filename' => 'Zones et points d\'arréts actives .xlsx',
+              ],
+              'report11' => [ 
+                  'headers' => ['Date', 'Type (Entrée/Sortie)', 'Horaire', 'Circuit ID','Zones (Trajet)','Durée','KM','Passagers','Véhicule', 'Cap Net Réelle', 'Taux d\'occupation réel %', 'Coût','Type navette (ETAT)'],
+                  'data' => $this->getPlaningCircuitsJournalier($startDate, $endDate),
+                  'filename' => 'Planning des circuits journaliers .xlsx',
+              ],
+          ];
+  
+          if (!isset($reportConfigs[$reportType])) {
+              throw $this->createNotFoundException('Type de rapport introuvable.');
+          }
+  
+          $config = $reportConfigs[$reportType];
+  
+          // Check if it's a preview request
+          if ($request->query->get('preview')) {
+              return $this->json([
+                  'headers' => $config['headers'],
+                  'rows' => $config['data'],
+              ], 200, [], [
+                  'groups' => ['report'],
+              ]);
+          }
+  
+          return $excelReportService->createExcel($config['headers'], $config['data'], $config['filename']);
+      } catch (\Exception $e) {
+          $logger->error('Error generating report: ' . $e->getMessage());
+          return $this->json([
+              'error' => 'An error occurred while generating the report.',
+              'message' => $e->getMessage(),
+              'trace' => $e->getTraceAsString(),
+          ], 500);
+      }
+  }
 
   
     
@@ -187,6 +168,7 @@ class ReportController extends AbstractController
             ->setParameter('status', 'validée') // Add condition for annulée status
             ->orderBy('n.date_navette', 'DESC'); // Order results by date_navette
         // Execute the query
+
         $navettes = $queryBuilder->getQuery()->getResult();
     
         // Define custom hour ranges for Entrée and Sortie
@@ -509,7 +491,7 @@ class ReportController extends AbstractController
     
 
    #[Route('/reservation-hours', name: 'get_reservation_hours')]
-public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateTime $endDate = null): array
+public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateTime $endDate = null, ?Site $managerSite = null): array
 {
     // Retrieve the repository for the Reservation entity
     $repository = $this->entityManager->getRepository(Reservation::class);
@@ -518,7 +500,10 @@ public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateT
     $queryBuilder = $repository->createQueryBuilder('r')
         ->join('r.user', 'u') // Relationship between reservation and user
         ->addSelect('u'); // Also load user data
-
+        if ($managerSite) {
+            $queryBuilder->andWhere('r.site = :site')
+                ->setParameter('site', $managerSite);
+        }
     if ($startDate) {
         $queryBuilder->andWhere('r.reservation_date >= :startDate')
                      ->setParameter('startDate', $startDate);
@@ -622,7 +607,6 @@ public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateT
             ->setParameter('statuses', ['validée', 'en attente']) // Set the statuses to filter by
             ->orderBy('re.reservation_date', 'DESC'); // Order by reservation_date in ascending order
 
-    
 
         // Apply date filters for ReservationEntries' reservation_date
         if ($startDate) {
@@ -706,7 +690,6 @@ public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateT
         ->addSelect('r', 'u', 'n', 'v', 't') // Include Reservation, User, Navette, and Vehicule in the result
         ->orderBy('re.reservation_date', 'DESC'); // Order by reservation_date in ascending order
 
-    
               // Apply date filters for ReservationEntries' reservation_date
               if ($startDate) {
                 $queryBuilder->andWhere('r.begin_on >= :startDate')
@@ -754,14 +737,17 @@ public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateT
 
     //ok
     #[Route('/users', name: 'get_inscrit_users')]
-    public function getReportHistoriqueInscrits(?\DateTime $startDate = null, ?\DateTime $endDate = null): array
+    public function getReportHistoriqueInscrits(?\DateTime $startDate = null, ?\DateTime $endDate = null, ?Site $managerSite = null): array
   {
         $repository = $this->entityManager->getRepository(User::class);
         $queryBuilder = $repository->createQueryBuilder('u');
     
         $queryBuilder->andWhere('u.adhesion = :adhesion')
             ->setParameter('adhesion', 1);
-    
+            if ($managerSite) {
+                $queryBuilder->andWhere('u.site = :site')
+                    ->setParameter('site', $managerSite);
+            }
         if ($startDate) {
             $queryBuilder->andWhere('DATE(u.date_adhesion) >= :startDate')
                 ->setParameter('startDate', $startDate);
@@ -796,14 +782,17 @@ public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateT
 
 
     #[Route('/users', name: 'get_deinscrit_users')]
-    public function getReportHistoriqueDeinscrits(?\DateTime $startDate = null, ?\DateTime $endDate = null): array
+    public function getReportHistoriqueDeinscrits(?\DateTime $startDate = null, ?\DateTime $endDate = null, ?Site $managerSite = null): array
     {
         $repository = $this->entityManager->getRepository(User::class);
         $queryBuilder = $repository->createQueryBuilder('u');
     
         $queryBuilder->andWhere('u.adhesion = :adhesion')
             ->setParameter('adhesion', 0);
-    
+            if ($managerSite) {
+                $queryBuilder->andWhere('u.site = :site')
+                    ->setParameter('site', $managerSite);
+            }
         if ($startDate) {
             $queryBuilder->andWhere('DATE(u.date_adhesion) >= :startDate')
                 ->setParameter('startDate', $startDate);
@@ -839,13 +828,17 @@ public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateT
 
     
     //ok
-    private function getBaseEffectif(): array
+    private function getBaseEffectif(?\DateTime $startDate = null, ?\DateTime $endDate = null, ?Site $managerSite = null): array
     {
         $repository = $this->entityManager->getRepository(user::class);
     
         // Build query with optional date filtering on "date_adhesion"
         $queryBuilder = $repository->createQueryBuilder('u');
-
+    // Add site filter if manager site is provided
+        if ($managerSite) {
+            $queryBuilder->andWhere('u.site = :site')
+                ->setParameter('site', $managerSite);
+        }
     
         $users = $queryBuilder->getQuery()->getResult();
     
@@ -872,7 +865,7 @@ public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateT
     }
 
     //ok
-    private function getBaseAdherents(): array
+    private function getBaseAdherents(?\DateTime $startDate = null, ?\DateTime $endDate = null, ?Site $managerSite = null): array
     {
         $repository = $this->entityManager->getRepository(user::class);
     
@@ -882,7 +875,11 @@ public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateT
             $queryBuilder->andWhere('u.adhesion = :adhesion')
             ->setParameter('adhesion', 1);
 
-    
+            if ($managerSite) {
+                $queryBuilder->andWhere('u.site = :site')
+                    ->setParameter('site', $managerSite);
+            }
+        
         $users = $queryBuilder->getQuery()->getResult();
     
         // Prepare data for the report
@@ -911,9 +908,15 @@ public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateT
    
     /**
    * @Route(path="/admin/reporting", name="reporting", methods={"GET"})
+   * 
    */
     public function reportsList(): Response
     {
+
+        if (!$this->isGranted('ROLE_MANAGER') && !$this->isGranted('ROLE_ADMIN')) {
+            throw new NotFoundHttpException('Page not found');
+        }
+
         $reports = [
             ['type' => 'report1', 'label' => 'Base de l\'effectif', 'report_category' => 'simple'],
             ['type' => 'report2', 'label' => 'Base des adhérents', 'report_category' => 'simple'],
