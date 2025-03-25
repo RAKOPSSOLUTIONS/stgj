@@ -648,7 +648,7 @@ public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateT
             
             $user = $reservation ? $reservation->getUser() : null; // Fetch User from Reservation
             $vehicule = $navette ? $navette->getVehicule() : null; // Fetch Vehicule from Navette
-            $site = $user->getSite();
+            $site = $user ? $user->getSite(): null;
             $trj = $entry ? $entry->getTrajet() : null ;
             $chofeur = $vehicule ? $vehicule->getUser() : '';
             
@@ -731,7 +731,7 @@ public function getTranchesHorairesActives(?\DateTime $startDate = null, ?\DateT
                 
                 $user = $reservation ? $reservation->getUser() : null; // Fetch User from Reservation
                 $vehicule = $navette ? $navette->getVehicule() : null; // Fetch Vehicule from Navette
-                $site = $user->getSite();
+                $site = $user ? $user->getSite(): null;
                 $trj = $entry ? $entry->getTrajet() : null ;
             // Add each entry's data to the report
             $data[] = [
