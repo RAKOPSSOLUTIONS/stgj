@@ -1179,8 +1179,9 @@ public function reserver(Request $request, Navette $navette, EntityManagerInterf
     $query = $optionsRepo->createQueryBuilder('n');
     $query->addSelect("CASE WHEN n.direction = 'entree' THEN 0 ELSE 1 END AS HIDDEN dir_order");
     $query->orderBy('dir_order', 'ASC');
-    $query->addOrderBy('n.heure_navette', 'ASC');
     $query->addOrderBy('n.date_navette', 'DESC');
+    $query->addOrderBy('n.heure_navette', 'ASC');
+ 
     // search params
     $keywords = $request->get('q');
     $trajet_id = $request->get('navette_id');
