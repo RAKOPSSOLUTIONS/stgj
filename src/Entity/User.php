@@ -553,7 +553,7 @@ class User implements UserInterface
     }
 
     /**
-     * @ORM\ManyToOne(targetEntity=Site::class)
+     * @ORM\ManyToOne(targetEntity=Site::class ,cascade={"persist"})
      * @Groups({"report"})
      */
     private $site;

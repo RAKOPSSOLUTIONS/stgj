@@ -705,30 +705,41 @@ class UserController extends BaseController
         if ($form->isSubmitted() && $form->isValid()) {
             // Get the uploaded file
             $file = $form->get('excelFile')->getData();
-
+    
             $entityManager = $this->getDoctrine()->getManager();
             
-
             // Ensure the file is uploaded
             if ($file) {
                 // Load the Excel file
                 $spreadsheet = IOFactory::load($file->getPathname());
-
+    
                 // Access the first worksheet
                 $worksheet = $spreadsheet->getActiveSheet();
                 $data = [];
-
+    
+                // Get total rows count
+                $highestRow = $worksheet->getHighestDataRow();
+                
+                // Check if file has more than 200 rows
+                if ($highestRow > 202) {
+                    $this->addFlash('error', 'Le fichier Excel ne doit pas contenir plus de 200 utilisateurs.');
+                    return $this->render('admin/user/import.html.twig', [
+                      'form' => $form->createView(),
+                  ]);
+                }
+    
                 // Loop through rows and columns
                 foreach ($worksheet->getRowIterator() as $rowIndex => $row) {
                     $rowData = [];
                     $i = 0;
-
+    
                     foreach ($row->getCellIterator() as $cell) {
-                      $rowData[] = $cell->getCalculatedValue(); //$cell->getValue();
+                      $rowData[] = $cell->getCalculatedValue();
                     }
                     
                     $data[] = $rowData;
                 }
+                
                 $i = 0;
                 //desactiver tous les utilisateurs avant de commencer l'import
                 foreach ($data as $row) {
@@ -736,21 +747,21 @@ class UserController extends BaseController
                         //find site
                         $name = $row[0];
                         $site = $this->getDoctrine()->getRepository(Site::class)->findOneBy(['name' => $name]);
-
+    
                       if ( $site ){
                           
                         //Check if user exists
                         $user = $this->getDoctrine()->getRepository(User::class)->findOneBy(
                           ['site_id'=> $site->getId(), 'matricule'=> $row[1]]);
-
+    
                         if ( !$user ){
                           //create user account
                           //nom, prenom, zone, matricule, email, telephone
                           //site, matricule, nom, prenom, mdp
-
+    
                           //check if user exists
                           //find site
-
+    
                           
                          
                           $user = new User();
@@ -760,26 +771,21 @@ class UserController extends BaseController
                           $user->setEmail($row[1].'@email.ma');
                           $user->setSociete($site->getSociete());
                           $user->setSite($site);
-
+    
                           //ajouter des zone par société et valider la zone 
-
+    
                           $user->setStatus('active');
                           $user->setRoles(['ROLE_USER']);
                           $uuid = Uuid::v4();
                           $user->setUid($uuid->toBase32());
-                          //$user->setPassword($passwordEncoder->encodePassword($user, trim($row[4])) );
-
-                          // Hash the password
-                         // $value = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[4]);
-                         // $password =  $value->format('Y-m-d');
-
+    
                           $password =$row[4];
+                          error_log($row[4]);
                           $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
-
+                          error_log($hashedPassword);
                           // Set the hashed password in the User entity
                           $user->setPassword($hashedPassword);
-
-
+    
                           $entityManager->persist($user);
                           $i++;
                           
@@ -791,42 +797,28 @@ class UserController extends BaseController
                           $user->setMatricule($row[1]);
                           $user->setSociete($site->getSociete());
                           $user->setSite($site);
-                          //$user->setPassword($passwordEncoder->encodePassword($user, trim($row[4])) );
-                          // Hash the password
-                          $value = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[4]);
-                          $password =  $value->format('Y-m-d');
-
+                          $password =$row[4];
+    
                           $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
-
-                          // Set the hashed password in the User entity
                           $user->setPassword($hashedPassword);
-
-  
-
+    
                           $entityManager->persist($user);
                         }
                         $entityManager->flush();
                       }   
                 }
-
+    
                 
                 if ( $i > 0 ) $this->addFlash( 'success', $i . " utilisateur(s) importé(s) avec succès");
-
-                // Process the data (e.g., save it to the database or display it)
-                // For this example, we will just output the data to check
+    
                 return $this->redirectToRoute('users');
-                return $this->render('admin/user/result.html.twig', [
-                    'data' => $data,
-                    'site' => $site
-                ]);
             }
         }
-
+    
         return $this->render('admin/user/import.html.twig', [
             'form' => $form->createView(),
         ]);
     }
-
 
 
       /**
