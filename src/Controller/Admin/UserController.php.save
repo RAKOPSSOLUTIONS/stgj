@@ -2,6 +2,7 @@
     
 namespace App\Controller\Admin;
 
+
 use App\Entity\Log;
 use App\Helpers\Base;
 use App\Entity\User;
@@ -770,10 +771,8 @@ class UserController extends BaseController
                           //$user->setPassword($passwordEncoder->encodePassword($user, trim($row[4])) );
 
                           // Hash the password
-                         // $value = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[4]);
-                         // $password =  $value->format('Y-m-d');
-
-                          $password =$row[4];
+                          $value = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject($row[4]);
+                          $password =  $value->format('Y-m-d');
                           $hashedPassword = $this->passwordHasher->hashPassword($user, $password);
 
                           // Set the hashed password in the User entity
