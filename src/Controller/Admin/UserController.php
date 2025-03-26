@@ -613,6 +613,10 @@ class UserController extends BaseController
     }
 
     if ( !$user->isAdmin() ) {
+      if ($user->getSite()) {
+        $params['site_id'] = $user->getSite()->getId();
+        $query->andWhere('u.site_id = :site_id');
+    }
       $params['societe_id'] = $user->getSociete()->getId();
       $query->andWhere('u.societe_id = :societe_id');
       $params['role'] = '%role_user%';
