@@ -19,7 +19,7 @@ use App\Entity\Tarif;
 use App\Helpers\Base;
 
 use App\Entity\ReservationEntries;
-
+use App\Repository\PickupRepository;
 use Symfony\Component\Form\AbstractType;
 
 use Symfony\Component\Security\Core\Security;
@@ -161,22 +161,19 @@ class ReservationEntriesSearchType extends AbstractType
 
 
     $builder->add('pickup_id', EntityType::class, [
-
       'label' => "Pickup",
-
       'class' => Pickup::class,
-
       'placeholder' => '',
-
       'mapped' => false,
-
       'group_by' => 'trajet',
-
       'required' => false,
-
-      'data' => $pickup
-
-    ]);
+      'data' => $pickup,
+      'query_builder' => function (PickupRepository $er) {
+          return $er->createQueryBuilder('p')
+              ->where('p.trajet IS NOT NULL')
+              ->orderBy('p.name', 'ASC');
+      }
+  ]);
 
 
 
