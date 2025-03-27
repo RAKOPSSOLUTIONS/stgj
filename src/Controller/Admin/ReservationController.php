@@ -255,8 +255,12 @@ class ReservationController extends BaseController
     if ( !$entity->getUser() ) $entity->setUser($user);
     $entity->setSite($user->getSite());
 
-    if ( $entity->getShiftEntree() < 8 ) $entity->setAdresseEntree($user->getAdresse());
-    if ( $entity->getShiftSortie() > 20 ) $entity->setAdresseSortie($user->getAdresse());
+    if ($entity->getShiftEntree() !== null && $entity->getShiftEntree() < 8) {
+      $entity->setAdresseEntree($user->getAdresse());
+  }
+  if ($entity->getShiftSortie() !== null && $entity->getShiftSortie() > 20) {
+      $entity->setAdresseSortie($user->getAdresse());
+  }
 
     if ( $entity->getPickupEntree() ) $entity->setTrajetEntree($entity->getPickupEntree()->getTrajet());
     if ( $entity->getPickupSortie() ) $entity->setTrajetSortie($entity->getPickupSortie()->getTrajet());
