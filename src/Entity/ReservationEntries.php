@@ -528,7 +528,7 @@ class ReservationEntries
     }
 
     public function isHomePickup(){
-        return $this->getReservationHeure() < 8 or $this->getReservationHeure() > 22;
+        return $this->getReservationHeure() < 8 or $this->getReservationHeure() > 20;
     }
 
     public function calculateDistance()

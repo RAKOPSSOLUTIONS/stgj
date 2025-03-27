@@ -25,7 +25,7 @@ use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\Uid\Uuid;
 
- 
+use Symfony\Component\Security\Core\Security;
 use Endroid\QrCode\QrCode;
 use Endroid\QrCode\Logo\Logo;
 use Endroid\QrCode\Color\Color;
@@ -43,12 +43,13 @@ use PhpOffice\PhpSpreadsheet\IOFactory;
 
 class UserController extends BaseController
 {
-
+  private $security;
   private $passwordHasher;
 
-    public function __construct(UserPasswordHasherInterface $passwordHasher)
+    public function __construct(UserPasswordHasherInterface $passwordHasher , Security $security)
     {
         $this->passwordHasher = $passwordHasher;
+        $this->security = $security;
     }
 
   /**
@@ -309,8 +310,13 @@ class UserController extends BaseController
 
     //34.000487, lng: -6.857256 
 
-    $latitude = !empty($user->getLatitude()) ? $user->getLatitude() : $user->getSite()->getLatitude();
-    $longitude = !empty($user->getLongitude()) ? $user->getLongitude() : $user->getSite()->getLongitude();
+    $latitude = !empty($user->getLatitude()) 
+    ? $user->getLatitude() 
+    : ($user->getSite() ? $user->getSite()->getLatitude() : null);
+
+$longitude = !empty($user->getLongitude()) 
+    ? $user->getLongitude() 
+    : ($user->getSite() ? $user->getSite()->getLongitude() : null);
 
     if ($user->getId() == $request->get('id')) {
       $title = $translator->trans("Modifier mes informations");
@@ -399,7 +405,15 @@ class UserController extends BaseController
       $entity->setRoles(['ROLE_'. strtoupper($form['role_name']->getData())]);
     }
     //notification d'activation 
-
+    if ($entity->getLatitude() && $entity->getLongitude() && $entity->getAdresse()) {
+      $pickup = $em->getRepository(Pickup::class)->findOrCreate(
+          $entity->getLatitude(),
+          $entity->getLongitude(),
+          $entity->getAdresse()
+      );
+      $entity->setPickup($pickup);
+  }
+  
     $em->persist($entity);
     $em->flush();
     // log activity
@@ -504,7 +518,7 @@ class UserController extends BaseController
     $table->addColumn('nom', 'Prénom', ['sortable' => true]);
     $table->addColumn('email', 'Email', ['sortable' => true]);
     
-    if ( $user->isAdmin() ) $table->addColumn('role', 'Role', [
+    if ( $this->security->isGranted('ROLE_ADMIN') ) $table->addColumn('role', 'Role', [
       'sortable' => true,
       'render' => function($entity) {
         $label = $entity->getRoleLabel();
@@ -612,7 +626,7 @@ class UserController extends BaseController
       $query->andWhere('u.roles LIKE :role');
     }
 
-    if ( !$user->isAdmin() ) {
+    if ( !$this->security->isGranted('ROLE_ADMIN') ) {
       if ($user->getSite()) {
         $params['site_id'] = $user->getSite()->getId();
         $query->andWhere('u.site_id = :site_id');

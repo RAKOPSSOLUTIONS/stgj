@@ -48,7 +48,6 @@ class Reservation
         '6' => '06h00',
         '7'   => '07h00',
         '8' => '08h00',
-
     ];
     
     const SHIFTS_ALL = [

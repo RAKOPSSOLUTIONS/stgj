@@ -309,14 +309,19 @@ class ReservationController extends BaseController
             $entry->setUser($reservation->getUser());
             $entry->setPickup($pickup);
             $entry->setTrajet($reservation->getTrajetEntree());
-            
-            $entry->setPickupLatitude($pickup->getLatitude());
-            $entry->setPickupLongitude($pickup->getLongitude());
+            if( $entity->getShiftEntree() < 8){
+              $entry->setPickupLatitude($user->getLatitude());
+              $entry->setPickupLongitude($user->getLongitude());
+              $entry->setPickupLocation($user->getAdresse());
+            }else{
+              $entry->setPickupLatitude($pickup->getLatitude());
+              $entry->setPickupLongitude($pickup->getLongitude());
+              $entry->setPickupLocation($pickup->getName());
+            }
+
 
             $entry->setDropoffLatitude($site->getLatitude());
             $entry->setDropoffLongitude($site->getLongitude());
-
-            $entry->setPickupLocation($pickup->getName());
             $entry->setDropOffLocation($site->getName());
          
             $em->persist($entry);
@@ -338,15 +343,22 @@ class ReservationController extends BaseController
             $entry->setUser($reservation->getUser());
             $entry->setPickup($pickup);
             $entry->setTrajet($reservation->getTrajetSortie());
-            
+            if($entity->getShiftSortie() > 20 ){
+              $entry->setDropoffLatitude($user->getLatitude());
+              $entry->setDropoffLongitude($user->getLongitude());
+              $entry->setDropOffLocation($user->getAdresse());
+            }else{
+              $entry->setDropoffLatitude($pickup->getLatitude());
+              $entry->setDropoffLongitude($pickup->getLongitude());
+              $entry->setDropOffLocation($pickup->getName());
+            }
             $entry->setPickupLatitude($site->getLatitude() );
             $entry->setPickupLongitude($site->getLongitude());
 
-            $entry->setDropoffLatitude($pickup->getLatitude());
-            $entry->setDropoffLongitude($pickup->getLongitude());
+
 
             $entry->setPickupLocation($site->getName());
-            $entry->setDropOffLocation($pickup->getName());
+            
 
             $em->persist($entry);
         }

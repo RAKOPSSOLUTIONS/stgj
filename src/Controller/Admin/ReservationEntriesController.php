@@ -515,7 +515,12 @@ public function createNavettes(Request $request)
     
     $em->getClassMetadata(get_class($entity))->reflFields['trajet']->setValue($entity, $entity->getTrajet());
     $em->getClassMetadata(get_class($entity))->reflFields['pickup']->setValue($entity, $entity->getPickup());
-    $em->getClassMetadata(get_class($entity))->reflFields['pickupLocation']->setValue($entity, $entity->getPickup()->getName());
+    if ($entity->getPickup() !== null) {
+      $em->getClassMetadata(get_class($entity))->reflFields['pickupLocation']->setValue(
+          $entity, 
+          $entity->getPickup()->getName()
+      );
+  }
     try {
       $em->flush();
   } catch (\Exception $e) {
@@ -725,7 +730,7 @@ public function createNavettes(Request $request)
         $heure = $entry->getReservationHeure();
         $navette = $entry->getNavette();
         $navette_id = $entry->getNavette() ? $entry->getNavette()->getId() : 0 ;
-       
+       error_log($pickup);
         $trajet_id = $entry->getTrajet() ? $entry->getTrajet()->getId() : '';
         $key = $date.$heure.$direction.$trajet_id;
         
