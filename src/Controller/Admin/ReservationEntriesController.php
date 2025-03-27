@@ -477,7 +477,8 @@ public function createNavettes(Request $request)
 
     if ( $entity->getReservationHeure() < 8 or $entity->getReservationHeure() > 20 ){
       $entity->setTrajet(null);
-      $entity->setPickup(null);
+      $pickup  = $this->getDoctrine()->getRepository(Pickup::class)->findOrCreate($user->getLatitude(), $user->getLongitude(), $user->getAdresse());
+      $entity->setPickup($pickup);
       if ( $entity->getDirection() == 'Entrée'){
         $pickupLatitude =  $user->getLatitude();
         $pickupLongitude = $user->getLongitude();
