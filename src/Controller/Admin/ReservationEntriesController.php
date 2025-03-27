@@ -475,7 +475,7 @@ public function createNavettes(Request $request)
     error_log("as".$entity->getTrajet()); // Should return a Trajet object
     error_log("sd".$entity->getPickup()); // Should return a Pickup object
 
-    if ( $entity->getReservationHeure() < 8 or $entity->getReservationHeure() > 21 ){
+    if ( $entity->getReservationHeure() < 8 or $entity->getReservationHeure() > 20 ){
       $entity->setTrajet(null);
       $entity->setPickup(null);
       if ( $entity->getDirection() == 'Entrée'){
