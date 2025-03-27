@@ -727,12 +727,15 @@ class ReservationController extends BaseController
     ])->handleRequest($request);
   }
 
-  private function GetCurrentWeekDates($user)
+ 
+
+ private function GetCurrentWeekDates($user)
   {
       $currentDateTime = new \DateTime('now', new \DateTimeZone('Europe/Paris'));
       $currentHour = (int)$currentDateTime->format('H');
       $currentDay = (int)$currentDateTime->format('N'); // 1 (Monday) to 7 (Sunday)
-      
+      $cutoffDate = strtotime('2025-04-01');
+  
       // Debug current date info
       error_log("Current date: " . $currentDateTime->format('Y-m-d H:i'));
       error_log("Current day: " . $currentDay . " (1=Monday, 7=Sunday)");
@@ -763,7 +766,15 @@ class ReservationController extends BaseController
       
       $days = 7; // Set to 7 days for a week
       $nextWeekDates = [];
-      $disabledDates = [];
+      // Add all the dates from March 26 to March 31, 2025 to disabled dates (using Y-m-d format)
+      $disabledDates = [
+          '2025-03-26', 
+          '2025-03-27', 
+          '2025-03-28', 
+          '2025-03-29', 
+          '2025-03-30', 
+          '2025-03-31'
+      ];
       
       // Determine the Friday of the current week to base the disabling logic
       $fridayOfCurrentWeek = clone $currentDateTime;
@@ -793,24 +804,22 @@ class ReservationController extends BaseController
       // Determine which dates to disable based on current day and time
       if ($isFridayAfternoonToTuesdayMorning) {
           if ($currentDay == 5 && $currentHour >= 13) { // Friday after 1 PM
-              $disabledDates = [$disableSaturday, $disableSunday, $disableMonday];
+              $disabledDates = array_merge($disabledDates, [$disableSaturday, $disableSunday, $disableMonday]);
           } elseif ($currentDay == 6) { // Saturday
               if ($currentHour < 13) {
-                  $disabledDates = [$disableSaturday, $disableSunday, $disableMonday];
+                  $disabledDates = array_merge($disabledDates, [$disableSaturday, $disableSunday, $disableMonday]);
               } else {
-                  $disabledDates = [$disableSunday, $disableMonday];
+                  $disabledDates = array_merge($disabledDates, [$disableSunday, $disableMonday]);
               }
           } elseif ($currentDay == 7) { // Sunday
               if ($currentHour < 13) {
-                  $disabledDates = [$disableSunday, $disableMonday];
+                  $disabledDates = array_merge($disabledDates, [$disableSunday, $disableMonday]);
               } else {
-                  $disabledDates = [$disableMonday];
+                  $disabledDates = array_merge($disabledDates, [$disableMonday]);
               }
           } elseif ($currentDay == 1) { // Monday
               if ($currentHour < 13) {
-                  $disabledDates = [$disableMonday];
-              } else {
-                  $disabledDates = [];
+                  $disabledDates = array_merge($disabledDates, [$disableMonday]);
               }
           }
       }
@@ -859,6 +868,8 @@ class ReservationController extends BaseController
       
       return [$dates_entree, $dates_sortie, $disabledDates];
   }
+
+
 
   /**
    * @Route(methods={"GET", "POST"}, path="/admin/reservations/{id}/enable", name="reservations.enable")
