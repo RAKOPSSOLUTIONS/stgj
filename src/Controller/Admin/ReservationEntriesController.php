@@ -475,23 +475,40 @@ public function createNavettes(Request $request)
     error_log("as".$entity->getTrajet()); // Should return a Trajet object
     error_log("sd".$entity->getPickup()); // Should return a Pickup object
 
-    if ( $entity->getReservationHeure() < 8 or $entity->getReservationHeure() > 22 ){
+    if ( $entity->getReservationHeure() < 8 or $entity->getReservationHeure() > 21 ){
       $entity->setTrajet(null);
       $entity->setPickup(null);
+      if ( $entity->getDirection() == 'Entrée'){
+        $pickupLatitude =  $user->getLatitude();
+        $pickupLongitude = $user->getLongitude();
+        $location = $user->getAdresse();
+        $entity->setPickupLatitude($pickupLatitude);
+        $entity->setPickupLongitude($pickupLongitude);
+        $entity->setPickupLocation($location);
+      }
+      else{
+        $dropoffLatitude =  $user->getLatitude();
+        $dropoffLongitude =  $user->getLongitude();
+        $location = $user->getAdresse();
+        $entity->setDropoffLatitude($dropoffLatitude);
+        $entity->setDropoffLongitude($dropoffLongitude);
+        $entity->setDropoffLocation($location);
+      }
+    }else{
+      if ( $entity->getDirection() == 'Entrée'){
+        $pickupLatitude = $entity->getPickup() ? $entity->getPickup()->getLatitude() : $user->getLatitude();
+        $pickupLongitude = $entity->getPickup() ? $entity->getPickup()->getLongitude() : $user->getLongitude();
+        $entity->setPickupLatitude($pickupLatitude);
+        $entity->setPickupLongitude($pickupLongitude);
+      }
+      else{
+        $dropoffLatitude = $entity->getPickup() ? $entity->getPickup()->getLatitude() : $user->getLatitude();
+        $dropoffLongitude = $entity->getPickup() ? $entity->getPickup()->getLongitude() : $user->getLongitude();
+        $entity->setDropoffLatitude($dropoffLatitude);
+        $entity->setDropoffLongitude($dropoffLongitude);
+      }
     }
 
-    if ( $entity->getDirection() == 'Entrée'){
-      $pickupLatitude = $entity->getPickup() ? $entity->getPickup()->getLatitude() : $user->getLatitude();
-      $pickupLongitude = $entity->getPickup() ? $entity->getPickup()->getLongitude() : $user->getLongitude();
-      $entity->setPickupLatitude($pickupLatitude);
-      $entity->setPickupLongitude($pickupLongitude);
-    }
-    else{
-      $dropoffLatitude = $entity->getPickup() ? $entity->getPickup()->getLatitude() : $user->getLatitude();
-      $dropoffLongitude = $entity->getPickup() ? $entity->getPickup()->getLongitude() : $user->getLongitude();
-      $entity->setDropoffLatitude($dropoffLatitude);
-      $entity->setDropoffLongitude($dropoffLongitude);
-    }
 
     //add or update entries
     $distance =  $entity->calculateDistance(); 
