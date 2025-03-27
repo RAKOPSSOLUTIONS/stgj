@@ -533,10 +533,18 @@ public function createNavettes(Request $request)
     $em->getClassMetadata(get_class($entity))->reflFields['trajet']->setValue($entity, $entity->getTrajet());
     $em->getClassMetadata(get_class($entity))->reflFields['pickup']->setValue($entity, $entity->getPickup());
     if ($entity->getPickup() !== null) {
-      $em->getClassMetadata(get_class($entity))->reflFields['pickupLocation']->setValue(
+      if ( $entity->getDirection() == 'Entrée'){
+        $em->getClassMetadata(get_class($entity))->reflFields['pickupLocation']->setValue(
           $entity, 
           $entity->getPickup()->getName()
       );
+      }else{
+        $em->getClassMetadata(get_class($entity))->reflFields['dropoffLocation']->setValue(
+          $entity, 
+          $entity->getPickup()->getName()
+      );
+      }
+
   }
     try {
       $em->flush();
@@ -998,6 +1006,15 @@ public function createNavettes(Request $request)
         return $this->isGranted('ROLE_ADMIN') && $entity->getStatus() == 'active';
       },
       'bulk_action' => $this->isGranted('ROLE_ADMIN') ? true : false
+    ]);
+    $table->addAction('delete', [
+      'type'  => 'modal',
+      'label' => 'Supprimer',
+      'icon'  => 'bi bi-trash',
+      'route' => function($entity) {
+        $id = $entity ? $entity->getId() : 0;
+        return "/admin/reservation_entries/{$id}/delete";
+      },
     ]);
 
     //$table->addDivider();
