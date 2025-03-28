@@ -53,7 +53,7 @@
         <div id="div_pickup_entree" {% if entity and entity.isHomePickup %}style="display:none;" {% endif %}>
           {{ form_row(form.pickup_entree) }}
         </div>
-        <div id="div_adresse_entree" {% if entity and entity.isHomePickup!=1 %}style="display:none;" {% endif %}>
+        <div id="div_adresse_entree" {% if entity and entity.isHomePickup !=1 %}style="display:none;" {% endif %}>
           {{ form_row(form.adresse_entree) }}
         </div>
         {% if form.repere_entree is defined %} 
@@ -91,7 +91,194 @@
     </button>
 
     {{ form_end(form) }}
-  </ajax-form>
+
+    <script>
+        // Pass PHP constants to JavaScript
+        const SHIFTS_ENTREE = {
+            '5': '05h00',
+            '6': '06h00',
+            '7': '07h00',
+            '8': '08h00'
+        };
+
+        const SHIFTS_SORTIE = {
+            '15': '15h00',
+            '16': '16h00',
+            '17': '17h00',
+            '18': '18h00',
+            '19': '19h00',
+            '20': '20h00',
+            '21': '21h00'
+        };
+
+        document.addEventListener('DOMContentLoaded', function() {
+            // Select the containers for Entrée and Sortie
+            const dateEntreeContainer = document.querySelector('#{{ form.dates_entree.vars.id }}');
+            const dateSortieContainer = document.querySelector('#{{ form.dates_sortie.vars.id }}');
+            const shiftEntree = document.querySelector('#{{ form.shift_entree.vars.id }}');
+            const shiftSortie = document.querySelector('#{{ form.shift_sortie.vars.id }}');
+            
+            console.log('Form loaded, dateEntree container ID:', dateEntreeContainer ? dateEntreeContainer.id : 'Not found');
+            console.log('dateSortie container ID:', dateSortieContainer ? dateSortieContainer.id : 'Not found');
+            console.log('shiftEntree ID:', shiftEntree.id);
+            console.log('shiftSortie ID:', shiftSortie.id);
+            
+            // Store original options for shift_entree and shift_sortie
+            const originalOptionsEntree = Array.from(shiftEntree.options).map(option => ({
+                value: option.value,
+                text: option.text
+            }));
+            
+            const originalOptionsSortie = Array.from(shiftSortie.options).map(option => ({
+                value: option.value,
+                text: option.text
+            }));
+            
+            console.log('Original options for shiftEntree:', originalOptionsEntree);
+            console.log('Original options for shiftSortie:', originalOptionsSortie);
+
+            // Function to update shift_entree based on dates_entree
+            function updateShiftEntreeOptions() {
+                const dateCheckboxes = dateEntreeContainer.querySelectorAll('input[type="checkbox"]');
+                let selectedDateValue = null;
+
+                dateCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedDateValue = checkbox.value;
+                    }
+                });
+
+                console.log('Entrée - Raw selected date value:', selectedDateValue);
+
+                if (!selectedDateValue) {
+                    console.log('Entrée - No date selected, resetting to default options');
+                    shiftEntree.innerHTML = '';
+                    originalOptionsEntree.forEach(opt => {
+                        const option = new Option(opt.text, opt.value);
+                        shiftEntree.add(option);
+                    });
+                    console.log('Entrée - Default options for shiftEntree:', Array.from(shiftEntree.options).map(opt => opt.value));
+                    return;
+                }
+
+                const selectedDate = new Date(selectedDateValue);
+                const thresholdDate = new Date('2025-04-06');
+                
+                if (isNaN(selectedDate.getTime())) {
+                    console.error('Entrée - Invalid date selected:', selectedDateValue);
+                    return;
+                }
+
+                console.log('Entrée - Parsed selected date:', selectedDate.toISOString());
+                console.log('Entrée - Threshold date:', thresholdDate.toISOString());
+                console.log('Entrée - Is selected date before threshold?', selectedDate < thresholdDate);
+
+                let modifiedShiftsEntree = { ...SHIFTS_ENTREE };
+
+                if (selectedDate >= thresholdDate) {
+                    console.log('Entrée - Date is on/after 2025-04-06, modifying shifts');
+                    delete modifiedShiftsEntree['5'];
+                    modifiedShiftsEntree['9'] = '09h00';
+                } else {
+                    console.log('Entrée - Date is before 2025-04-06, using original shifts');
+                }
+
+                console.log('Entrée - Modified SHIFTS_ENTREE:', modifiedShiftsEntree);
+
+                shiftEntree.innerHTML = '';
+                  const emptyOption = new Option('', '');
+                  shiftEntree.add(emptyOption);
+                Object.entries(modifiedShiftsEntree).forEach(([value, text]) => {
+                    const option = new Option(text, value);
+                    shiftEntree.add(option);
+                });
+                console.log('Entrée - Updated options for shiftEntree:', Array.from(shiftEntree.options).map(opt => opt.value));
+            }
+
+            // Function to update shift_sortie based on dates_sortie
+            function updateShiftSortieOptions() {
+                const dateCheckboxes = dateSortieContainer.querySelectorAll('input[type="checkbox"]');
+                let selectedDateValue = null;
+
+                dateCheckboxes.forEach(checkbox => {
+                    if (checkbox.checked) {
+                        selectedDateValue = checkbox.value;
+                    }
+                });
+
+                console.log('Sortie - Raw selected date value:', selectedDateValue);
+
+                if (!selectedDateValue) {
+                    console.log('Sortie - No date selected, resetting to default options');
+                    shiftSortie.innerHTML = '';
+                    originalOptionsSortie.forEach(opt => {
+                        const option = new Option(opt.text, opt.value);
+                        shiftSortie.add(option);
+                    });
+                    console.log('Sortie - Default options for shiftSortie:', Array.from(shiftSortie.options).map(opt => opt.value));
+                    return;
+                }
+
+                const selectedDate = new Date(selectedDateValue);
+                const thresholdDate = new Date('2025-04-06');
+                
+                if (isNaN(selectedDate.getTime())) {
+                    console.error('Sortie - Invalid date selected:', selectedDateValue);
+                    return;
+                }
+
+                console.log('Sortie - Parsed selected date:', selectedDate.toISOString());
+                console.log('Sortie - Threshold date:', thresholdDate.toISOString());
+                console.log('Sortie - Is selected date before threshold?', selectedDate < thresholdDate);
+
+                let modifiedShiftsSortie = { ...SHIFTS_SORTIE };
+
+                if (selectedDate >= thresholdDate) {
+                    console.log('Sortie - Date is on/after 2025-04-06, modifying shifts');
+                    delete modifiedShiftsSortie['15'];
+                    modifiedShiftsSortie['22'] = '22h00';
+                } else {
+                    console.log('Sortie - Date is before 2025-04-06, using original shifts');
+                }
+
+                console.log('Sortie - Modified SHIFTS_SORTIE:', modifiedShiftsSortie);
+
+                shiftSortie.innerHTML = '';
+                    const emptyOption = new Option('', '');
+                    shiftSortie.add(emptyOption);
+                Object.entries(modifiedShiftsSortie).forEach(([value, text]) => {
+                    const option = new Option(text, value);
+                    shiftSortie.add(option);
+                });
+                console.log('Sortie - Updated options for shiftSortie:', Array.from(shiftSortie.options).map(opt => opt.value));
+            }
+
+            // Initial updates
+            console.log('Performing initial update for Entrée');
+            updateShiftEntreeOptions();
+            console.log('Performing initial update for Sortie');
+            updateShiftSortieOptions();
+            
+            // Add event listeners to Entrée checkboxes
+            const dateEntreeCheckboxes = dateEntreeContainer.querySelectorAll('input[type="checkbox"]');
+            dateEntreeCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    console.log('Entrée - Date checkbox changed, updating options');
+                    updateShiftEntreeOptions();
+                });
+            });
+
+            // Add event listeners to Sortie checkboxes
+            const dateSortieCheckboxes = dateSortieContainer.querySelectorAll('input[type="checkbox"]');
+            dateSortieCheckboxes.forEach(checkbox => {
+                checkbox.addEventListener('change', function() {
+                    console.log('Sortie - Date checkbox changed, updating options');
+                    updateShiftSortieOptions();
+                });
+            });
+        });
+    </script>
+</ajax-form>
 
 {% endblock %}
 

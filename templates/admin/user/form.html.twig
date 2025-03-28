@@ -77,7 +77,9 @@
     {% if form.matricule is defined %}{{ form_row(form.matricule) }}  {% endif %}
     {% if form.email is defined %}{{ form_row(form.email) }}  {% endif %}
     {% if form.telephone is defined %}{{ form_row(form.telephone) }}  {% endif %}
-    {% if form.adresse is defined %}{{ form_row(form.adresse) }}  {% endif %}
+{% if form.adresse is defined %}
+    {{ form_row(form.adresse, {'attr': {'disabled': 'disabled'}}) }}
+{% endif %}
 
     {{ form_row(form.latitude) }} 
     {{ form_row(form.longitude) }}

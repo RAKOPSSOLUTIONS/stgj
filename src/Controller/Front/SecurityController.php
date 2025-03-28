@@ -12,7 +12,7 @@ use App\Entity\User;
 use App\Form\UserType;
 use Symfony\Component\Security\Core\Encoder\UserPasswordEncoderInterface;
 use Symfony\Component\PasswordHasher\Hasher\UserPasswordHasherInterface;
-
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class SecurityController extends BaseController
 {
@@ -48,6 +48,7 @@ class SecurityController extends BaseController
 
     public function signup(Request $request, UserPasswordEncoderInterface $passwordEncoder)
     {
+        throw new NotFoundHttpException('Page not found.');
     $user = new User();
     $form = $this->createForm(UserType::class, $user, ['user' => $user]);
     $form->handleRequest($request);

@@ -15,20 +15,24 @@ use Symfony\Component\Routing\Annotation\Route;
 use Symfony\Contracts\Translation\TranslatorInterface;
 use Symfony\Component\Security\Core\User\UserInterface;
 use Sensio\Bundle\FrameworkExtraBundle\Configuration\IsGranted;
+use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 
 class ReclamationController extends BaseController
 {
    /**
    * @Route(methods={"GET"}, path="/admin/reclamations", name="reclamations")
    */
+  // public function index(Request $request, UserInterface $user, Table $table)
+  // {
+  //   return $this->render('admin/reclamation/index.html.twig', [
+  //     'table' => $this->getTable($request, $user, $table),
+  //     //'search_form' => $this->getSearchForm($request, $user)->createView()
+  //   ]);
+  // }
   public function index(Request $request, UserInterface $user, Table $table)
   {
-    return $this->render('admin/reclamation/index.html.twig', [
-      'table' => $this->getTable($request, $user, $table),
-      //'search_form' => $this->getSearchForm($request, $user)->createView()
-    ]);
+    throw new NotFoundHttpException('Page not found.');
   }
-
   /**
    * @Route(methods={"GET"}, path="/admin/reclamations/table", name="reclamations.table")
    */
