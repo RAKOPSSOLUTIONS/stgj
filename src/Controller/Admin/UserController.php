@@ -299,8 +299,8 @@ class UserController extends BaseController
       return $this->redirectToRoute('user.details', ['id' => $user->getId()]);
     }
 
-    if ( $user->getUpdatesCount() >= 5 ) {
-      $this->addFlash( 'error', "La mise à jour de vos informations est limitée à 5 fois");
+    if ( $user->getUpdatesCount() >= 100 ) {
+      $this->addFlash( 'error', "La mise à jour de vos informations est limitée à 100 fois");
 
       return $this->redirectToRoute('user.details', ['id' => $user->getId()]);
     }
